@@ -58,13 +58,20 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect dashboard routes
-  if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
+  // Allow access to onboarding page without checks
+  if (request.nextUrl.pathname === '/onboarding') {
+    return response
+  }
+
+  // Protect dashboard and settings routes
+  if ((request.nextUrl.pathname.startsWith('/dashboard') || 
+       request.nextUrl.pathname.startsWith('/settings')) && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Check if user needs onboarding
-  if (user && request.nextUrl.pathname.startsWith('/dashboard')) {
+  // Check if user needs onboarding (for dashboard and settings pages)
+  if (user && (request.nextUrl.pathname.startsWith('/dashboard') || 
+               request.nextUrl.pathname.startsWith('/settings'))) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('study_program, degree_type')
