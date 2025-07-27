@@ -79,66 +79,68 @@ export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) 
   };
 
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow">
-      <div className="flex items-start gap-3">
-        <div className={`p-2 rounded-lg bg-muted ${iconColor}`}>
-          <Icon className="h-6 w-6" />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <h4 className="font-medium truncate" title={file.display_name}>
-            {file.display_name}
-          </h4>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
-            <span>{formatFileSize(file.file_size)}</span>
-            <span>•</span>
-            <span>{formatDate(file.created_at)}</span>
-            {file.ai_category && (
-              <>
-                <span>•</span>
-                <span className="capitalize">{file.ai_category}</span>
-              </>
-            )}
+    <>
+      <Card className="p-4 hover:shadow-md transition-shadow">
+        <div className="flex items-start gap-3">
+          <div className={`p-2 rounded-lg bg-muted ${iconColor}`}>
+            <Icon className="h-6 w-6" />
           </div>
+
+          <div className="flex-1 min-w-0">
+            <h4 className="font-medium truncate" title={file.display_name}>
+              {file.display_name}
+            </h4>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
+              <span>{formatFileSize(file.file_size)}</span>
+              <span>•</span>
+              <span>{formatDate(file.created_at)}</span>
+              {file.ai_category && (
+                <>
+                  <span>•</span>
+                  <span className="capitalize">{file.ai_category}</span>
+                </>
+              )}
+            </div>
+          </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" disabled={isDeleting}>
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setShowPreview(true)}>
+                <Eye className="mr-2 h-4 w-4" />
+                View
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onDownload?.(file)}>
+                <Download className="mr-2 h-4 w-4" />
+                Download
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={handleDelete}
+                className="text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" disabled={isDeleting}>
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setShowPreview(true)}>
-              <Eye className="mr-2 h-4 w-4" />
-              View
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onDownload?.(file)}>
-              <Download className="mr-2 h-4 w-4" />
-              Download
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={handleDelete}
-              className="text-destructive"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+        {file.ai_summary && (
+          <p className="text-sm text-muted-foreground mt-3 line-clamp-2">
+            {file.ai_summary}
+          </p>
+        )}
+      </Card>
 
-      {file.ai_summary && (
-        <p className="text-sm text-muted-foreground mt-3 line-clamp-2">
-          {file.ai_summary}
-        </p>
-      )}
-    </Card>
-
-    <FilePreview
-      file={file}
-      open={showPreview}
-      onOpenChange={setShowPreview}
-    />
+      <FilePreview
+        file={file}
+        open={showPreview}
+        onOpenChange={setShowPreview}
+      />
+    </>
   );
 }
