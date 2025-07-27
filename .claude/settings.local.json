@@ -17,7 +17,8 @@
       "Bash(test:*)",
       "Bash(ls:*)",
       "Bash(npx shadcn-ui:*)",
-      "Bash(npx shadcn@latest add progress --yes)"
+      "Bash(npx shadcn@latest add progress --yes)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }

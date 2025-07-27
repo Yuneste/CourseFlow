@@ -29,65 +29,97 @@ interface BenefitsShowcaseProps {
 
 // Animated demonstration components for each benefit
 const FileOrganizationDemo = () => {
+  const [detectedText, setDetectedText] = useState('');
+  const [movedToFolder, setMovedToFolder] = useState(false);
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setDetectedText('binomial formula'), 1500);
+    const timer2 = setTimeout(() => setMovedToFolder(true), 2500);
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
   return (
     <div className="relative w-full h-64 mx-auto">
-      {/* Computer screen */}
+      {/* File with text */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="absolute left-0 top-1/2 -translate-y-1/2 w-32 h-24 bg-gray-200 rounded-lg shadow-lg flex items-center justify-center"
+        className="absolute left-0 top-1/2 -translate-y-1/2 w-40 h-48 bg-white rounded-lg shadow-lg p-3"
       >
-        <FileText className="h-8 w-8 text-gray-600" />
+        <div className="text-xs text-gray-400 mb-2">lecture_notes.pdf</div>
+        <div className="space-y-1 text-xs text-gray-600">
+          <div className="h-1 bg-gray-200 rounded w-full"></div>
+          <div className="h-1 bg-gray-200 rounded w-3/4"></div>
+          <motion.div 
+            className="relative"
+            animate={detectedText ? { scale: [1, 1.1, 1] } : {}}
+            transition={{ duration: 0.5 }}
+          >
+            <div className={`${detectedText ? 'bg-yellow-300' : ''} px-1 rounded inline-block`}>
+              binomial formula
+            </div>
+          </motion.div>
+          <div className="h-1 bg-gray-200 rounded w-full"></div>
+          <div className="h-1 bg-gray-200 rounded w-2/3"></div>
+        </div>
       </motion.div>
 
       {/* AI Scanner */}
       <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
       >
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          animate={{ rotate: detectedText ? 0 : 360 }}
+          transition={{ duration: detectedText ? 0.5 : 2, repeat: detectedText ? 0 : Infinity, ease: "linear" }}
           className="relative"
         >
           <Cpu className="h-12 w-12 text-[#FA8072]" />
-          <motion.div
-            animate={{ scale: [1, 1.5, 1] }}
-            transition={{ duration: 1, repeat: Infinity }}
-            className="absolute inset-0 bg-[#FA8072] rounded-full opacity-20"
-          />
+          {detectedText && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#FA8072] text-white text-xs px-2 py-1 rounded"
+            >
+              Found: Math!
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
 
-      {/* Scan lines */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 1, 0] }}
-        transition={{ delay: 0.8, duration: 1, repeat: Infinity }}
-        className="absolute left-32 top-1/2 -translate-y-1/2 w-24"
-      >
-        <ScanLine className="h-6 w-24 text-[#FA8072]" />
-      </motion.div>
+      {/* Moving text */}
+      {movedToFolder && (
+        <motion.div
+          initial={{ x: -200, y: 0, opacity: 1 }}
+          animate={{ x: 200, y: -20, opacity: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-semibold text-[#FA8072]"
+        >
+          binomial formula →
+        </motion.div>
+      )}
 
       {/* Organized folders */}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.5 }}
+        transition={{ delay: 0.8 }}
         className="absolute right-0 top-1/2 -translate-y-1/2 grid grid-cols-2 gap-2"
       >
         {['Math', 'CS', 'Bio', 'Eng'].map((subject, i) => (
           <motion.div
             key={subject}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.7 + i * 0.1 }}
-            className="w-16 h-16 bg-[#FFE4E1] rounded-lg shadow-md flex flex-col items-center justify-center"
+            animate={movedToFolder && subject === 'Math' ? { scale: [1, 1.2, 1] } : {}}
+            className={`w-16 h-16 ${movedToFolder && subject === 'Math' ? 'bg-[#FA8072] text-white' : 'bg-[#FFE4E1]'} rounded-lg shadow-md flex flex-col items-center justify-center transition-colors`}
           >
-            <FolderCheck className="h-6 w-6 text-[#FA8072]" />
-            <span className="text-xs mt-1 text-gray-700">{subject}</span>
+            <FolderCheck className={`h-6 w-6 ${movedToFolder && subject === 'Math' ? 'text-white' : 'text-[#FA8072]'}`} />
+            <span className={`text-xs mt-1 ${movedToFolder && subject === 'Math' ? 'text-white font-semibold' : 'text-gray-700'}`}>{subject}</span>
           </motion.div>
         ))}
       </motion.div>
@@ -96,118 +128,236 @@ const FileOrganizationDemo = () => {
 };
 
 const AIAssistantDemo = () => {
-  const [messages, setMessages] = useState<string[]>([]);
+  const [currentSubject, setCurrentSubject] = useState(0);
+  const [showFlashcards, setShowFlashcards] = useState(false);
   
+  const subjects = [
+    {
+      messages: [
+        { text: 'Help with derivatives?', isUser: true },
+        { text: 'f\'(x) = 2x for f(x) = x²', isUser: false },
+        { text: 'Create flashcards?', isUser: true },
+      ],
+      flashcards: ['Derivative of x²', 'Power rule', 'Chain rule']
+    },
+    {
+      messages: [
+        { text: 'Explain photosynthesis', isUser: true },
+        { text: 'Plants convert CO₂ + H₂O → glucose', isUser: false },
+        { text: 'Quiz me!', isUser: true },
+      ],
+      flashcards: ['Chloroplast', 'Light reaction', 'Calvin cycle']
+    },
+    {
+      messages: [
+        { text: 'Binary tree traversal?', isUser: true },
+        { text: 'Inorder: Left→Root→Right', isUser: false },
+        { text: 'Practice cards?', isUser: true },
+      ],
+      flashcards: ['Inorder', 'Preorder', 'BFS vs DFS']
+    }
+  ];
+
+  const current = subjects[currentSubject];
+
   useEffect(() => {
-    const timer1 = setTimeout(() => setMessages(['Help with calculus?']), 500);
-    const timer2 = setTimeout(() => setMessages(prev => [...prev, 'Here\'s the solution...']), 1500);
-    const timer3 = setTimeout(() => setMessages(prev => [...prev, 'Practice problems?']), 2500);
-    const timer4 = setTimeout(() => setMessages(prev => [...prev, 'Try these exercises...']), 3500);
+    const cycleTimer = setInterval(() => {
+      setCurrentSubject((prev) => (prev + 1) % subjects.length);
+      setShowFlashcards(false);
+    }, 6000);
+
+    const flashcardTimer = setTimeout(() => {
+      setShowFlashcards(true);
+    }, 3000);
     
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      clearTimeout(timer4);
+      clearInterval(cycleTimer);
+      clearTimeout(flashcardTimer);
     };
-  }, []);
+  }, [currentSubject]);
 
   return (
-    <div className="relative w-full h-64 mx-auto">
+    <div className="relative w-full h-64 mx-auto flex gap-4">
+      {/* Chat Section */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="absolute inset-0 bg-gray-100 rounded-lg shadow-lg p-4"
+        key={currentSubject}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="flex-1 bg-white rounded-lg shadow-lg p-4"
       >
-        {/* AI Bot */}
-        <motion.div
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute top-4 left-4"
-        >
-          <Bot className="h-8 w-8 text-[#FA8072]" />
-        </motion.div>
+        <div className="flex items-center gap-2 mb-3">
+          <Bot className="h-6 w-6 text-[#FA8072]" />
+          <span className="text-sm font-semibold">AI Assistant</span>
+        </div>
 
-        {/* Chat messages */}
-        <div className="mt-12 space-y-2">
+        <div className="space-y-2">
           <AnimatePresence>
-            {messages.map((msg, i) => (
+            {current.messages.map((msg, i) => (
               <motion.div
-                key={i}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}
+                key={`${currentSubject}-${i}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.8 }}
+                className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`px-3 py-2 rounded-lg text-sm ${
-                  i % 2 === 0 
-                    ? 'bg-white text-gray-700' 
+                <div className={`px-3 py-1.5 rounded-lg text-xs max-w-[80%] ${
+                  msg.isUser 
+                    ? 'bg-gray-200 text-gray-700' 
                     : 'bg-[#FA8072] text-white'
                 }`}>
-                  {msg}
+                  {msg.text}
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
         </div>
       </motion.div>
+
+      {/* Flashcards Section */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: showFlashcards ? 1 : 0, scale: showFlashcards ? 1 : 0 }}
+        transition={{ delay: 0.2 }}
+        className="w-32 space-y-2"
+      >
+        <div className="text-xs font-semibold text-gray-600 mb-1">Generated Cards:</div>
+        {current.flashcards.map((card, i) => (
+          <motion.div
+            key={`${currentSubject}-card-${i}`}
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.3 + i * 0.1 }}
+            className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] text-white p-2 rounded text-xs shadow-md"
+          >
+            {card}
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 };
 
 const CloudStorageDemo = () => {
+  const [syncActive, setSyncActive] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSyncActive(prev => !prev);
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const devices = [
+    { name: 'Desktop', icon: '🖥️', position: 'bottom-0 left-0' },
+    { name: 'Mobile', icon: '📱', position: 'bottom-0 right-0' },
+    { name: 'Laptop', icon: '💻', position: 'bottom-0 left-1/2 -translate-x-1/2' }
+  ];
+
   return (
     <div className="relative w-full h-64 mx-auto">
-      {/* Devices */}
-      <div className="absolute inset-0 flex items-center justify-between">
-        {['laptop', 'phone', 'tablet'].map((device, i) => (
-          <motion.div
-            key={device}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.2 }}
-            className="w-20 h-20 bg-gray-200 rounded-lg shadow-lg flex items-center justify-center"
-          >
-            <FileText className="h-6 w-6 text-gray-600" />
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Cloud in center */}
+      {/* Cloud at top */}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.8 }}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        className="absolute top-0 left-1/2 -translate-x-1/2"
       >
-        <Cloud className="h-16 w-16 text-[#FA8072]" />
+        <Cloud className="h-20 w-20 text-[#FA8072]" />
         <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          animate={{ scale: syncActive ? [1, 1.2, 1] : 1 }}
+          transition={{ duration: 0.5 }}
           className="absolute inset-0 bg-[#FA8072] rounded-full opacity-20 blur-xl"
         />
       </motion.div>
 
-      {/* Upload arrows */}
-      <AnimatePresence>
-        {[0, 1, 2].map((i) => (
+      {/* Connection lines */}
+      <svg className="absolute inset-0 w-full h-full" style={{ zIndex: -1 }}>
+        {devices.map((_, i) => {
+          const angle = (i * 120 - 60) * Math.PI / 180;
+          const startX = 50 + Math.cos(angle) * 35;
+          const startY = 25;
+          const endX = 50 + Math.cos(angle) * 35;
+          const endY = 75;
+          
+          return (
+            <motion.line
+              key={i}
+              x1={`${startX}%`}
+              y1={`${startY}%`}
+              x2={`${endX}%`}
+              y2={`${endY}%`}
+              stroke="#FA8072"
+              strokeWidth="2"
+              strokeDasharray="5,5"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ 
+                pathLength: 1, 
+                opacity: syncActive ? [0.3, 0.8, 0.3] : 0.3,
+                strokeDashoffset: syncActive ? [0, -10] : 0
+              }}
+              transition={{ 
+                pathLength: { delay: 0.5 + i * 0.1, duration: 0.5 },
+                opacity: { duration: 2, repeat: Infinity },
+                strokeDashoffset: { duration: 1, repeat: Infinity, ease: "linear" }
+              }}
+            />
+          );
+        })}
+      </svg>
+
+      {/* Devices at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 flex justify-between px-8">
+        {devices.map((device, i) => (
           <motion.div
-            key={i}
-            initial={{ opacity: 0 }}
+            key={device.name}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 + i * 0.1 }}
+            className="flex flex-col items-center"
+          >
+            <motion.div
+              animate={syncActive ? { scale: [1, 1.1, 1] } : {}}
+              transition={{ delay: i * 0.1 }}
+              className="text-4xl mb-1"
+            >
+              {device.icon}
+            </motion.div>
+            <span className="text-xs text-gray-600">{device.name}</span>
+            {syncActive && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                className="absolute -top-4 bg-green-500 text-white text-xs px-2 py-0.5 rounded"
+              >
+                Synced!
+              </motion.div>
+            )}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Floating files */}
+      <AnimatePresence>
+        {syncActive && [0, 1, 2].map((i) => (
+          <motion.div
+            key={`file-${i}`}
+            initial={{ 
+              x: i === 0 ? -100 : i === 1 ? 100 : 0,
+              y: 150,
+              opacity: 0 
+            }}
             animate={{ 
-              opacity: [0, 1, 0],
-              y: [0, -30, -60]
+              x: 0,
+              y: -20,
+              opacity: [0, 1, 0]
             }}
             transition={{ 
-              delay: 1.2 + i * 0.5,
-              duration: 1.5,
-              repeat: Infinity,
-              repeatDelay: 1.5
+              delay: i * 0.3,
+              duration: 1.5
             }}
-            className={`absolute ${
-              i === 0 ? 'left-20' : i === 1 ? 'left-1/2 -translate-x-1/2' : 'right-20'
-            } bottom-24`}
+            className="absolute left-1/2 top-1/2 -translate-x-1/2"
           >
-            <Upload className="h-4 w-4 text-[#FA8072]" />
+            <FileText className="h-4 w-4 text-[#FA8072]" />
           </motion.div>
         ))}
       </AnimatePresence>
@@ -266,42 +416,111 @@ const DeadlineTrackerDemo = () => {
 };
 
 const ProgressTrackerDemo = () => {
-  return (
-    <div className="relative w-full h-64 mx-auto">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto"
-      >
-        <div className="flex items-center gap-2 mb-4">
-          <BarChart3 className="h-6 w-6 text-[#FA8072]" />
-          <span className="font-semibold">Your Progress</span>
-        </div>
+  const [showImprovement, setShowImprovement] = useState(false);
 
-        {/* Animated progress bars */}
-        <div className="space-y-3">
-          {[
-            { subject: 'Mathematics', progress: 75 },
-            { subject: 'Computer Science', progress: 90 },
-            { subject: 'Biology', progress: 60 }
-          ].map((item, i) => (
-            <div key={i} className="space-y-1">
-              <div className="flex justify-between text-sm">
-                <span>{item.subject}</span>
-                <span className="text-[#FA8072]">{item.progress}%</span>
-              </div>
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${item.progress}%` }}
-                  transition={{ delay: 0.5 + i * 0.2, duration: 1 }}
-                  className="h-full bg-gradient-to-r from-[#FA8072] to-[#FF6B6B]"
-                />
+  useEffect(() => {
+    const timer = setTimeout(() => setShowImprovement(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const grades = [
+    { subject: 'Mathematics', before: 'C+', after: 'A-', beforeNum: 65, afterNum: 85 },
+    { subject: 'Computer Science', before: 'B', after: 'A', beforeNum: 75, afterNum: 92 },
+    { subject: 'Biology', before: 'C', after: 'B+', beforeNum: 60, afterNum: 80 }
+  ];
+
+  return (
+    <div className="relative w-full h-64 mx-auto flex gap-6 items-center justify-center">
+      {/* Before CourseFlow */}
+      <motion.div
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="bg-gray-100 rounded-lg shadow-lg p-4 w-48"
+      >
+        <h3 className="text-sm font-semibold text-gray-600 mb-3">Before CourseFlow</h3>
+        <div className="space-y-2">
+          {grades.map((grade, i) => (
+            <div key={i} className="flex justify-between items-center">
+              <span className="text-xs text-gray-600">{grade.subject}:</span>
+              <span className="text-lg font-bold text-red-500">{grade.before}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 text-center">
+          <span className="text-xs text-gray-500">GPA: 2.3</span>
+        </div>
+      </motion.div>
+
+      {/* Arrow */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5 }}
+        className="text-[#FA8072]"
+      >
+        <ChevronRight className="h-8 w-8" />
+      </motion.div>
+
+      {/* After CourseFlow */}
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-gradient-to-br from-[#FFE4E1] to-white rounded-lg shadow-lg p-4 w-48"
+      >
+        <h3 className="text-sm font-semibold text-[#FA8072] mb-3">With CourseFlow</h3>
+        <div className="space-y-2">
+          {grades.map((grade, i) => (
+            <div key={i} className="flex justify-between items-center">
+              <span className="text-xs text-gray-600">{grade.subject}:</span>
+              <div className="flex items-center gap-1">
+                {showImprovement && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="text-lg font-bold text-green-600"
+                  >
+                    {grade.after}
+                  </motion.span>
+                )}
+                {!showImprovement && (
+                  <span className="text-lg font-bold text-gray-400">?</span>
+                )}
+                {showImprovement && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                  >
+                    <TrendingUp className="h-3 w-3 text-green-500" />
+                  </motion.div>
+                )}
               </div>
             </div>
           ))}
         </div>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: showImprovement ? 1 : 0 }}
+          transition={{ delay: 1 }}
+          className="mt-3 text-center"
+        >
+          <span className="text-xs font-semibold text-[#FA8072]">GPA: 3.6 ✨</span>
+        </motion.div>
       </motion.div>
+
+      {/* Improvement indicators */}
+      {showImprovement && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1.5 }}
+          className="absolute top-0 right-0 bg-green-500 text-white text-xs px-3 py-1 rounded-full"
+        >
+          +56% improvement!
+        </motion.div>
+      )}
     </div>
   );
 };

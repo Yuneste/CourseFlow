@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ChevronRight, BookOpen, Globe, Plus, Edit2, Trash2, GraduationCap } from 'lucide-react';
+import { ChevronRight, ChevronLeft, BookOpen, Globe, Plus, Edit2, Trash2, GraduationCap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { coursesService, CreateCourseInput } from '@/lib/services/courses.service';
 import { Course } from '@/types';
 import { cn } from '@/lib/utils';
-import { BenefitsShowcase, BenefitsShowcaseStyles } from '@/components/features/onboarding/BenefitsShowcase';
+import { BenefitsShowcaseStyles } from '@/components/features/onboarding/BenefitsShowcase';
 import { BenefitsShowcaseAnimated } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
 
 // Define academic systems by country
@@ -66,7 +66,6 @@ export default function OnboardingPage() {
   const [error, setError] = useState<string | null>(null);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [showBenefits, setShowBenefits] = useState(false);
-  const [useAnimatedBenefits, setUseAnimatedBenefits] = useState(true);
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
@@ -175,6 +174,7 @@ export default function OnboardingPage() {
             studyProgram={studyProgram}
             onChange={setStudyProgram}
             onNext={() => setStep(3)}
+            onPrevious={() => setStep(1)}
           />
         );
       case 3:
@@ -187,6 +187,7 @@ export default function OnboardingPage() {
             onUpdateCourse={updateCourse}
             onDeleteCourse={deleteCourse}
             onNext={() => setStep(4)}
+            onPrevious={() => setStep(2)}
             isLoading={isLoading}
             error={error}
             editingCourse={editingCourse}
@@ -199,8 +200,7 @@ export default function OnboardingPage() {
             coursesCount={courses.length}
             onComplete={handleComplete}
             onShowBenefits={() => setShowBenefits(true)}
-            useAnimatedBenefits={useAnimatedBenefits}
-            setUseAnimatedBenefits={setUseAnimatedBenefits}
+            onPrevious={() => setStep(3)}
           />
         );
       default:
@@ -212,11 +212,7 @@ export default function OnboardingPage() {
     return (
       <>
         <BenefitsShowcaseStyles />
-        {useAnimatedBenefits ? (
-          <BenefitsShowcaseAnimated onComplete={handleComplete} />
-        ) : (
-          <BenefitsShowcase onComplete={handleComplete} />
-        )}
+        <BenefitsShowcaseAnimated onComplete={handleComplete} />
       </>
     );
   }
@@ -303,6 +299,7 @@ interface StepAddCoursesProps {
   onUpdateCourse: (id: string, course: any) => Promise<void>;
   onDeleteCourse: (id: string) => Promise<void>;
   onNext: () => void;
+  onPrevious: () => void;
   isLoading: boolean;
   error: string | null;
   editingCourse: Course | null;
@@ -317,6 +314,7 @@ function StepAddCourses({
   onUpdateCourse,
   onDeleteCourse,
   onNext,
+  onPrevious,
   isLoading,
   error,
   editingCourse,
@@ -456,11 +454,31 @@ function StepAddCourses({
               <Plus className="h-4 w-4 mr-2" />
               Add a Course
             </Button>
-            {courses.length > 0 && (
-              <Button onClick={onNext} className="w-full">
-                Continue
-                <ChevronRight className="h-4 w-4 ml-2" />
+            {courses.length === 0 && (
+              <Button 
+                onClick={onPrevious}
+                variant="outline"
+                className="w-full"
+              >
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Previous
               </Button>
+            )}
+            {courses.length > 0 && (
+              <div className="flex gap-3">
+                <Button 
+                  onClick={onPrevious}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <ChevronLeft className="h-4 w-4 mr-2" />
+                  Previous
+                </Button>
+                <Button onClick={onNext} className="flex-1 bg-[#FA8072] hover:bg-[#FF6B6B] text-white">
+                  Continue
+                  <ChevronRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
             )}
           </div>
         ) : (
@@ -613,9 +631,10 @@ interface StepStudyProgramProps {
   };
   onChange: (program: any) => void;
   onNext: () => void;
+  onPrevious: () => void;
 }
 
-function StepStudyProgram({ country, studyProgram, onChange, onNext }: StepStudyProgramProps) {
+function StepStudyProgram({ country, studyProgram, onChange, onNext, onPrevious }: StepStudyProgramProps) {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 20 }, (_, i) => currentYear - 10 + i);
   
@@ -750,14 +769,25 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext }: StepStudy
             </div>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={!studyProgram.study_program || !studyProgram.degree_type}
-          >
-            Continue
-            <ChevronRight className="h-4 w-4 ml-2" />
-          </Button>
+          <div className="flex gap-3">
+            <Button 
+              type="button"
+              variant="outline"
+              onClick={onPrevious}
+              className="flex-1"
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Previous
+            </Button>
+            <Button 
+              type="submit" 
+              className="flex-1 bg-[#FA8072] hover:bg-[#FF6B6B] text-white"
+              disabled={!studyProgram.study_program || !studyProgram.degree_type}
+            >
+              Continue
+              <ChevronRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
@@ -769,14 +799,12 @@ function StepComplete({
   coursesCount,
   onComplete,
   onShowBenefits,
-  useAnimatedBenefits,
-  setUseAnimatedBenefits,
+  onPrevious,
 }: {
   coursesCount: number;
   onComplete: () => void;
   onShowBenefits: () => void;
-  useAnimatedBenefits: boolean;
-  setUseAnimatedBenefits: (value: boolean) => void;
+  onPrevious: () => void;
 }) {
   return (
     <Card>
@@ -795,29 +823,21 @@ function StepComplete({
               : 'Your account is ready! You can add courses anytime from your dashboard.'}
           </p>
         </div>
-        
-        {/* Toggle for intro style */}
-        <div className="flex items-center justify-center gap-3 py-4">
-          <label className="text-sm text-gray-600">Classic intro</label>
-          <button
-            onClick={() => setUseAnimatedBenefits(!useAnimatedBenefits)}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              useAnimatedBenefits ? 'bg-[#FA8072]' : 'bg-gray-200'
-            }`}
+        <div className="flex gap-3">
+          <Button 
+            onClick={onPrevious}
+            variant="outline"
+            size="lg"
+            className="flex-1"
           >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                useAnimatedBenefits ? 'translate-x-6' : 'translate-x-1'
-              }`}
-            />
-          </button>
-          <label className="text-sm text-gray-600">Animated demos</label>
+            <ChevronLeft className="h-5 w-5 mr-2" />
+            Previous
+          </Button>
+          <Button onClick={onShowBenefits} size="lg" className="flex-1 bg-[#FA8072] hover:bg-[#FF6B6B] text-white">
+            Discover CourseFlow
+            <ChevronRight className="h-5 w-5 ml-2" />
+          </Button>
         </div>
-        
-        <Button onClick={onShowBenefits} size="lg" className="w-full bg-[#FA8072] hover:bg-[#FF6B6B] text-white">
-          Discover CourseFlow
-          <ChevronRight className="h-5 w-5 ml-2" />
-        </Button>
       </CardContent>
     </Card>
   );
