@@ -63,13 +63,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect authenticated users away from auth pages (except update-password)
+  // Redirect authenticated users away from auth pages
   if (
     user &&
     (request.nextUrl.pathname === '/login' ||
       request.nextUrl.pathname === '/register' ||
-      request.nextUrl.pathname === '/reset-password') &&
-    request.nextUrl.pathname !== '/update-password'
+      request.nextUrl.pathname === '/reset-password')
   ) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
