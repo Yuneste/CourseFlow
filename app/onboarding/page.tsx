@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ChevronRight, BookOpen, Globe, Plus, Sparkles } from 'lucide-react';
+import { ChevronRight, BookOpen, Globe, Plus, Edit2, Trash2 } from 'lucide-react';
 import { coursesService, CreateCourseInput } from '@/lib/services/courses.service';
 import { Course } from '@/types';
 import { cn } from '@/lib/utils';
@@ -53,6 +53,7 @@ export default function OnboardingPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
   const totalSteps = 3;
   const progress = (step / totalSteps) * 100;
@@ -88,6 +89,35 @@ export default function OnboardingPage() {
     }
   };
 
+  const updateCourse = async (id: string, courseData: any) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const updatedCourse = await coursesService.updateCourse(id, courseData);
+      setCourses(courses.map(course => 
+        course.id === id ? updatedCourse : course
+      ));
+      setEditingCourse(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update course');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteCourse = async (id: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      await coursesService.deleteCourse(id);
+      setCourses(courses.filter(course => course.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete course');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -99,9 +129,13 @@ export default function OnboardingPage() {
             academicSystem={ACADEMIC_SYSTEMS[selectedCountry!]}
             courses={courses}
             onAddCourse={addCourse}
+            onUpdateCourse={updateCourse}
+            onDeleteCourse={deleteCourse}
             onNext={() => setStep(3)}
             isLoading={isLoading}
             error={error}
+            editingCourse={editingCourse}
+            setEditingCourse={setEditingCourse}
           />
         );
       case 3:
@@ -191,9 +225,13 @@ interface StepAddCoursesProps {
   academicSystem: typeof ACADEMIC_SYSTEMS[CountryCode];
   courses: Course[];
   onAddCourse: (course: CreateCourseInput) => Promise<void>;
+  onUpdateCourse: (id: string, course: any) => Promise<void>;
+  onDeleteCourse: (id: string) => Promise<void>;
   onNext: () => void;
   isLoading: boolean;
   error: string | null;
+  editingCourse: Course | null;
+  setEditingCourse: (course: Course | null) => void;
 }
 
 function StepAddCourses({
@@ -201,9 +239,13 @@ function StepAddCourses({
   academicSystem,
   courses,
   onAddCourse,
+  onUpdateCourse,
+  onDeleteCourse,
   onNext,
   isLoading,
   error,
+  editingCourse,
+  setEditingCourse,
 }: StepAddCoursesProps) {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<CreateCourseInput>({
@@ -237,7 +279,13 @@ function StepAddCourses({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onAddCourse(formData);
+    
+    if (editingCourse) {
+      await onUpdateCourse(editingCourse.id, formData);
+    } else {
+      await onAddCourse(formData);
+    }
+    
     if (!error) {
       setFormData({
         ...formData,
@@ -248,6 +296,7 @@ function StepAddCourses({
         ects_credits: undefined,
       });
       setShowForm(false);
+      setEditingCourse(null);
     }
   };
 
@@ -270,7 +319,7 @@ function StepAddCourses({
               {courses.map((course) => (
                 <div
                   key={course.id}
-                  className="flex items-center gap-3 p-3 rounded-lg border bg-gray-50"
+                  className="flex items-center gap-3 p-3 rounded-lg border bg-gray-50 group hover:bg-gray-100 transition-colors"
                 >
                   <span className="text-2xl">{course.emoji}</span>
                   <div className="flex-1">
@@ -280,10 +329,42 @@ function StepAddCourses({
                       {course.term}
                     </div>
                   </div>
-                  <div
-                    className="w-4 h-4 rounded-full"
-                    style={{ backgroundColor: course.color }}
-                  />
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: course.color }}
+                    />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setEditingCourse(course);
+                        setFormData({
+                          name: course.name,
+                          term: course.term,
+                          code: course.code || '',
+                          professor: course.professor || '',
+                          academic_period_type: course.academic_period_type,
+                          credits: course.credits || undefined,
+                          ects_credits: course.ects_credits || undefined,
+                          color: course.color,
+                          emoji: course.emoji || '📚',
+                        });
+                        setShowForm(true);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onDeleteCourse(course.id)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -416,13 +497,27 @@ function StepAddCourses({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setShowForm(false)}
+                onClick={() => {
+                  setShowForm(false);
+                  setEditingCourse(null);
+                  setFormData({
+                    name: '',
+                    term: academicSystem.terms[0],
+                    code: '',
+                    professor: '',
+                    academic_period_type: academicSystem.periodType,
+                    credits: undefined,
+                    ects_credits: undefined,
+                    color: '#3B82F6',
+                    emoji: '📚',
+                  });
+                }}
                 className="flex-1"
               >
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading} className="flex-1">
-                {isLoading ? 'Adding...' : 'Add Course'}
+                {isLoading ? (editingCourse ? 'Updating...' : 'Adding...') : (editingCourse ? 'Update Course' : 'Add Course')}
               </Button>
             </div>
           </form>
@@ -443,14 +538,12 @@ function StepComplete({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-yellow-500" />
+        <CardTitle>
           You&apos;re All Set!
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center space-y-6">
         <div className="py-8">
-          <div className="text-6xl mb-4">🎉</div>
           <p className="text-lg text-gray-600">
             {coursesCount > 0
               ? `Great! You've added ${coursesCount} course${
