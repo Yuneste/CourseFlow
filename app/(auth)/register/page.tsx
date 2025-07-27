@@ -79,7 +79,7 @@ export default function RegisterPage() {
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Check your email</CardTitle>
           <CardDescription>
-            We've sent you a verification link to {email}
+            We&apos;ve sent you a verification link to {email}
           </CardDescription>
         </CardHeader>
         <CardContent>
