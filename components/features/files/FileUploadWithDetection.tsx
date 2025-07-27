@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, DragEvent, ChangeEvent } from 'react';
+import { useState, useRef, useEffect, useCallback, DragEvent, ChangeEvent } from 'react';
 import { Upload, Folder, X, AlertCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -67,12 +67,31 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
     handleFiles(files);
   };
 
+  const checkForDuplicates = useCallback(async (files: File[]) => {
+    setCheckingDuplicates(true);
+    const newDuplicates = new Map(duplicateFiles);
+
+    try {
+      for (const file of files) {
+        const result = await filesService.checkDuplicate(file);
+        if (result.isDuplicate) {
+          newDuplicates.set(file.name, result.existingFile);
+        }
+      }
+      setDuplicateFiles(newDuplicates);
+    } catch (error) {
+      console.error('Error checking duplicates:', error);
+    } finally {
+      setCheckingDuplicates(false);
+    }
+  }, [duplicateFiles]);
+
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     handleFiles(files);
   };
 
-  const handleFiles = async (files: File[]) => {
+  const handleFiles = useCallback(async (files: File[]) => {
     // Validate files
     const errors: string[] = [];
     const validFiles: FileWithSuggestion[] = [];
@@ -126,26 +145,7 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
       setSelectedFiles(prev => [...prev, ...validFiles]);
       await checkForDuplicates(validFiles.map(f => f.file));
     }
-  };
-
-  const checkForDuplicates = async (files: File[]) => {
-    setCheckingDuplicates(true);
-    const newDuplicates = new Map(duplicateFiles);
-
-    try {
-      for (const file of files) {
-        const result = await filesService.checkDuplicate(file);
-        if (result.isDuplicate) {
-          newDuplicates.set(file.name, result.existingFile);
-        }
-      }
-      setDuplicateFiles(newDuplicates);
-    } catch (error) {
-      console.error('Error checking duplicates:', error);
-    } finally {
-      setCheckingDuplicates(false);
-    }
-  };
+  }, [courseId, courses, checkForDuplicates]);
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) return;
@@ -169,7 +169,7 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
       const allResults: FileType[] = [];
       const allErrors: any[] = [];
 
-      for (const [targetCourseId, files] of filesByCourse) {
+      for (const [targetCourseId, files] of Array.from(filesByCourse.entries())) {
         const result = await filesService.uploadWithQueue(
           files,
           {
@@ -253,7 +253,7 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
 
     document.addEventListener('paste', handlePaste);
     return () => document.removeEventListener('paste', handlePaste);
-  }, [courses]);
+  }, [courses, handleFiles]);
 
   const getCourseById = (id: string) => courses.find(c => c.id === id);
 
