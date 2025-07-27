@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -63,25 +64,16 @@ export default function ProfileSettingsPage() {
       })
 
       if (response.ok) {
-        // Check if user has completed onboarding
-        const supabase = createClient()
-        const { data: { user } } = await supabase.auth.getUser()
+        setSuccessMessage('Profile updated successfully!')
+        // Reload profile to show updated data
+        await loadProfile()
         
-        if (user) {
-          const { data: courses } = await supabase
-            .from('courses')
-            .select('id')
-            .eq('user_id', user.id)
-            .limit(1)
-          
-          if (!courses || courses.length === 0) {
-            // User needs to complete onboarding
-            router.push('/onboarding')
-          } else {
-            // User has courses, go to dashboard
-            router.push('/dashboard')
-          }
-        }
+        // Show success message for 2 seconds before redirecting
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 2000)
+      } else {
+        console.error('Failed to update profile')
       }
     } catch (error) {
       console.error('Error updating profile:', error)
@@ -146,6 +138,29 @@ export default function ProfileSettingsPage() {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="degree_type">Degree Type</Label>
+              <Select
+                value={profile.degree_type}
+                onValueChange={(value) => setProfile({ ...profile, degree_type: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select degree type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bachelor">Bachelor's</SelectItem>
+                  <SelectItem value="master">Master's</SelectItem>
+                  <SelectItem value="phd">PhD</SelectItem>
+                  <SelectItem value="diploma">Diploma</SelectItem>
+                  <SelectItem value="associate">Associate</SelectItem>
+                  <SelectItem value="undergraduate">Undergraduate</SelectItem>
+                  <SelectItem value="graduate">Graduate</SelectItem>
+                  <SelectItem value="postgraduate">Postgraduate</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="pt-4">
               <Button 
                 type="submit" 
@@ -154,6 +169,9 @@ export default function ProfileSettingsPage() {
               >
                 {isLoading ? 'Saving...' : 'Save Changes'}
               </Button>
+              {successMessage && (
+                <p className="mt-2 text-sm text-green-600">{successMessage}</p>
+              )}
             </div>
           </form>
         </CardContent>

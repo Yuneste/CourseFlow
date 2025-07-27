@@ -63,6 +63,31 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Check if user needs onboarding
+  if (user && request.nextUrl.pathname.startsWith('/dashboard')) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('study_program, degree_type')
+      .eq('id', user.id)
+      .single()
+    
+    // Check if user has completed basic profile setup
+    if (!profile?.study_program || !profile?.degree_type) {
+      return NextResponse.redirect(new URL('/onboarding', request.url))
+    }
+    
+    // Check if user has any courses
+    const { data: courses } = await supabase
+      .from('courses')
+      .select('id')
+      .eq('user_id', user.id)
+      .limit(1)
+    
+    if (!courses || courses.length === 0) {
+      return NextResponse.redirect(new URL('/onboarding', request.url))
+    }
+  }
+
   // Redirect authenticated users away from auth pages (except update-password)
   if (
     user &&
@@ -71,6 +96,27 @@ export async function middleware(request: NextRequest) {
       request.nextUrl.pathname === '/register' ||
       request.nextUrl.pathname === '/reset-password')
   ) {
+    // Check if user needs onboarding first
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('study_program, degree_type')
+      .eq('id', user.id)
+      .single()
+    
+    if (!profile?.study_program || !profile?.degree_type) {
+      return NextResponse.redirect(new URL('/onboarding', request.url))
+    }
+    
+    const { data: courses } = await supabase
+      .from('courses')
+      .select('id')
+      .eq('user_id', user.id)
+      .limit(1)
+    
+    if (!courses || courses.length === 0) {
+      return NextResponse.redirect(new URL('/onboarding', request.url))
+    }
+    
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 

@@ -9,12 +9,39 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
       // Check if this is a password recovery flow
       if (type === 'recovery') {
         return NextResponse.redirect(`${origin}/update-password`)
       }
+      
+      // Check if user needs onboarding
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('study_program, degree_type')
+          .eq('id', user.id)
+          .single()
+        
+        // Check if user has completed basic profile setup
+        if (!profile?.study_program || !profile?.degree_type) {
+          return NextResponse.redirect(`${origin}/onboarding`)
+        }
+        
+        // Check if user has any courses
+        const { data: courses } = await supabase
+          .from('courses')
+          .select('id')
+          .eq('user_id', user.id)
+          .limit(1)
+        
+        if (!courses || courses.length === 0) {
+          return NextResponse.redirect(`${origin}/onboarding`)
+        }
+      }
+      
       return NextResponse.redirect(`${origin}${next}`)
     }
   }
