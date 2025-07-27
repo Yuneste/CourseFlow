@@ -28,6 +28,7 @@ interface CourseFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: CreateCourseInput | UpdateCourseInput) => Promise<void>;
+  onDelete?: () => Promise<void>;
   course?: Course | null;
   academicSystem: {
     terms: string[];
@@ -57,6 +58,7 @@ export function CourseForm({
   open,
   onOpenChange,
   onSubmit,
+  onDelete,
   course,
   academicSystem,
 }: CourseFormProps) {
@@ -326,18 +328,37 @@ export function CourseForm({
               </div>
             )}
           </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : course ? 'Update Course' : 'Add Course'}
-            </Button>
+          <DialogFooter className="flex justify-between">
+            <div>
+              {course && onDelete && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={async () => {
+                    if (confirm(`Are you sure you want to delete "${course.name}"? This action cannot be undone.`)) {
+                      await onDelete();
+                      onOpenChange(false);
+                    }
+                  }}
+                  disabled={isSubmitting}
+                >
+                  Delete Course
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : course ? 'Update Course' : 'Add Course'}
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>

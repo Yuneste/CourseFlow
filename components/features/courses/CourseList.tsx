@@ -245,6 +245,11 @@ export function CourseList({
         open={isFormOpen}
         onOpenChange={handleFormClose}
         onSubmit={handleFormSubmit}
+        onDelete={editingCourse ? async () => {
+          await onDeleteCourse(editingCourse.id);
+          setIsFormOpen(false);
+          setEditingCourse(null);
+        } : undefined}
         course={editingCourse}
         academicSystem={academicSystem}
       />
