@@ -14,7 +14,10 @@
       "Bash(git merge:*)",
       "Bash(rm:*)",
       "Bash(npm test:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(ls:*)",
+      "Bash(npx shadcn-ui:*)",
+      "Bash(npx shadcn@latest add progress --yes)"
     ],
     "deny": []
   }
