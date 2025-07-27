@@ -36,11 +36,22 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-white to-orange-50">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-[#FA8072] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#FFB6B0] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-[#FFDAB9] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      {/* Geometric pattern background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]">
+        {/* Diamond pattern */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="diamond-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#FA8072" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#diamond-pattern)" />
+        </svg>
+        
+        {/* Subtle animated elements */}
+        <div className="absolute top-20 left-20 w-64 h-64 bg-[#FFE4E1] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
+        <div className="absolute top-40 right-20 w-72 h-72 bg-[#FFF0ED] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-[#FFEBE7] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
       </div>
       
       {/* Content */}

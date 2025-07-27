@@ -20,7 +20,15 @@ import {
   Cloud,
   CheckCircle,
   Clock,
-  BarChart3
+  BarChart3,
+  Link,
+  BookOpenCheck,
+  Youtube,
+  FileVideo,
+  GraduationCap,
+  Users,
+  UserPlus,
+  Share2
 } from 'lucide-react';
 
 interface BenefitsShowcaseProps {
@@ -415,6 +423,300 @@ const DeadlineTrackerDemo = () => {
   );
 };
 
+const ResourceRecommendationDemo = () => {
+  const [showResources, setShowResources] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setSelectedCourse(0), 1000);
+    const timer2 = setTimeout(() => setShowResources(true), 2000);
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
+  const courses = [
+    { name: 'Calculus II', emoji: '📐', resources: ['Khan Academy', 'MIT OCW', 'YouTube'] },
+    { name: 'Data Structures', emoji: '💻', resources: ['Coursera', 'LeetCode', 'GeeksforGeeks'] },
+    { name: 'Organic Chem', emoji: '🧪', resources: ['ChemLibre', 'YouTube', 'Study.com'] }
+  ];
+
+  const resourceIcons = {
+    'Khan Academy': '🎓',
+    'MIT OCW': '🏛️',
+    'YouTube': '📺',
+    'Coursera': '🎯',
+    'LeetCode': '💡',
+    'GeeksforGeeks': '🚀',
+    'ChemLibre': '⚗️',
+    'Study.com': '📚'
+  };
+
+  return (
+    <div className="relative w-full h-64 mx-auto">
+      <div className="flex gap-8 items-start justify-center h-full">
+        {/* Your Courses */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-gray-600 mb-3">Your Courses</h3>
+          {courses.map((course, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.1 }}
+              onClick={() => setSelectedCourse(i)}
+              className={`cursor-pointer p-3 rounded-lg transition-all ${
+                selectedCourse === i 
+                  ? 'bg-[#FA8072] text-white shadow-lg scale-105' 
+                  : 'bg-gray-100 hover:bg-gray-200'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{course.emoji}</span>
+                <span className="text-sm font-medium">{course.name}</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* AI Brain */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 }}
+          className="relative"
+        >
+          <motion.div
+            animate={selectedCourse !== null ? { rotate: 360 } : {}}
+            transition={{ duration: 1 }}
+          >
+            <Brain className="h-12 w-12 text-[#FA8072]" />
+          </motion.div>
+          {selectedCourse !== null && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute inset-0 bg-[#FA8072] rounded-full opacity-20 blur-xl"
+            />
+          )}
+        </motion.div>
+
+        {/* Recommended Resources */}
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-gray-600 mb-3">Recommended Resources</h3>
+          <AnimatePresence mode="wait">
+            {showResources && selectedCourse !== null && (
+              <motion.div
+                key={selectedCourse}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-2"
+              >
+                {courses[selectedCourse].resources.map((resource, i) => (
+                  <motion.div
+                    key={resource}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex items-center gap-3 p-2 bg-gradient-to-r from-[#FFE4E1] to-white rounded-lg shadow-sm"
+                  >
+                    <span className="text-xl">{resourceIcons[resource as keyof typeof resourceIcons]}</span>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-gray-700">{resource}</div>
+                      <div className="text-xs text-gray-500">Free resource</div>
+                    </div>
+                    <Link className="h-4 w-4 text-[#FA8072]" />
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CollaborationDemo = () => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showFiles, setShowFiles] = useState(false);
+
+  useEffect(() => {
+    const timer1 = setTimeout(() => setShowNotifications(true), 1000);
+    const timer2 = setTimeout(() => setShowFiles(true), 2000);
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
+  const users = [
+    { name: 'Alex', avatar: '👤', color: '#FA8072' },
+    { name: 'Sarah', avatar: '👩', color: '#FF6B6B' },
+    { name: 'Mike', avatar: '👨', color: '#FFB6B0' },
+    { name: 'Emma', avatar: '👱‍♀️', color: '#FFA07A' }
+  ];
+
+  const notifications = [
+    { user: 'Sarah', action: 'shared notes', file: 'Lecture_15.pdf' },
+    { user: 'Mike', action: 'added flashcards', file: 'Chapter_8' },
+    { user: 'Emma', action: 'completed quiz', file: 'Quiz_3' }
+  ];
+
+  return (
+    <div className="relative w-full h-64 mx-auto">
+      <div className="flex gap-8 items-center justify-center h-full">
+        {/* Study Group */}
+        <div className="relative">
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-lg shadow-lg p-6 w-64"
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <Users className="h-5 w-5 text-[#FA8072]" />
+              <span className="font-semibold text-sm">Study Group: CS 101</span>
+            </div>
+            
+            {/* User avatars */}
+            <div className="flex -space-x-2 mb-4">
+              {users.map((user, i) => (
+                <motion.div
+                  key={user.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="relative"
+                >
+                  <div 
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 border-white"
+                    style={{ backgroundColor: user.color }}
+                  >
+                    {user.avatar}
+                  </div>
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+                    className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"
+                  />
+                </motion.div>
+              ))}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                whileHover={{ scale: 1.1 }}
+                className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-white hover:bg-gray-300 transition-colors"
+              >
+                <UserPlus className="h-4 w-4 text-gray-600" />
+              </motion.button>
+            </div>
+
+            {/* Activity feed */}
+            <AnimatePresence>
+              {showNotifications && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="space-y-2"
+                >
+                  {notifications.map((notif, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.2 }}
+                      className="text-xs text-gray-600 flex items-center gap-1"
+                    >
+                      <span className="font-semibold">{notif.user}</span>
+                      <span>{notif.action}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+
+        {/* Shared Files */}
+        <AnimatePresence>
+          {showFiles && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0, rotate: -180 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ type: 'spring' }}
+              className="relative"
+            >
+              <Share2 className="h-12 w-12 text-[#FA8072]" />
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  initial={{ scale: 0, x: 0, y: 0 }}
+                  animate={{ 
+                    scale: 1,
+                    x: (i - 1) * 50,
+                    y: -30
+                  }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  className="absolute top-0 left-1/2 -translate-x-1/2"
+                >
+                  <FileText className="h-6 w-6 text-[#FA8072]" />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Shared folder */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-gradient-to-br from-[#FFE4E1] to-white rounded-lg shadow-lg p-6"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <FolderOpen className="h-5 w-5 text-[#FA8072]" />
+            <span className="font-semibold text-sm">Shared Materials</span>
+          </div>
+          
+          <div className="space-y-2">
+            {['Lecture Notes', 'Practice Problems', 'Study Guides', 'Past Exams'].map((item, i) => (
+              <motion.div
+                key={item}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + i * 0.1 }}
+                className="flex items-center gap-2 text-xs text-gray-700"
+              >
+                <motion.div
+                  animate={showFiles ? { scale: [1, 1.1, 1] } : {}}
+                  transition={{ delay: i * 0.2 }}
+                >
+                  <FileText className="h-4 w-4 text-[#FA8072]" />
+                </motion.div>
+                <span>{item}</span>
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1 + i * 0.1 }}
+                  className="ml-auto text-[10px] text-gray-500"
+                >
+                  {4 - i} users
+                </motion.span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
 const ProgressTrackerDemo = () => {
   const [showImprovement, setShowImprovement] = useState(false);
 
@@ -531,6 +833,18 @@ const benefits = [
     title: "Smart File Organization",
     description: "Watch how AI automatically scans and organizes your files into the perfect structure",
     Demo: FileOrganizationDemo
+  },
+  {
+    icon: Users,
+    title: "Study Together with Friends",
+    description: "Create study groups, share materials, and collaborate with classmates in real-time",
+    Demo: CollaborationDemo
+  },
+  {
+    icon: Link,
+    title: "Smart Resource Recommendations",
+    description: "Get personalized online resources automatically matched to your courses",
+    Demo: ResourceRecommendationDemo
   },
   {
     icon: Brain,
