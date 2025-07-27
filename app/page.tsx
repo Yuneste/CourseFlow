@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function Home() {
+function HomeContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -21,5 +21,18 @@ export default function Home() {
       <h1 className="text-4xl font-bold">CourseFlow</h1>
       <p className="mt-4 text-xl text-gray-600">Academic File Organization Platform</p>
     </main>
+  )
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <main className="flex min-h-screen flex-col items-center justify-center p-24">
+        <h1 className="text-4xl font-bold">CourseFlow</h1>
+        <p className="mt-4 text-xl text-gray-600">Loading...</p>
+      </main>
+    }>
+      <HomeContent />
+    </Suspense>
   )
 }
