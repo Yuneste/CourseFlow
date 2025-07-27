@@ -120,7 +120,7 @@ export default function OnboardingPage() {
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to CourseFlow</h1>
-        <p className="text-gray-600">Let's set up your courses in just a few steps</p>
+        <p className="text-gray-600">Let&apos;s set up your courses in just a few steps</p>
       </div>
 
       <div className="mb-8">
@@ -154,7 +154,7 @@ function StepCountrySelection({ onSelect }: { onSelect: (country: CountryCode) =
           Select Your Country
         </CardTitle>
         <CardDescription>
-          We'll customize your academic calendar based on your location
+          We&apos;ll customize your academic calendar based on your location
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -259,7 +259,7 @@ function StepAddCourses({
           Add Your Courses
         </CardTitle>
         <CardDescription>
-          Add the courses you're taking this term
+          Add the courses you&apos;re taking this term
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -445,7 +445,7 @@ function StepComplete({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-yellow-500" />
-          You're All Set!
+          You&apos;re All Set!
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center space-y-6">

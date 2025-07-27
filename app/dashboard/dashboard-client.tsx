@@ -65,7 +65,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   // Initialize courses in store on mount
   useEffect(() => {
     setCourses(initialCourses);
-  }, []);
+  }, [initialCourses, setCourses]);
 
   // Determine academic system based on user's country
   const getAcademicSystem = () => {
