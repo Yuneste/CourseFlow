@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { coursesService, CreateCourseInput } from '@/lib/services/courses.service';
 import { Course } from '@/types';
 import { cn } from '@/lib/utils';
+import { BenefitsShowcase, BenefitsShowcaseStyles } from '@/components/features/onboarding/BenefitsShowcase';
 
 // Define academic systems by country
 const ACADEMIC_SYSTEMS = {
@@ -63,6 +64,7 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [showBenefits, setShowBenefits] = useState(false);
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
@@ -84,7 +86,10 @@ export default function OnboardingPage() {
         const response = await fetch('/api/profile', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(studyProgram),
+          body: JSON.stringify({
+            ...studyProgram,
+            country: selectedCountry,
+          }),
         });
         
         if (!response.ok) {
@@ -175,12 +180,22 @@ export default function OnboardingPage() {
           <StepComplete
             coursesCount={courses.length}
             onComplete={handleComplete}
+            onShowBenefits={() => setShowBenefits(true)}
           />
         );
       default:
         return null;
     }
   };
+
+  if (showBenefits) {
+    return (
+      <>
+        <BenefitsShowcaseStyles />
+        <BenefitsShowcase onComplete={handleComplete} />
+      </>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -725,9 +740,11 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext }: StepStudy
 function StepComplete({
   coursesCount,
   onComplete,
+  onShowBenefits,
 }: {
   coursesCount: number;
   onComplete: () => void;
+  onShowBenefits: () => void;
 }) {
   return (
     <Card>
@@ -746,8 +763,8 @@ function StepComplete({
               : 'Your account is ready! You can add courses anytime from your dashboard.'}
           </p>
         </div>
-        <Button onClick={onComplete} size="lg" className="w-full">
-          Go to Dashboard
+        <Button onClick={onShowBenefits} size="lg" className="w-full">
+          Discover CourseFlow
           <ChevronRight className="h-5 w-5 ml-2" />
         </Button>
       </CardContent>

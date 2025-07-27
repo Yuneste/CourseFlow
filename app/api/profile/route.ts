@@ -18,14 +18,21 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     
     // Update profile
+    const updateData: any = {
+      study_program: body.study_program,
+      degree_type: body.degree_type,
+      start_year: body.start_year,
+      expected_graduation_year: body.expected_graduation_year,
+    };
+    
+    // Also update country if provided
+    if (body.country) {
+      updateData.country = body.country;
+    }
+    
     const { error } = await supabase
       .from('profiles')
-      .update({
-        study_program: body.study_program,
-        degree_type: body.degree_type,
-        start_year: body.start_year,
-        expected_graduation_year: body.expected_graduation_year,
-      })
+      .update(updateData)
       .eq('id', user.id);
 
     if (error) {
