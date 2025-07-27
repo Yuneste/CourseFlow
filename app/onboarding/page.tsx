@@ -218,7 +218,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]">
       <div className="max-w-2xl mx-auto pt-12 px-4">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent mb-2">
@@ -233,17 +233,6 @@ export default function OnboardingPage() {
 
       {renderStep()}
 
-        {step < 3 && (
-          <div className="mt-6 text-center">
-            <Button
-              variant="ghost"
-              onClick={handleSkip}
-              className="text-gray-500 hover:text-gray-700 hover:bg-[#FFE4E1]"
-            >
-              Skip for now
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );

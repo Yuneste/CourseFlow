@@ -36,7 +36,7 @@ interface BenefitsShowcaseProps {
 }
 
 // Animated demonstration components for each benefit
-const FileOrganizationDemo = () => {
+export const FileOrganizationDemo = () => {
   const [detectedText, setDetectedText] = useState('');
   const [movedToFolder, setMovedToFolder] = useState(false);
 
@@ -423,7 +423,7 @@ const DeadlineTrackerDemo = () => {
   );
 };
 
-const ResourceRecommendationDemo = () => {
+export const ResourceRecommendationDemo = () => {
   const [showResources, setShowResources] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
 
@@ -541,7 +541,7 @@ const ResourceRecommendationDemo = () => {
   );
 };
 
-const CollaborationDemo = () => {
+export const CollaborationDemo = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
 

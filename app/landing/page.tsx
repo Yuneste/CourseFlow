@@ -1,0 +1,424 @@
+'use client';
+
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { 
+  FileText, 
+  Users, 
+  Link as LinkIcon, 
+  Brain, 
+  FolderOpen, 
+  Calendar, 
+  TrendingUp,
+  Star,
+  Check,
+  ChevronRight,
+  Menu,
+  X,
+  GraduationCap,
+  Sparkles
+} from 'lucide-react';
+import { FileOrganizationDemo, CollaborationDemo, ResourceRecommendationDemo } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
+
+export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const features = [
+    {
+      icon: FileText,
+      title: "Smart File Organization",
+      description: "AI automatically organizes your study materials by course",
+      Demo: FileOrganizationDemo
+    },
+    {
+      icon: Users,
+      title: "Study Groups",
+      description: "Collaborate with classmates in real-time",
+      Demo: CollaborationDemo
+    },
+    {
+      icon: LinkIcon,
+      title: "Resource Recommendations",
+      description: "Get personalized learning resources for your courses",
+      Demo: ResourceRecommendationDemo
+    }
+  ];
+
+  const testimonials = [
+    {
+      name: "Sarah Chen",
+      role: "Computer Science Student",
+      content: "CourseFlow completely transformed how I organize my studies. My GPA went from 2.8 to 3.6!",
+      rating: 5
+    },
+    {
+      name: "Marcus Johnson",
+      role: "Engineering Major",
+      content: "The collaboration features are amazing. My study group uses it daily to share notes and prep for exams.",
+      rating: 5
+    },
+    {
+      name: "Emily Rodriguez",
+      role: "Pre-Med Student",
+      content: "The AI assistant helps me understand complex topics quickly. It's like having a tutor available 24/7.",
+      rating: 5
+    }
+  ];
+
+  const pricingPlans = [
+    {
+      name: "Free",
+      price: "$0",
+      features: ["5 courses", "Basic file organization", "1GB storage", "Community support"],
+      highlighted: false
+    },
+    {
+      name: "Pro",
+      price: "$9.99",
+      period: "/month",
+      features: ["Unlimited courses", "AI-powered organization", "100GB storage", "Study groups", "Priority support", "Advanced analytics"],
+      highlighted: true
+    },
+    {
+      name: "Team",
+      price: "$19.99",
+      period: "/month",
+      features: ["Everything in Pro", "Unlimited collaborators", "500GB storage", "Admin controls", "API access", "Custom integrations"],
+      highlighted: false
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-2">
+              <GraduationCap className="h-8 w-8 text-[#FA8072]" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+                CourseFlow
+              </span>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#features" className="text-gray-600 hover:text-[#FA8072] transition-colors">Features</a>
+              <a href="#testimonials" className="text-gray-600 hover:text-[#FA8072] transition-colors">Testimonials</a>
+              <a href="#pricing" className="text-gray-600 hover:text-[#FA8072] transition-colors">Pricing</a>
+              <Link href="/login">
+                <Button variant="outline" className="mr-2">Log In</Button>
+              </Link>
+              <Link href="/register">
+                <Button className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white">Get Started</Button>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="md:hidden bg-white border-t border-gray-100"
+          >
+            <div className="container mx-auto px-4 py-4 space-y-4">
+              <a href="#features" className="block text-gray-600 hover:text-[#FA8072]">Features</a>
+              <a href="#testimonials" className="block text-gray-600 hover:text-[#FA8072]">Testimonials</a>
+              <a href="#pricing" className="block text-gray-600 hover:text-[#FA8072]">Pricing</a>
+              <Link href="/login" className="block">
+                <Button variant="outline" className="w-full">Log In</Button>
+              </Link>
+              <Link href="/register" className="block">
+                <Button className="w-full bg-[#FA8072] hover:bg-[#FF6B6B] text-white">Get Started</Button>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-4">
+        <div className="container mx-auto text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-7xl font-bold mb-6"
+          >
+            Your Academic Success
+            <br />
+            <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+              Simplified
+            </span>
+          </motion.h1>
+          
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto"
+          >
+            The all-in-one platform that organizes your courses, powers your study sessions, 
+            and helps you achieve better grades with AI assistance.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-col md:flex-row gap-4 justify-center mb-8"
+          >
+            <Link href="/register">
+              <Button size="lg" className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white px-8 py-6 text-lg">
+                Start Free Trial
+                <Sparkles className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
+              Watch Demo
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-sm text-gray-500"
+          >
+            No credit card required • 14-day free trial • Cancel anytime
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Features that Power Your
+              <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> Success</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              See how CourseFlow transforms your academic journey with intelligent features
+            </p>
+          </div>
+
+          <div className="space-y-24">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-12`}
+              >
+                <div className="flex-1 max-w-xl">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-3 bg-[#FFE4E1] rounded-lg">
+                      <feature.icon className="h-8 w-8 text-[#FA8072]" />
+                    </div>
+                    <h3 className="text-3xl font-bold">{feature.title}</h3>
+                  </div>
+                  <p className="text-lg text-gray-600 mb-6">{feature.description}</p>
+                  <ul className="space-y-3">
+                    <li className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-green-500" />
+                      <span className="text-gray-700">Automatic organization</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-green-500" />
+                      <span className="text-gray-700">Real-time collaboration</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-5 w-5 text-green-500" />
+                      <span className="text-gray-700">AI-powered insights</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex-1 max-w-2xl w-full">
+                  <div className="bg-white rounded-xl shadow-xl p-8">
+                    <feature.Demo />
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 px-4 bg-white/50">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Students Love
+              <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> CourseFlow</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              Join thousands of students achieving their academic goals
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-xl shadow-lg p-6"
+              >
+                <div className="flex mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-4 italic">&ldquo;{testimonial.content}&rdquo;</p>
+                <div>
+                  <p className="font-semibold">{testimonial.name}</p>
+                  <p className="text-sm text-gray-500">{testimonial.role}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Simple, Transparent
+              <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> Pricing</span>
+            </h2>
+            <p className="text-xl text-gray-600">
+              Choose the plan that fits your needs
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className={`relative rounded-xl p-8 ${
+                  plan.highlighted 
+                    ? 'bg-gradient-to-br from-[#FA8072] to-[#FF6B6B] text-white shadow-2xl scale-105' 
+                    : 'bg-white shadow-lg'
+                }`}
+              >
+                {plan.highlighted && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-black px-4 py-1 rounded-full text-sm font-semibold">
+                    Most Popular
+                  </div>
+                )}
+                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold">{plan.price}</span>
+                  {plan.period && <span className="text-lg">{plan.period}</span>}
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <Check className={`h-5 w-5 ${plan.highlighted ? 'text-white' : 'text-green-500'}`} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button 
+                  className={`w-full ${
+                    plan.highlighted 
+                      ? 'bg-white text-[#FA8072] hover:bg-gray-100' 
+                      : 'bg-[#FA8072] text-white hover:bg-[#FF6B6B]'
+                  }`}
+                >
+                  Get Started
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-[#FA8072] to-[#FF6B6B]">
+        <div className="container mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Ready to Transform Your Studies?
+          </h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            Join thousands of students who are already achieving better grades with CourseFlow
+          </p>
+          <Link href="/register">
+            <Button size="lg" className="bg-white text-[#FA8072] hover:bg-gray-100 px-8 py-6 text-lg">
+              Start Your Free Trial
+              <Sparkles className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-4 bg-gray-900 text-white">
+        <div className="container mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <GraduationCap className="h-6 w-6" />
+                <span className="text-xl font-bold">CourseFlow</span>
+              </div>
+              <p className="text-gray-400">
+                Your academic success, simplified.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#features" className="hover:text-white">Features</a></li>
+                <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
+                <li><a href="#" className="hover:text-white">API</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">About</a></li>
+                <li><a href="#" className="hover:text-white">Blog</a></li>
+                <li><a href="#" className="hover:text-white">Careers</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">Help Center</a></li>
+                <li><a href="#" className="hover:text-white">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 CourseFlow. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

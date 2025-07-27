@@ -26,6 +26,6 @@ export default async function Home({
     redirect('/dashboard')
   }
   
-  // If not logged in, redirect to login
-  redirect('/login')
+  // If not logged in, redirect to landing page
+  redirect('/landing')
 }
