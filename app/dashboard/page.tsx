@@ -26,12 +26,12 @@ export default async function DashboardPage() {
     .eq('id', user.id)
     .single()
 
-  // Check if user has completed onboarding (has at least one course)
+  // Check if user has completed onboarding
   const hasCompletedOnboarding = courses && courses.length > 0
 
-  // If user hasn't completed onboarding and has no profile data, redirect to onboarding
-  // This allows users with profile data to access settings without being forced into onboarding
-  if (!hasCompletedOnboarding && (!profile?.full_name || !profile?.country)) {
+  // For new users (no courses), always redirect to onboarding
+  // unless they explicitly have a country set (meaning they've been through onboarding before)
+  if (!hasCompletedOnboarding && !profile?.country) {
     redirect('/onboarding')
   }
 
