@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Course, User } from '@/types';
 import { CourseList } from '@/components/features/courses/CourseList';
 import { coursesService } from '@/lib/services/courses.service';
+import { useAppStore } from '@/stores/useAppStore';
 import { useRouter } from 'next/navigation';
 
 // Define academic systems by country
@@ -46,10 +47,25 @@ interface DashboardClientProps {
 }
 
 export function DashboardClient({ initialCourses, userProfile }: DashboardClientProps) {
-  const [courses, setCourses] = useState<Course[]>(initialCourses);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  
+  // Get state and actions from Zustand store
+  const {
+    courses,
+    isLoadingCourses,
+    coursesError,
+    setCourses,
+    addCourse,
+    updateCourse,
+    deleteCourse,
+    setLoadingCourses,
+    setCoursesError,
+  } = useAppStore();
+
+  // Initialize courses in store on mount
+  useEffect(() => {
+    setCourses(initialCourses);
+  }, []);
 
   // Determine academic system based on user's country
   const getAcademicSystem = () => {
@@ -61,48 +77,49 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
 
   const handleCreateCourse = async (courseData: any) => {
     try {
-      setIsLoading(true);
-      setError(null);
+      setLoadingCourses(true);
+      setCoursesError(null);
       const newCourse = await coursesService.createCourse({
         ...courseData,
         academic_period_type: academicSystem.periodType,
       });
-      setCourses([newCourse, ...courses]);
+      addCourse(newCourse);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create course');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create course';
+      setCoursesError(errorMessage);
       throw err; // Re-throw to let the form handle it
     } finally {
-      setIsLoading(false);
+      setLoadingCourses(false);
     }
   };
 
   const handleUpdateCourse = async (id: string, updates: any) => {
     try {
-      setIsLoading(true);
-      setError(null);
+      setLoadingCourses(true);
+      setCoursesError(null);
       const updatedCourse = await coursesService.updateCourse(id, updates);
-      setCourses(courses.map(course => 
-        course.id === id ? updatedCourse : course
-      ));
+      updateCourse(id, updatedCourse);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update course');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update course';
+      setCoursesError(errorMessage);
       throw err;
     } finally {
-      setIsLoading(false);
+      setLoadingCourses(false);
     }
   };
 
   const handleDeleteCourse = async (id: string) => {
     try {
-      setIsLoading(true);
-      setError(null);
+      setLoadingCourses(true);
+      setCoursesError(null);
       await coursesService.deleteCourse(id);
-      setCourses(courses.filter(course => course.id !== id));
+      deleteCourse(id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete course');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete course';
+      setCoursesError(errorMessage);
       throw err;
     } finally {
-      setIsLoading(false);
+      setLoadingCourses(false);
     }
   };
 
@@ -113,16 +130,16 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
 
   return (
     <div>
-      {error && (
+      {coursesError && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-          {error}
+          {coursesError}
         </div>
       )}
       
       <CourseList
         courses={courses}
         academicSystem={academicSystem}
-        isLoading={isLoading}
+        isLoading={isLoadingCourses}
         onCreateCourse={handleCreateCourse}
         onUpdateCourse={handleUpdateCourse}
         onDeleteCourse={handleDeleteCourse}
