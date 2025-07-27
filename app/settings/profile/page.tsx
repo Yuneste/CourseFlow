@@ -148,8 +148,8 @@ export default function ProfileSettingsPage() {
                   <SelectValue placeholder="Select degree type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="bachelor">Bachelor's</SelectItem>
-                  <SelectItem value="master">Master's</SelectItem>
+                  <SelectItem value="bachelor">Bachelor&apos;s</SelectItem>
+                  <SelectItem value="master">Master&apos;s</SelectItem>
                   <SelectItem value="phd">PhD</SelectItem>
                   <SelectItem value="diploma">Diploma</SelectItem>
                   <SelectItem value="associate">Associate</SelectItem>
