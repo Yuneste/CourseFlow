@@ -13,6 +13,7 @@ import { createClient } from '@/lib/supabase/client'
 export default function ProfileSettingsPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
   const [profile, setProfile] = useState({
     full_name: '',
     email: '',
@@ -62,7 +63,25 @@ export default function ProfileSettingsPage() {
       })
 
       if (response.ok) {
-        router.push('/dashboard')
+        // Check if user has completed onboarding
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        
+        if (user) {
+          const { data: courses } = await supabase
+            .from('courses')
+            .select('id')
+            .eq('user_id', user.id)
+            .limit(1)
+          
+          if (!courses || courses.length === 0) {
+            // User needs to complete onboarding
+            router.push('/onboarding')
+          } else {
+            // User has courses, go to dashboard
+            router.push('/dashboard')
+          }
+        }
       }
     } catch (error) {
       console.error('Error updating profile:', error)

@@ -19,20 +19,21 @@ export default async function DashboardPage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
-  // Check if user has completed onboarding (has at least one course)
-  const hasCompletedOnboarding = courses && courses.length > 0
-
-  // If user hasn't completed onboarding, redirect to onboarding
-  if (!hasCompletedOnboarding) {
-    redirect('/onboarding')
-  }
-
   // Get user profile for academic system info
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single()
+
+  // Check if user has completed onboarding (has at least one course)
+  const hasCompletedOnboarding = courses && courses.length > 0
+
+  // If user hasn't completed onboarding and has no profile data, redirect to onboarding
+  // This allows users with profile data to access settings without being forced into onboarding
+  if (!hasCompletedOnboarding && (!profile?.full_name || !profile?.country)) {
+    redirect('/onboarding')
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden">
