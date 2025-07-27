@@ -1,5 +1,5 @@
 import { api } from '@/lib/api/client';
-import type { File, UploadProgress } from '@/types';
+import type { File as FileType, UploadProgress } from '@/types';
 import { calculateFileHash } from '@/lib/utils/file-validation';
 
 export interface UploadOptions {
@@ -34,7 +34,7 @@ class FilesService {
     }
     
     // Use XMLHttpRequest for progress tracking
-    return new Promise<{ files: File[]; errors?: any[] }>((resolve, reject) => {
+    return new Promise<{ files: FileType[]; errors?: any[] }>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       
       // Track upload progress
@@ -75,9 +75,9 @@ class FilesService {
   /**
    * Upload files with individual progress tracking
    */
-  async uploadWithQueue(files: File[], options: UploadOptions = {}) {
+  async uploadWithQueue(files: File[], options: UploadOptions = {}): Promise<{ files: FileType[]; errors: any[] }> {
     const { courseId, onFileProgress } = options;
-    const results: { files: File[]; errors: any[] } = { files: [], errors: [] };
+    const results: { files: FileType[]; errors: any[] } = { files: [], errors: [] };
     
     // Process files sequentially for better progress tracking
     for (let i = 0; i < files.length; i++) {
@@ -172,9 +172,9 @@ class FilesService {
   /**
    * Get user's files
    */
-  async getFiles(courseId?: string): Promise<File[]> {
+  async getFiles(courseId?: string): Promise<FileType[]> {
     const query = courseId ? `?course_id=${courseId}` : '';
-    return api.get<File[]>(`/files${query}`);
+    return api.get<FileType[]>(`/files${query}`);
   }
 
   /**

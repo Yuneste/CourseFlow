@@ -26,10 +26,25 @@ export function FileList({ courseId }: FileListProps) {
 
   // Fetch files on mount or when courseId changes
   useEffect(() => {
-    if (shouldRefetchFiles()) {
-      fetchFiles();
-    }
-  }, [courseId]);
+    const fetchFilesIfNeeded = async () => {
+      if (shouldRefetchFiles()) {
+        setLoadingFiles(true);
+        setFilesError(null);
+
+        try {
+          const fetchedFiles = await filesService.getFiles(courseId);
+          setFiles(fetchedFiles);
+        } catch (error) {
+          console.error('Error fetching files:', error);
+          setFilesError(error instanceof Error ? error.message : 'Failed to fetch files');
+        } finally {
+          setLoadingFiles(false);
+        }
+      }
+    };
+
+    fetchFilesIfNeeded();
+  }, [courseId, shouldRefetchFiles, setFiles, setLoadingFiles, setFilesError]);
 
   const fetchFiles = async () => {
     setLoadingFiles(true);

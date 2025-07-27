@@ -20,7 +20,8 @@
       "Bash(npx shadcn@latest add progress --yes)",
       "Bash(npm run build:*)",
       "Bash(touch:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(npm run lint)"
     ],
     "deny": []
   }

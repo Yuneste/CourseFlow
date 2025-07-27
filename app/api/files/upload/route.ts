@@ -9,27 +9,8 @@ import {
   detectAcademicContent,
   ALLOWED_MIME_TYPES
 } from '@/lib/utils/file-validation';
-import { rateLimit } from '@/lib/rate-limit';
-import type { File } from '@/types';
-
-// Rate limiter for file uploads
-const uploadLimiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
-  uniqueTokenPerInterval: 500,
-});
-
-// Different rate limits by file type
-const imageLimiter = rateLimit({
-  interval: 60 * 1000,
-  uniqueTokenPerInterval: 500,
-  maxRequests: 10, // 10 images per minute
-});
-
-const documentLimiter = rateLimit({
-  interval: 60 * 1000,
-  uniqueTokenPerInterval: 500,
-  maxRequests: 20, // 20 documents per minute
-});
+import { checkRateLimit } from '@/lib/rate-limit';
+import type { File as FileType } from '@/types';
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,9 +23,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Apply general rate limiting
-    try {
-      await uploadLimiter.check(30, user.id); // 30 uploads per minute total
-    } catch {
+    const rateLimit = await checkRateLimit(req, user.id, 30, 60 * 1000);
+    if (!rateLimit.allowed) {
       return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
     }
 
@@ -62,7 +42,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Maximum 10 files can be uploaded at once' }, { status: 400 });
     }
 
-    const uploadResults: (File | { error: string; filename: string })[] = [];
+    const uploadResults: (FileType | { error: string; filename: string })[] = [];
 
     // Process each file
     for (const file of files) {
@@ -76,20 +56,11 @@ export async function POST(req: NextRequest) {
 
         // Apply type-specific rate limiting
         const fileCategory = typeValidation.category;
-        if (fileCategory === 'image') {
-          try {
-            await imageLimiter.check(10, user.id);
-          } catch {
-            uploadResults.push({ error: 'Image upload rate limit exceeded', filename: file.name });
-            continue;
-          }
-        } else {
-          try {
-            await documentLimiter.check(20, user.id);
-          } catch {
-            uploadResults.push({ error: 'Document upload rate limit exceeded', filename: file.name });
-            continue;
-          }
+        const typeLimit = fileCategory === 'image' ? 10 : 20;
+        const typeRateLimit = await checkRateLimit(req, `${user.id}:${fileCategory}`, typeLimit, 60 * 1000);
+        if (!typeRateLimit.allowed) {
+          uploadResults.push({ error: `${fileCategory} upload rate limit exceeded`, filename: file.name });
+          continue;
         }
 
         // Validate file size

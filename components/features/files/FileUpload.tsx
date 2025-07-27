@@ -13,7 +13,7 @@ import {
   validateFileBatch,
   formatFileSize 
 } from '@/lib/utils/file-validation';
-import type { UploadProgress as UploadProgressType } from '@/types';
+import type { UploadProgress as UploadProgressType, File as FileType } from '@/types';
 
 interface FileUploadProps {
   courseId?: string;
