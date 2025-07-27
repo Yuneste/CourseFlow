@@ -124,14 +124,9 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   };
 
   const handleCourseClick = (course: Course) => {
-    // When clicking on a course card, open the edit dialog
-    // This provides immediate edit functionality as required by criteria 4
-    handleEdit(course);
-  };
-
-  const handleEdit = (course: Course) => {
-    // This function will be called by CourseList component
-    console.log('Editing course:', course);
+    // For future use - could navigate to course details page
+    // For now, the CourseList component handles edit/delete internally
+    console.log('Course clicked:', course);
   };
 
   return (
@@ -149,7 +144,6 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         onCreateCourse={handleCreateCourse}
         onUpdateCourse={handleUpdateCourse}
         onDeleteCourse={handleDeleteCourse}
-        onCourseClick={handleCourseClick}
         viewMode="grid"
       />
     </div>

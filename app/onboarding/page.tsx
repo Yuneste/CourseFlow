@@ -5,7 +5,10 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ChevronRight, BookOpen, Globe, Plus, Edit2, Trash2 } from 'lucide-react';
+import { ChevronRight, BookOpen, Globe, Plus, Edit2, Trash2, GraduationCap } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { coursesService, CreateCourseInput } from '@/lib/services/courses.service';
 import { Course } from '@/types';
 import { cn } from '@/lib/utils';
@@ -50,12 +53,18 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState<CountryCode | null>(null);
+  const [studyProgram, setStudyProgram] = useState({
+    study_program: '',
+    degree_type: '' as any,
+    start_year: new Date().getFullYear(),
+    expected_graduation_year: new Date().getFullYear() + 4,
+  });
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
-  const totalSteps = 3;
+  const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
 
   const handleCountrySelect = (country: CountryCode) => {
@@ -68,10 +77,24 @@ export default function OnboardingPage() {
   };
 
   const handleComplete = async () => {
-    if (courses.length === 0) {
-      // If no courses added, still go to dashboard
+    try {
+      // Save study program information to user profile
+      if (studyProgram.study_program && studyProgram.degree_type) {
+        // We'll need to create an API endpoint to update the profile
+        const response = await fetch('/api/profile', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(studyProgram),
+        });
+        
+        if (!response.ok) {
+          console.error('Failed to update profile');
+        }
+      }
+      
       router.push('/dashboard');
-    } else {
+    } catch (error) {
+      console.error('Error completing onboarding:', error);
       router.push('/dashboard');
     }
   };
@@ -124,6 +147,15 @@ export default function OnboardingPage() {
         return <StepCountrySelection onSelect={handleCountrySelect} />;
       case 2:
         return (
+          <StepStudyProgram
+            country={selectedCountry!}
+            studyProgram={studyProgram}
+            onChange={setStudyProgram}
+            onNext={() => setStep(3)}
+          />
+        );
+      case 3:
+        return (
           <StepAddCourses
             country={selectedCountry!}
             academicSystem={ACADEMIC_SYSTEMS[selectedCountry!]}
@@ -131,14 +163,14 @@ export default function OnboardingPage() {
             onAddCourse={addCourse}
             onUpdateCourse={updateCourse}
             onDeleteCourse={deleteCourse}
-            onNext={() => setStep(3)}
+            onNext={() => setStep(4)}
             isLoading={isLoading}
             error={error}
             editingCourse={editingCourse}
             setEditingCourse={setEditingCourse}
           />
         );
-      case 3:
+      case 4:
         return (
           <StepComplete
             coursesCount={courses.length}
@@ -527,7 +559,169 @@ function StepAddCourses({
   );
 }
 
-// Step 3: Complete
+// Step 2: Study Program
+interface StepStudyProgramProps {
+  country: CountryCode;
+  studyProgram: {
+    study_program: string;
+    degree_type: string;
+    start_year: number;
+    expected_graduation_year: number;
+  };
+  onChange: (program: any) => void;
+  onNext: () => void;
+}
+
+function StepStudyProgram({ country, studyProgram, onChange, onNext }: StepStudyProgramProps) {
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 20 }, (_, i) => currentYear - 10 + i);
+  
+  // Define degree types based on country
+  const getDegreeTypes = () => {
+    switch (country) {
+      case 'DE':
+        return [
+          { value: 'bachelor', label: 'Bachelor' },
+          { value: 'master', label: 'Master' },
+          { value: 'diploma', label: 'Diplom' },
+          { value: 'phd', label: 'Promotion (Dr.)' },
+        ];
+      case 'US':
+      case 'CA':
+        return [
+          { value: 'associate', label: "Associate's Degree" },
+          { value: 'undergraduate', label: "Bachelor's Degree" },
+          { value: 'graduate', label: "Master's Degree" },
+          { value: 'phd', label: 'Doctoral Degree (PhD)' },
+        ];
+      case 'UK':
+        return [
+          { value: 'undergraduate', label: 'Undergraduate (BSc/BA)' },
+          { value: 'postgraduate', label: 'Postgraduate (MSc/MA)' },
+          { value: 'phd', label: 'Doctoral (PhD/DPhil)' },
+        ];
+      default:
+        return [
+          { value: 'bachelor', label: "Bachelor's Degree" },
+          { value: 'master', label: "Master's Degree" },
+          { value: 'phd', label: 'Doctoral Degree' },
+          { value: 'other', label: 'Other' },
+        ];
+    }
+  };
+
+  const degreeTypes = getDegreeTypes();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (studyProgram.study_program && studyProgram.degree_type) {
+      onNext();
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <GraduationCap className="h-5 w-5" />
+          Your Study Program
+        </CardTitle>
+        <CardDescription>
+          Tell us about your academic journey
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="study_program">What are you studying? *</Label>
+            <Input
+              id="study_program"
+              value={studyProgram.study_program}
+              onChange={(e) => onChange({ ...studyProgram, study_program: e.target.value })}
+              placeholder={
+                country === 'DE' ? 'z.B. Informatik, Maschinenbau, BWL' : 
+                country === 'US' ? 'e.g., Computer Science, Engineering, Business' :
+                'e.g., Computer Science, Engineering, Business'
+              }
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="degree_type">Degree Type *</Label>
+            <Select
+              value={studyProgram.degree_type}
+              onValueChange={(value) => onChange({ ...studyProgram, degree_type: value })}
+              required
+            >
+              <SelectTrigger id="degree_type">
+                <SelectValue placeholder="Select your degree type" />
+              </SelectTrigger>
+              <SelectContent>
+                {degreeTypes.map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="start_year">Start Year</Label>
+              <Select
+                value={studyProgram.start_year.toString()}
+                onValueChange={(value) => onChange({ ...studyProgram, start_year: parseInt(value) })}
+              >
+                <SelectTrigger id="start_year">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="expected_graduation">Expected Graduation</Label>
+              <Select
+                value={studyProgram.expected_graduation_year.toString()}
+                onValueChange={(value) => onChange({ ...studyProgram, expected_graduation_year: parseInt(value) })}
+              >
+                <SelectTrigger id="expected_graduation">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.filter(year => year >= studyProgram.start_year).map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={!studyProgram.study_program || !studyProgram.degree_type}
+          >
+            Continue
+            <ChevronRight className="h-4 w-4 ml-2" />
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Step 4: Complete
 function StepComplete({
   coursesCount,
   onComplete,

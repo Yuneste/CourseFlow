@@ -3,6 +3,10 @@ export interface User {
   email: string;
   full_name: string;
   university?: string;
+  study_program?: string;
+  degree_type?: 'bachelor' | 'master' | 'phd' | 'diploma' | 'associate' | 'undergraduate' | 'graduate' | 'postgraduate' | 'other';
+  start_year?: number;
+  expected_graduation_year?: number;
   preferred_locale: string;
   country: string;
   timezone: string;

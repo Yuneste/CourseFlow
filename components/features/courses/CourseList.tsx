@@ -181,7 +181,7 @@ export function CourseList({
                   course={course}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
-                  onClick={onCourseClick}
+                  onClick={onCourseClick || handleEdit}
                   className={currentViewMode === 'list' ? 'max-w-none' : ''}
                 />
               ))}
