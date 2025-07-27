@@ -12,6 +12,7 @@ interface AppState {
   selectedCourse: Course | null;
   isLoadingCourses: boolean;
   coursesError: string | null;
+  coursesLastFetched: number | null;
 
   // Course actions
   setCourses: (courses: Course[]) => void;
@@ -26,6 +27,7 @@ interface AppState {
   getCoursesByTerm: (term: string) => Course[];
   getCourseById: (id: string) => Course | undefined;
   getTotalCredits: (term?: string) => number;
+  shouldRefetchCourses: () => boolean;
 }
 
 export const useAppStore = create<AppState>()(
@@ -38,6 +40,7 @@ export const useAppStore = create<AppState>()(
         selectedCourse: null,
         isLoadingCourses: false,
         coursesError: null,
+        coursesLastFetched: null,
 
         // User actions
         setUser: (user) => set({ user }),
@@ -46,7 +49,8 @@ export const useAppStore = create<AppState>()(
         setCourses: (courses) => 
           set({ 
             courses, 
-            coursesError: null 
+            coursesError: null,
+            coursesLastFetched: Date.now()
           }),
 
         addCourse: (course) =>
@@ -108,6 +112,15 @@ export const useAppStore = create<AppState>()(
             return total;
           }, 0);
         },
+
+        shouldRefetchCourses: () => {
+          const { coursesLastFetched } = get();
+          if (!coursesLastFetched) return true;
+          
+          // Cache expires after 5 minutes
+          const CACHE_DURATION = 5 * 60 * 1000;
+          return Date.now() - coursesLastFetched > CACHE_DURATION;
+        },
       }),
       {
         name: 'courseflow-app-store',
@@ -116,6 +129,7 @@ export const useAppStore = create<AppState>()(
           user: state.user,
           courses: state.courses,
           selectedCourse: state.selectedCourse,
+          coursesLastFetched: state.coursesLastFetched,
         }),
       }
     )
