@@ -13,6 +13,7 @@ import { coursesService, CreateCourseInput } from '@/lib/services/courses.servic
 import { Course } from '@/types';
 import { cn } from '@/lib/utils';
 import { BenefitsShowcase, BenefitsShowcaseStyles } from '@/components/features/onboarding/BenefitsShowcase';
+import { BenefitsShowcaseAnimated } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
 
 // Define academic systems by country
 const ACADEMIC_SYSTEMS = {
@@ -65,6 +66,7 @@ export default function OnboardingPage() {
   const [error, setError] = useState<string | null>(null);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [showBenefits, setShowBenefits] = useState(false);
+  const [useAnimatedBenefits, setUseAnimatedBenefits] = useState(true);
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
@@ -197,6 +199,8 @@ export default function OnboardingPage() {
             coursesCount={courses.length}
             onComplete={handleComplete}
             onShowBenefits={() => setShowBenefits(true)}
+            useAnimatedBenefits={useAnimatedBenefits}
+            setUseAnimatedBenefits={setUseAnimatedBenefits}
           />
         );
       default:
@@ -208,7 +212,11 @@ export default function OnboardingPage() {
     return (
       <>
         <BenefitsShowcaseStyles />
-        <BenefitsShowcase onComplete={handleComplete} />
+        {useAnimatedBenefits ? (
+          <BenefitsShowcaseAnimated onComplete={handleComplete} />
+        ) : (
+          <BenefitsShowcase onComplete={handleComplete} />
+        )}
       </>
     );
   }
@@ -761,10 +769,14 @@ function StepComplete({
   coursesCount,
   onComplete,
   onShowBenefits,
+  useAnimatedBenefits,
+  setUseAnimatedBenefits,
 }: {
   coursesCount: number;
   onComplete: () => void;
   onShowBenefits: () => void;
+  useAnimatedBenefits: boolean;
+  setUseAnimatedBenefits: (value: boolean) => void;
 }) {
   return (
     <Card>
@@ -783,7 +795,26 @@ function StepComplete({
               : 'Your account is ready! You can add courses anytime from your dashboard.'}
           </p>
         </div>
-        <Button onClick={onShowBenefits} size="lg" className="w-full">
+        
+        {/* Toggle for intro style */}
+        <div className="flex items-center justify-center gap-3 py-4">
+          <label className="text-sm text-gray-600">Classic intro</label>
+          <button
+            onClick={() => setUseAnimatedBenefits(!useAnimatedBenefits)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              useAnimatedBenefits ? 'bg-[#FA8072]' : 'bg-gray-200'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                useAnimatedBenefits ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+          <label className="text-sm text-gray-600">Animated demos</label>
+        </div>
+        
+        <Button onClick={onShowBenefits} size="lg" className="w-full bg-[#FA8072] hover:bg-[#FF6B6B] text-white">
           Discover CourseFlow
           <ChevronRight className="h-5 w-5 ml-2" />
         </Button>
