@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { User, Course } from '@/types';
+import { User, Course, File, UploadProgress } from '@/types';
 
 interface AppState {
   // User state
@@ -28,6 +28,33 @@ interface AppState {
   getCourseById: (id: string) => Course | undefined;
   getTotalCredits: (term?: string) => number;
   shouldRefetchCourses: () => boolean;
+
+  // File state
+  files: File[];
+  uploadQueue: UploadProgress[];
+  isLoadingFiles: boolean;
+  filesError: string | null;
+  filesLastFetched: number | null;
+
+  // File actions
+  setFiles: (files: File[]) => void;
+  addFile: (file: File) => void;
+  updateFile: (id: string, updates: Partial<File>) => void;
+  deleteFile: (id: string) => void;
+  setLoadingFiles: (loading: boolean) => void;
+  setFilesError: (error: string | null) => void;
+
+  // Upload queue actions
+  addToUploadQueue: (upload: UploadProgress) => void;
+  updateUploadProgress: (fileId: string, updates: Partial<UploadProgress>) => void;
+  removeFromUploadQueue: (fileId: string) => void;
+  clearUploadQueue: () => void;
+
+  // File utility actions
+  getFilesByCourse: (courseId: string) => File[];
+  getFileById: (id: string) => File | undefined;
+  getTotalStorageUsed: () => number;
+  shouldRefetchFiles: () => boolean;
 }
 
 export const useAppStore = create<AppState>()(
@@ -41,6 +68,11 @@ export const useAppStore = create<AppState>()(
         isLoadingCourses: false,
         coursesError: null,
         coursesLastFetched: null,
+        files: [],
+        uploadQueue: [],
+        isLoadingFiles: false,
+        filesError: null,
+        filesLastFetched: null,
 
         // User actions
         setUser: (user) => set({ user }),
@@ -121,15 +153,94 @@ export const useAppStore = create<AppState>()(
           const CACHE_DURATION = 5 * 60 * 1000;
           return Date.now() - coursesLastFetched > CACHE_DURATION;
         },
+
+        // File actions
+        setFiles: (files) => 
+          set({ 
+            files, 
+            filesError: null,
+            filesLastFetched: Date.now()
+          }),
+
+        addFile: (file) =>
+          set((state) => ({
+            files: [file, ...state.files],
+            filesError: null,
+          })),
+
+        updateFile: (id, updates) =>
+          set((state) => ({
+            files: state.files.map((file) =>
+              file.id === id ? { ...file, ...updates } : file
+            ),
+            filesError: null,
+          })),
+
+        deleteFile: (id) =>
+          set((state) => ({
+            files: state.files.filter((file) => file.id !== id),
+            filesError: null,
+          })),
+
+        setLoadingFiles: (loading) => set({ isLoadingFiles: loading }),
+        
+        setFilesError: (error) => set({ filesError: error }),
+
+        // Upload queue actions
+        addToUploadQueue: (upload) =>
+          set((state) => ({
+            uploadQueue: [...state.uploadQueue, upload],
+          })),
+
+        updateUploadProgress: (fileId, updates) =>
+          set((state) => ({
+            uploadQueue: state.uploadQueue.map((upload) =>
+              upload.fileId === fileId ? { ...upload, ...updates } : upload
+            ),
+          })),
+
+        removeFromUploadQueue: (fileId) =>
+          set((state) => ({
+            uploadQueue: state.uploadQueue.filter((upload) => upload.fileId !== fileId),
+          })),
+
+        clearUploadQueue: () => set({ uploadQueue: [] }),
+
+        // File utility actions
+        getFilesByCourse: (courseId) => {
+          const { files } = get();
+          return files.filter((file) => file.course_id === courseId);
+        },
+
+        getFileById: (id) => {
+          const { files } = get();
+          return files.find((file) => file.id === id);
+        },
+
+        getTotalStorageUsed: () => {
+          const { files } = get();
+          return files.reduce((total, file) => total + file.file_size, 0);
+        },
+
+        shouldRefetchFiles: () => {
+          const { filesLastFetched } = get();
+          if (!filesLastFetched) return true;
+          
+          // Cache expires after 5 minutes
+          const CACHE_DURATION = 5 * 60 * 1000;
+          return Date.now() - filesLastFetched > CACHE_DURATION;
+        },
       }),
       {
         name: 'courseflow-app-store',
         partialize: (state) => ({
-          // Only persist user and courses, not loading states or errors
+          // Only persist user, courses, and files, not loading states or errors
           user: state.user,
           courses: state.courses,
           selectedCourse: state.selectedCourse,
           coursesLastFetched: state.coursesLastFetched,
+          files: state.files,
+          filesLastFetched: state.filesLastFetched,
         }),
       }
     )

@@ -30,3 +30,33 @@ export interface Course {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface File {
+  id: string;
+  user_id: string;
+  course_id?: string;
+  original_name: string;
+  display_name: string;
+  storage_url: string;
+  file_type: string;
+  file_size: number;
+  file_hash: string;
+  upload_source: 'web' | 'mobile' | 'api';
+  is_academic_content: boolean;
+  detected_language?: string;
+  ai_category?: 'lecture' | 'assignment' | 'notes' | 'exam' | 'other';
+  ai_summary?: string;
+  ai_summary_translations?: Record<string, string>;
+  ai_confidence?: number;
+  created_at: Date;
+  processed_at?: Date;
+  upload_session_id?: string;
+}
+
+export interface UploadProgress {
+  fileId: string;
+  fileName: string;
+  progress: number;
+  status: 'pending' | 'uploading' | 'completed' | 'failed' | 'cancelled';
+  error?: string;
+}
