@@ -38,7 +38,7 @@ describe('ResetPasswordPage', () => {
 
     await waitFor(() => {
       expect(mockResetPasswordForEmail).toHaveBeenCalledWith('test@example.com', {
-        redirectTo: expect.stringContaining('/update-password'),
+        redirectTo: expect.stringContaining('/auth/callback?type=recovery'),
       })
     })
 
