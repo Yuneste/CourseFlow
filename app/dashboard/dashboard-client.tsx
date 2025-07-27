@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Course, User } from '@/types';
 import { CourseList } from '@/components/features/courses/CourseList';
-import { CountrySelector } from '@/components/features/courses/CountrySelector';
 import { coursesService } from '@/lib/services/courses.service';
 import { useAppStore } from '@/stores/useAppStore';
 import { useRouter } from 'next/navigation';
@@ -49,8 +48,6 @@ interface DashboardClientProps {
 
 export function DashboardClient({ initialCourses, userProfile }: DashboardClientProps) {
   const router = useRouter();
-  const [showCountrySelector, setShowCountrySelector] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState(userProfile?.country || null);
   
   // Get state and actions from Zustand store
   const {
@@ -70,39 +67,13 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
     setCourses(initialCourses);
   }, [initialCourses, setCourses]);
 
-  // Check if country needs to be set
-  useEffect(() => {
-    // Only show selector if profile is loaded and country is not set
-    if (userProfile && !userProfile.country && !selectedCountry) {
-      setShowCountrySelector(true);
-    }
-  }, [userProfile, selectedCountry]);
-
   // Determine academic system based on user's country
   const getAcademicSystem = () => {
-    const countryCode = selectedCountry || userProfile?.country || 'US';
+    const countryCode = userProfile?.country || 'US';
     return ACADEMIC_SYSTEMS[countryCode as keyof typeof ACADEMIC_SYSTEMS] || ACADEMIC_SYSTEMS.US;
   };
 
   const academicSystem = getAcademicSystem();
-
-  const handleCountrySelect = async (country: string) => {
-    try {
-      const response = await fetch('/api/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ country }),
-      });
-
-      if (response.ok) {
-        setSelectedCountry(country);
-        setShowCountrySelector(false);
-        router.refresh();
-      }
-    } catch (error) {
-      console.error('Failed to update country:', error);
-    }
-  };
 
   const handleCreateCourse = async (courseData: any) => {
     try {
@@ -174,11 +145,6 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         onUpdateCourse={handleUpdateCourse}
         onDeleteCourse={handleDeleteCourse}
         viewMode="grid"
-      />
-
-      <CountrySelector
-        open={showCountrySelector}
-        onSelect={handleCountrySelect}
       />
     </div>
   );

@@ -889,10 +889,6 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
     }
   }, [currentIndex, onComplete]);
 
-  const handleSkip = () => {
-    setIsVisible(false);
-    setTimeout(onComplete, 500);
-  };
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -977,20 +973,13 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
                 ))}
               </motion.div>
 
-              {/* Navigation buttons */}
+              {/* Navigation button */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                className="flex items-center justify-center gap-4"
+                className="flex items-center justify-center"
               >
-                <Button
-                  variant="outline"
-                  onClick={handleSkip}
-                  className="px-6"
-                >
-                  Skip
-                </Button>
                 <Button
                   onClick={handleNext}
                   className="px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all bg-[#FA8072] hover:bg-[#FF6B6B] text-white border-0"
