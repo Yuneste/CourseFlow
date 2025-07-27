@@ -72,10 +72,11 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
 
   // Check if country needs to be set
   useEffect(() => {
-    if (!userProfile?.country) {
+    // Only show selector if profile is loaded and country is not set
+    if (userProfile && !userProfile.country && !selectedCountry) {
       setShowCountrySelector(true);
     }
-  }, [userProfile?.country]);
+  }, [userProfile, selectedCountry]);
 
   // Determine academic system based on user's country
   const getAcademicSystem = () => {

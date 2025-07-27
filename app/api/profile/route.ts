@@ -18,17 +18,15 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     
     // Update profile
-    const updateData: any = {
-      study_program: body.study_program,
-      degree_type: body.degree_type,
-      start_year: body.start_year,
-      expected_graduation_year: body.expected_graduation_year,
-    };
+    const updateData: any = {};
     
-    // Also update country if provided
-    if (body.country) {
-      updateData.country = body.country;
-    }
+    // Only add fields that are provided
+    if (body.study_program !== undefined) updateData.study_program = body.study_program;
+    if (body.degree_type !== undefined) updateData.degree_type = body.degree_type;
+    if (body.start_year !== undefined) updateData.start_year = body.start_year;
+    if (body.expected_graduation_year !== undefined) updateData.expected_graduation_year = body.expected_graduation_year;
+    if (body.country !== undefined) updateData.country = body.country;
+    if (body.full_name !== undefined) updateData.full_name = body.full_name;
     
     const { error } = await supabase
       .from('profiles')

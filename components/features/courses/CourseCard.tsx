@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Course } from '@/types';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MoreVertical, Edit, Trash2, BookOpen, User, Hash } from 'lucide-react';
+import { MoreVertical, Edit, Trash2, BookOpen, User } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,32 +31,43 @@ export function CourseCard({
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <Card
+    <div
       className={cn(
-        'relative overflow-hidden transition-all duration-200 cursor-pointer group border-2',
-        isHovered && 'shadow-lg scale-[1.02] border-[#FA8072]',
-        !isHovered && 'border-gray-200',
+        'relative overflow-hidden transition-all duration-300 cursor-pointer group glass-effect rounded-lg',
+        isHovered && 'shadow-2xl scale-[1.02] course-card-float',
         className
       )}
-      style={{
-        borderTopColor: course.color,
-        borderTopWidth: '4px',
-      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => onClick?.(course)}
     >
+      {/* Color band at top */}
+      <div 
+        className="absolute top-0 left-0 right-0 h-1"
+        style={{ backgroundColor: course.color }}
+      />
+      
+      {/* Gradient overlay */}
+      <div 
+        className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
+        style={{
+          background: `linear-gradient(135deg, ${course.color}20 0%, transparent 100%)`
+        }}
+      />
+      
+      <Card className="border-0 bg-transparent">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-3xl" role="img" aria-label="Course emoji">
-              {course.emoji || '📚'}
-            </span>
+            <div className="relative">
+              <span className="text-4xl drop-shadow-md" role="img" aria-label="Course emoji">
+                {course.emoji || '📚'}
+              </span>
+            </div>
             <div className="flex-1">
               <h3 className="font-semibold text-lg line-clamp-1">{course.name}</h3>
               {course.code && (
-                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                  <Hash className="h-3 w-3" />
+                <div className="text-sm text-muted-foreground mt-1">
                   <span>{course.code}</span>
                 </div>
               )}
@@ -123,5 +134,6 @@ export function CourseCard({
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 }
