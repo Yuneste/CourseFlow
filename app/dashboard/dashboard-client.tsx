@@ -6,40 +6,7 @@ import { CourseList } from '@/components/features/courses/CourseList';
 import { coursesService } from '@/lib/services/courses.service';
 import { useAppStore } from '@/stores/useAppStore';
 import { useRouter } from 'next/navigation';
-
-// Define academic systems by country
-const ACADEMIC_SYSTEMS = {
-  US: {
-    name: 'United States',
-    periodType: 'semester' as const,
-    terms: ['Fall 2024', 'Spring 2025', 'Summer 2025'],
-    creditSystem: 'credits',
-  },
-  CA: {
-    name: 'Canada',
-    periodType: 'semester' as const,
-    terms: ['Fall 2024', 'Winter 2025', 'Summer 2025'],
-    creditSystem: 'credits',
-  },
-  UK: {
-    name: 'United Kingdom',
-    periodType: 'term' as const,
-    terms: ['Michaelmas 2024', 'Hilary 2025', 'Trinity 2025'],
-    creditSystem: 'uk_honours',
-  },
-  DE: {
-    name: 'Germany',
-    periodType: 'semester' as const,
-    terms: ['Wintersemester 2024/25', 'Sommersemester 2025'],
-    creditSystem: 'ects',
-  },
-  NL: {
-    name: 'Netherlands',
-    periodType: 'trimester' as const,
-    terms: ['Period 1', 'Period 2', 'Period 3', 'Period 4'],
-    creditSystem: 'ects',
-  },
-};
+import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
 
 interface DashboardClientProps {
   initialCourses: Course[];
@@ -68,12 +35,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   }, [initialCourses, setCourses]);
 
   // Determine academic system based on user's country
-  const getAcademicSystem = () => {
-    const countryCode = userProfile?.country || 'US';
-    return ACADEMIC_SYSTEMS[countryCode as keyof typeof ACADEMIC_SYSTEMS] || ACADEMIC_SYSTEMS.US;
-  };
-
-  const academicSystem = getAcademicSystem();
+  const academicSystem = getAcademicSystemWithTerms(userProfile?.country || 'US');
 
   const handleCreateCourse = async (courseData: any) => {
     try {

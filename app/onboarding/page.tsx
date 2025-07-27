@@ -14,6 +14,7 @@ import { Course } from '@/types';
 import { cn } from '@/lib/utils';
 import { BenefitsShowcaseStyles } from '@/components/features/onboarding/BenefitsShowcase';
 import { BenefitsShowcaseAnimated } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
+import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
 
 // Define academic systems by country
 const ACADEMIC_SYSTEMS = {
@@ -66,12 +67,15 @@ export default function OnboardingPage() {
   const [error, setError] = useState<string | null>(null);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [showBenefits, setShowBenefits] = useState(false);
+  const [academicSystem, setAcademicSystem] = useState<ReturnType<typeof getAcademicSystemWithTerms> | null>(null);
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
 
   const handleCountrySelect = async (country: CountryCode) => {
     setSelectedCountry(country);
+    const system = getAcademicSystemWithTerms(country);
+    setAcademicSystem(system);
     
     // Save country immediately to profile
     try {
@@ -178,10 +182,10 @@ export default function OnboardingPage() {
           />
         );
       case 3:
-        return (
+        return academicSystem ? (
           <StepAddCourses
             country={selectedCountry!}
-            academicSystem={ACADEMIC_SYSTEMS[selectedCountry!]}
+            academicSystem={academicSystem}
             courses={courses}
             onAddCourse={addCourse}
             onUpdateCourse={updateCourse}
@@ -193,7 +197,7 @@ export default function OnboardingPage() {
             editingCourse={editingCourse}
             setEditingCourse={setEditingCourse}
           />
-        );
+        ) : null;
       case 4:
         return (
           <StepComplete
@@ -282,7 +286,7 @@ function StepCountrySelection({ onSelect }: { onSelect: (country: CountryCode) =
 // Step 2: Add Courses
 interface StepAddCoursesProps {
   country: CountryCode;
-  academicSystem: typeof ACADEMIC_SYSTEMS[CountryCode];
+  academicSystem: ReturnType<typeof getAcademicSystemWithTerms>;
   courses: Course[];
   onAddCourse: (course: CreateCourseInput) => Promise<void>;
   onUpdateCourse: (id: string, course: any) => Promise<void>;
@@ -312,7 +316,7 @@ function StepAddCourses({
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<CreateCourseInput>({
     name: '',
-    term: academicSystem.terms[0],
+    term: academicSystem.currentTerm || academicSystem.terms[0],
     code: '',
     professor: '',
     academic_period_type: academicSystem.periodType,
@@ -533,6 +537,40 @@ function StepAddCourses({
                 />
               </div>
             </div>
+
+            {academicSystem.creditSystem === 'credits' && (
+              <div>
+                <label className="block text-sm font-medium mb-1">Credits</label>
+                <input
+                  type="number"
+                  value={formData.credits || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, credits: e.target.value ? parseInt(e.target.value) : undefined })
+                  }
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g., 3"
+                  min="0"
+                  max="10"
+                />
+              </div>
+            )}
+
+            {academicSystem.creditSystem === 'ects' && (
+              <div>
+                <label className="block text-sm font-medium mb-1">ECTS Credits</label>
+                <input
+                  type="number"
+                  value={formData.ects_credits || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ects_credits: e.target.value ? parseInt(e.target.value) : undefined })
+                  }
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g., 6"
+                  min="0"
+                  max="30"
+                />
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <div>

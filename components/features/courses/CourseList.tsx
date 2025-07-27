@@ -5,7 +5,14 @@ import { Course } from '@/types';
 import { CourseCard } from './CourseCard';
 import { CourseForm } from './CourseForm';
 import { Button } from '@/components/ui/button';
-import { Plus, Grid3x3, List } from 'lucide-react';
+import { Plus, Grid3x3, List, Filter } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,6 +56,7 @@ export function CourseList({
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [deletingCourse, setDeletingCourse] = useState<Course | null>(null);
   const [currentViewMode, setCurrentViewMode] = useState(viewMode);
+  const [selectedTerm, setSelectedTerm] = useState<string>('all');
 
   const handleEdit = (course: Course) => {
     setEditingCourse(course);
@@ -125,8 +133,16 @@ export function CourseList({
     );
   }
 
-  // Group courses by term
-  const coursesByTerm = courses.reduce((acc, course) => {
+  // Filter courses by selected term
+  const filteredCourses = selectedTerm === 'all' 
+    ? courses 
+    : courses.filter(course => course.term === selectedTerm);
+
+  // Get unique terms from courses
+  const availableTerms = Array.from(new Set(courses.map(course => course.term)));
+
+  // Group filtered courses by term
+  const coursesByTerm = filteredCourses.reduce((acc, course) => {
     if (!acc[course.term]) {
       acc[course.term] = [];
     }
@@ -139,6 +155,20 @@ export function CourseList({
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Your Courses</h2>
         <div className="flex items-center gap-2">
+          <Select value={selectedTerm} onValueChange={setSelectedTerm}>
+            <SelectTrigger className="w-[200px]">
+              <Filter className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Filter by term" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Terms</SelectItem>
+              {academicSystem.terms.map((term) => (
+                <SelectItem key={term} value={term}>
+                  {term}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="flex bg-muted rounded-lg p-1">
             <Button
               variant={currentViewMode === 'grid' ? 'default' : 'ghost'}
@@ -164,31 +194,52 @@ export function CourseList({
         </div>
       </div>
 
-      <div className="space-y-8">
-        {Object.entries(coursesByTerm).map(([term, termCourses]) => (
-          <div key={term}>
-            <h3 className="text-lg font-semibold mb-4 text-muted-foreground">{term}</h3>
-            <div
-              className={cn(
-                currentViewMode === 'grid'
-                  ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
-                  : 'space-y-3'
-              )}
-            >
-              {termCourses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={course}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onClick={onCourseClick || handleEdit}
-                  className={currentViewMode === 'list' ? 'max-w-md' : ''}
-                />
-              ))}
-            </div>
+      {filteredCourses.length === 0 && selectedTerm !== 'all' ? (
+        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+          <div className="rounded-full bg-muted p-6 mb-4">
+            <Filter className="h-12 w-12 text-muted-foreground" />
           </div>
-        ))}
-      </div>
+          <h3 className="text-lg font-semibold mb-2">No courses found</h3>
+          <p className="text-muted-foreground mb-6 max-w-sm">
+            No courses found for the selected term. Try selecting a different term or add a new course.
+          </p>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={() => setSelectedTerm('all')}>
+              Clear Filter
+            </Button>
+            <Button onClick={() => setIsFormOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Course
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {Object.entries(coursesByTerm).map(([term, termCourses]) => (
+            <div key={term}>
+              <h3 className="text-lg font-semibold mb-4 text-muted-foreground">{term}</h3>
+              <div
+                className={cn(
+                  currentViewMode === 'grid'
+                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                    : 'space-y-3'
+                )}
+              >
+                {termCourses.map((course) => (
+                  <CourseCard
+                    key={course.id}
+                    course={course}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onClick={onCourseClick || handleEdit}
+                    className={currentViewMode === 'list' ? 'max-w-md' : ''}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <CourseForm
         open={isFormOpen}
