@@ -176,6 +176,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Create directory structure for the course
+    // In Supabase Storage, directories are created automatically when files are uploaded
+    // So we'll create placeholder files for each category
+    const categories = ['Lectures', 'Assignments', 'Notes', 'Exams', 'Others'];
+    const placeholderContent = new Blob([`${course.name} - ${course.term}`], { type: 'text/plain' });
+    
+    for (const category of categories) {
+      const placeholderPath = `${user.id}/${course.id}/${category}/.placeholder`;
+      
+      try {
+        await supabase.storage
+          .from('user-files')
+          .upload(placeholderPath, placeholderContent, {
+            contentType: 'text/plain',
+            upsert: true,
+          });
+      } catch (storageError) {
+        // Log but don't fail course creation if placeholder creation fails
+        console.error(`Failed to create placeholder for ${category}:`, storageError);
+      }
+    }
+
     return NextResponse.json(course, { status: 201 });
   } catch (error) {
     console.error('Unexpected error in POST /api/courses:', error);

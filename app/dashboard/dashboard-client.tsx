@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Course, User } from '@/types';
 import { CourseList } from '@/components/features/courses/CourseList';
 import { FileUpload } from '@/components/features/files/FileUpload';
+import { FileUploadWithDetection } from '@/components/features/files/FileUploadWithDetection';
 import { FileList } from '@/components/features/files/FileList';
 import { FileCategoryView } from '@/components/features/files/FileCategoryView';
 import { StorageUsage } from '@/components/features/files/StorageUsage';
@@ -100,9 +101,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   };
 
   const handleCourseClick = (course: Course) => {
-    // For future use - could navigate to course details page
-    // For now, the CourseList component handles edit/delete internally
-    console.log('Course clicked:', course);
+    router.push(`/dashboard/courses/${course.id}`);
   };
 
   const handleFileDelete = async (fileId: string) => {
@@ -256,11 +255,11 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
                   </select>
                 </div>
                 
-                <FileUpload
+                <FileUploadWithDetection
                   courseId={selectedCourse?.id}
                   onUploadComplete={() => {
-                    // Optionally hide upload after completion
-                    // setShowFileUpload(false);
+                    // Refresh files
+                    window.location.reload();
                   }}
                 />
               </div>
