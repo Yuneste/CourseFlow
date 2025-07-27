@@ -108,12 +108,12 @@ export default function LandingPage() {
               <a href="#features" className="text-gray-600 hover:text-[#FA8072] transition-colors">Features</a>
               <a href="#testimonials" className="text-gray-600 hover:text-[#FA8072] transition-colors">Testimonials</a>
               <a href="#pricing" className="text-gray-600 hover:text-[#FA8072] transition-colors">Pricing</a>
-              <Link href="/login">
-                <Button variant="outline" className="mr-2">Log In</Button>
-              </Link>
-              <Link href="/register">
-                <Button className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white">Get Started</Button>
-              </Link>
+              <Button variant="outline" className="mr-2" asChild>
+                <Link href="/login">Log In</Link>
+              </Button>
+              <Button className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white" asChild>
+                <Link href="/register">Get Started</Link>
+              </Button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -137,12 +137,12 @@ export default function LandingPage() {
               <a href="#features" className="block text-gray-600 hover:text-[#FA8072]">Features</a>
               <a href="#testimonials" className="block text-gray-600 hover:text-[#FA8072]">Testimonials</a>
               <a href="#pricing" className="block text-gray-600 hover:text-[#FA8072]">Pricing</a>
-              <Link href="/login" className="block">
-                <Button variant="outline" className="w-full">Log In</Button>
-              </Link>
-              <Link href="/register" className="block">
-                <Button className="w-full bg-[#FA8072] hover:bg-[#FF6B6B] text-white">Get Started</Button>
-              </Link>
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/login" className="block">Log In</Link>
+              </Button>
+              <Button className="w-full bg-[#FA8072] hover:bg-[#FF6B6B] text-white" asChild>
+                <Link href="/register" className="block">Get Started</Link>
+              </Button>
             </div>
           </motion.div>
         )}
@@ -179,14 +179,17 @@ export default function LandingPage() {
             transition={{ delay: 0.2 }}
             className="flex flex-col md:flex-row gap-4 justify-center mb-8"
           >
-            <Link href="/register">
-              <Button size="lg" className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white px-8 py-6 text-lg">
+            <Button size="lg" className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white px-8 py-6 text-lg" asChild>
+              <Link href="/register">
                 Start Free Trial
                 <Sparkles className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Button size="lg" variant="outline" className="px-8 py-6 text-lg">
-              Watch Demo
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="px-8 py-6 text-lg" onClick={() => {
+              const element = document.getElementById('features');
+              element?.scrollIntoView({ behavior: 'smooth' });
+            }}>
+              See Features
               <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
           </motion.div>
@@ -349,8 +352,11 @@ export default function LandingPage() {
                       ? 'bg-white text-[#FA8072] hover:bg-gray-100' 
                       : 'bg-[#FA8072] text-white hover:bg-[#FF6B6B]'
                   }`}
+                  asChild
                 >
-                  Get Started
+                  <Link href="/register">
+                    Get Started
+                  </Link>
                 </Button>
               </motion.div>
             ))}
@@ -367,12 +373,12 @@ export default function LandingPage() {
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
             Join thousands of students who are already achieving better grades with CourseFlow
           </p>
-          <Link href="/register">
-            <Button size="lg" className="bg-white text-[#FA8072] hover:bg-gray-100 px-8 py-6 text-lg">
+          <Button size="lg" className="bg-white text-[#FA8072] hover:bg-gray-100 px-8 py-6 text-lg" asChild>
+            <Link href="/register">
               Start Your Free Trial
               <Sparkles className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </section>
 
