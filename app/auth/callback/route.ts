@@ -21,23 +21,12 @@ export async function GET(request: Request) {
       if (user) {
         const { data: profile } = await supabase
           .from('profiles')
-          .select('study_program, degree_type')
+          .select('onboarding_completed')
           .eq('id', user.id)
           .single()
         
-        // Check if user has completed basic profile setup
-        if (!profile?.study_program || !profile?.degree_type) {
-          return NextResponse.redirect(`${origin}/onboarding`)
-        }
-        
-        // Check if user has any courses
-        const { data: courses } = await supabase
-          .from('courses')
-          .select('id')
-          .eq('user_id', user.id)
-          .limit(1)
-        
-        if (!courses || courses.length === 0) {
+        // Check if user has completed onboarding
+        if (!profile?.onboarding_completed) {
           return NextResponse.redirect(`${origin}/onboarding`)
         }
       }

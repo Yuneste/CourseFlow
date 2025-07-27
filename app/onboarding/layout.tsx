@@ -21,20 +21,15 @@ export default async function OnboardingLayout({
     redirect('/login');
   }
 
-  // Check if user has already completed full onboarding
+  // Check if user has already completed onboarding
   const { data: profile } = await supabase
     .from('profiles')
-    .select('study_program, degree_type')
+    .select('onboarding_completed')
     .eq('id', user.id)
     .single();
 
-  const { count } = await supabase
-    .from('courses')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
-
-  // Only redirect if user has completed profile AND has courses
-  if (profile?.study_program && profile?.degree_type && count && count > 0) {
+  // If user has already completed onboarding, redirect to dashboard
+  if (profile?.onboarding_completed) {
     redirect('/dashboard');
   }
 

@@ -101,21 +101,19 @@ export default function OnboardingPage() {
 
   const handleComplete = async () => {
     try {
-      // Save study program information to user profile
-      if (studyProgram.study_program && studyProgram.degree_type) {
-        // We'll need to create an API endpoint to update the profile
-        const response = await fetch('/api/profile', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...studyProgram,
-            country: selectedCountry,
-          }),
-        });
-        
-        if (!response.ok) {
-          console.error('Failed to update profile');
-        }
+      // Save study program information and mark onboarding as completed
+      const response = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...studyProgram,
+          country: selectedCountry,
+          onboarding_completed: true,
+        }),
+      });
+      
+      if (!response.ok) {
+        console.error('Failed to update profile');
       }
       
       router.push('/dashboard');

@@ -27,6 +27,7 @@ export async function PATCH(request: NextRequest) {
     if (body.expected_graduation_year !== undefined) updateData.expected_graduation_year = body.expected_graduation_year;
     if (body.country !== undefined) updateData.country = body.country;
     if (body.full_name !== undefined) updateData.full_name = body.full_name;
+    if (body.onboarding_completed !== undefined) updateData.onboarding_completed = body.onboarding_completed;
     
     const { error } = await supabase
       .from('profiles')
