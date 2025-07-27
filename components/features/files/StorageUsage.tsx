@@ -81,7 +81,7 @@ export function StorageUsage({ userTier = 'free' }: StorageUsageProps) {
           <div className="flex items-start gap-2 mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded">
             <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-400 mt-0.5" />
             <div className="text-xs text-yellow-600 dark:text-yellow-400">
-              <p>You're using {usage.percentage.toFixed(0)}% of your storage.</p>
+              <p>You&apos;re using {usage.percentage.toFixed(0)}% of your storage.</p>
             </div>
           </div>
         )}
