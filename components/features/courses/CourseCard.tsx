@@ -33,8 +33,9 @@ export function CourseCard({
   return (
     <Card
       className={cn(
-        'relative overflow-hidden transition-all duration-200 cursor-pointer',
-        isHovered && 'shadow-lg scale-[1.02]',
+        'relative overflow-hidden transition-all duration-200 cursor-pointer group border-2',
+        isHovered && 'shadow-lg scale-[1.02] border-[#FA8072]',
+        !isHovered && 'border-gray-200',
         className
       )}
       style={{

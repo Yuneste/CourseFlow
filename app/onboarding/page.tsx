@@ -69,8 +69,24 @@ export default function OnboardingPage() {
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
 
-  const handleCountrySelect = (country: CountryCode) => {
+  const handleCountrySelect = async (country: CountryCode) => {
     setSelectedCountry(country);
+    
+    // Save country immediately to profile
+    try {
+      const response = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ country }),
+      });
+      
+      if (!response.ok) {
+        console.error('Failed to save country to profile');
+      }
+    } catch (error) {
+      console.error('Error saving country:', error);
+    }
+    
     setStep(2);
   };
 
@@ -198,29 +214,33 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to CourseFlow</h1>
-        <p className="text-gray-600">Let&apos;s set up your courses in just a few steps</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50">
+      <div className="max-w-2xl mx-auto pt-12 px-4">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent mb-2">
+            Welcome to CourseFlow
+          </h1>
+          <p className="text-gray-600">Let&apos;s set up your courses in just a few steps</p>
+        </div>
 
-      <div className="mb-8">
-        <Progress value={progress} className="h-2" />
-      </div>
+        <div className="mb-8">
+          <Progress value={progress} className="h-3 bg-[#FFE4E1]" />
+        </div>
 
       {renderStep()}
 
-      {step < 3 && (
-        <div className="mt-6 text-center">
-          <Button
-            variant="ghost"
-            onClick={handleSkip}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            Skip for now
-          </Button>
-        </div>
-      )}
+        {step < 3 && (
+          <div className="mt-6 text-center">
+            <Button
+              variant="ghost"
+              onClick={handleSkip}
+              className="text-gray-500 hover:text-gray-700 hover:bg-[#FFE4E1]"
+            >
+              Skip for now
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { LogoutButton } from '@/components/auth/logout-button'
+import { ProfileDropdown } from '@/components/features/profile/ProfileDropdown'
 import { DashboardClient } from './dashboard-client'
 
 export default async function DashboardPage() {
@@ -35,23 +35,27 @@ export default async function DashboardPage() {
     .single()
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          {profile?.full_name && (
-            <p className="text-muted-foreground mt-1">
-              Welcome back, {profile.full_name}!
-            </p>
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50">
+      <div className="container mx-auto py-6">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+              Dashboard
+            </h1>
+            {profile?.full_name && (
+              <p className="text-gray-600 mt-1">
+                Welcome back, {profile.full_name}!
+              </p>
+            )}
+          </div>
+          <ProfileDropdown user={user} profile={profile} />
         </div>
-        <LogoutButton />
+        
+        <DashboardClient 
+          initialCourses={courses || []} 
+          userProfile={profile}
+        />
       </div>
-      
-      <DashboardClient 
-        initialCourses={courses || []} 
-        userProfile={profile}
-      />
     </div>
   )
 }

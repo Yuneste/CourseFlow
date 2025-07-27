@@ -109,7 +109,7 @@ export function BenefitsShowcase({ onComplete }: BenefitsShowcaseProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden"
+          className="fixed inset-0 z-50 bg-gradient-to-br from-rose-50 via-white to-orange-50 overflow-hidden"
         >
           <div className="absolute inset-0 bg-grid-pattern opacity-5" />
           
@@ -127,9 +127,9 @@ export function BenefitsShowcase({ onComplete }: BenefitsShowcaseProps) {
                 className="mb-8 inline-flex"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-xl opacity-30 animate-pulse" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] rounded-full blur-xl opacity-30 animate-pulse" />
                   <div className="relative bg-white rounded-full p-8 shadow-xl">
-                    <Icon className="h-16 w-16 text-blue-600" />
+                    <Icon className="h-16 w-16 text-[#FA8072]" />
                   </div>
                 </div>
               </motion.div>
@@ -163,9 +163,9 @@ export function BenefitsShowcase({ onComplete }: BenefitsShowcaseProps) {
                     key={index}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       index === currentIndex
-                        ? 'w-8 bg-blue-600'
+                        ? 'w-8 bg-[#FA8072]'
                         : index < currentIndex
-                        ? 'w-2 bg-blue-300'
+                        ? 'w-2 bg-[#FFB6B0]'
                         : 'w-2 bg-gray-300'
                     }`}
                   />
@@ -187,7 +187,7 @@ export function BenefitsShowcase({ onComplete }: BenefitsShowcaseProps) {
                 </Button>
                 <Button
                   onClick={handleNext}
-                  className="px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                  className="px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all bg-[#FA8072] hover:bg-[#FF6B6B] text-white border-0"
                 >
                   {currentIndex === benefits.length - 1 ? (
                     <>
@@ -225,7 +225,7 @@ export function BenefitsShowcase({ onComplete }: BenefitsShowcaseProps) {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute top-20 left-20 w-64 h-64 bg-blue-200 rounded-full blur-3xl opacity-20"
+            className="absolute top-20 left-20 w-64 h-64 bg-[#FFB6B0] rounded-full blur-3xl opacity-20"
           />
           <motion.div
             animate={{
@@ -237,7 +237,7 @@ export function BenefitsShowcase({ onComplete }: BenefitsShowcaseProps) {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute bottom-20 right-20 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-20"
+            className="absolute bottom-20 right-20 w-96 h-96 bg-[#FFDAB9] rounded-full blur-3xl opacity-20"
           />
         </motion.div>
       )}
