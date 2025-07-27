@@ -238,9 +238,16 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
         setUploadErrors(allErrors.map(e => e.error || 'Upload failed'));
       }
 
+      // Add uploaded files to the store
+      if (allResults.length > 0) {
+        // Add files to the store so they show immediately
+        allResults.forEach(file => addFile(file));
+      }
+
       // Clear selected files if all successful
       if (allErrors.length === 0) {
         setSelectedFiles([]);
+        setUploadErrors([]);
         onUploadComplete?.();
       }
 

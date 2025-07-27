@@ -166,6 +166,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
             onCreateCourse={handleCreateCourse}
             onUpdateCourse={handleUpdateCourse}
             onDeleteCourse={handleDeleteCourse}
+            onCourseClick={handleCourseClick}
             viewMode="grid"
           />
         </div>
@@ -258,8 +259,8 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
                 <FileUploadWithDetection
                   courseId={selectedCourse?.id}
                   onUploadComplete={() => {
-                    // Refresh files
-                    window.location.reload();
+                    // Files are automatically added to the store
+                    // No need to reload
                   }}
                 />
               </div>

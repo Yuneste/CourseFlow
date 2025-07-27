@@ -8,7 +8,8 @@ import {
   File, 
   Download, 
   Trash2, 
-  MoreVertical 
+  MoreVertical,
+  Eye
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,16 +20,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatFileSize } from '@/lib/utils/file-validation';
+import { FilePreview } from './FilePreview';
 import type { File as FileType } from '@/types';
 
 interface FileCardProps {
   file: FileType;
   onDelete?: (fileId: string) => void;
   onDownload?: (file: FileType) => void;
+  onView?: (file: FileType) => void;
 }
 
-export function FileCard({ file, onDelete, onDownload }: FileCardProps) {
+export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const getFileIcon = (fileType: string) => {
     if (fileType.startsWith('image/')) return FileImage;
@@ -105,6 +109,10 @@ export function FileCard({ file, onDelete, onDownload }: FileCardProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setShowPreview(true)}>
+              <Eye className="mr-2 h-4 w-4" />
+              View
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onDownload?.(file)}>
               <Download className="mr-2 h-4 w-4" />
               Download
@@ -126,5 +134,11 @@ export function FileCard({ file, onDelete, onDownload }: FileCardProps) {
         </p>
       )}
     </Card>
+
+    <FilePreview
+      file={file}
+      open={showPreview}
+      onOpenChange={setShowPreview}
+    />
   );
 }
