@@ -5,6 +5,7 @@ import { Course, User } from '@/types';
 import { CourseList } from '@/components/features/courses/CourseList';
 import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileList } from '@/components/features/files/FileList';
+import { FileCategoryView } from '@/components/features/files/FileCategoryView';
 import { StorageUsage } from '@/components/features/files/StorageUsage';
 import { UploadStats } from '@/components/features/files/UploadStats';
 import { coursesService } from '@/lib/services/courses.service';
@@ -13,7 +14,9 @@ import { useRouter } from 'next/navigation';
 import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, FolderOpen } from 'lucide-react';
+import { Upload, FolderOpen, Grid3x3, List } from 'lucide-react';
+import { filesService } from '@/lib/services/files.service';
+import type { File } from '@/types';
 
 interface DashboardClientProps {
   initialCourses: Course[];
@@ -24,6 +27,8 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   const router = useRouter();
   const [showFileUpload, setShowFileUpload] = useState(false);
   const [activeTab, setActiveTab] = useState<'courses' | 'files'>('courses');
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [fileViewMode, setFileViewMode] = useState<'list' | 'category'>('category');
   
   // Get state and actions from Zustand store
   const {
@@ -100,6 +105,31 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
     console.log('Course clicked:', course);
   };
 
+  const handleFileDelete = async (fileId: string) => {
+    try {
+      await filesService.deleteFile(fileId);
+      const { deleteFile: deleteFileFromStore } = useAppStore.getState();
+      deleteFileFromStore(fileId);
+    } catch (error) {
+      console.error('Error deleting file:', error);
+    }
+  };
+
+  const handleFileDownload = async (file: File) => {
+    try {
+      const downloadData = await filesService.getDownloadUrl(file.id);
+      const link = document.createElement('a');
+      link.href = downloadData.url;
+      link.download = downloadData.filename;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Tab Navigation */}
@@ -147,13 +177,53 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">My Files</h2>
-            <Button
-              onClick={() => setShowFileUpload(!showFileUpload)}
-              variant={showFileUpload ? 'secondary' : 'default'}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center border rounded-lg">
+                <Button
+                  variant={fileViewMode === 'category' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="rounded-r-none"
+                  onClick={() => setFileViewMode('category')}
+                >
+                  <Grid3x3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={fileViewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="rounded-l-none"
+                  onClick={() => setFileViewMode('list')}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+              <Button
+                onClick={() => setShowFileUpload(!showFileUpload)}
+                variant={showFileUpload ? 'secondary' : 'default'}
+              >
+                <Upload className="mr-2 h-4 w-4" />
+                {showFileUpload ? 'Hide Upload' : 'Upload Files'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Course Filter */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium">Filter by course:</label>
+            <select
+              className="p-2 border rounded-md max-w-xs"
+              value={selectedCourse?.id || ''}
+              onChange={(e) => {
+                const course = courses.find(c => c.id === e.target.value);
+                setSelectedCourse(course || null);
+              }}
             >
-              <Upload className="mr-2 h-4 w-4" />
-              {showFileUpload ? 'Hide Upload' : 'Upload Files'}
-            </Button>
+              <option value="">All Files</option>
+              {courses.map(course => (
+                <option key={course.id} value={course.id}>
+                  {course.emoji} {course.name} ({course.term})
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Stats and Usage Row */}
@@ -164,16 +234,48 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
 
           {showFileUpload && (
             <Card className="p-6">
-              <FileUpload
-                onUploadComplete={() => {
-                  // Optionally hide upload after completion
-                  // setShowFileUpload(false);
-                }}
-              />
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Select Course for Upload
+                  </label>
+                  <select
+                    className="w-full p-2 border rounded-md"
+                    value={selectedCourse?.id || ''}
+                    onChange={(e) => {
+                      const course = courses.find(c => c.id === e.target.value);
+                      setSelectedCourse(course || null);
+                    }}
+                  >
+                    <option value="">No specific course (General files)</option>
+                    {courses.map(course => (
+                      <option key={course.id} value={course.id}>
+                        {course.emoji} {course.name} ({course.term})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <FileUpload
+                  courseId={selectedCourse?.id}
+                  onUploadComplete={() => {
+                    // Optionally hide upload after completion
+                    // setShowFileUpload(false);
+                  }}
+                />
+              </div>
             </Card>
           )}
 
-          <FileList />
+          {fileViewMode === 'list' ? (
+            <FileList courseId={selectedCourse?.id} />
+          ) : (
+            <FileCategoryView 
+              courseId={selectedCourse?.id}
+              onFileDelete={handleFileDelete}
+              onFileDownload={handleFileDownload}
+            />
+          )}
         </div>
       )}
     </div>

@@ -9,6 +9,7 @@ import {
   detectAcademicContent,
   ALLOWED_MIME_TYPES
 } from '@/lib/utils/file-validation';
+import { categorizeFile, getCategoryFolder } from '@/lib/utils/file-categorization';
 import { checkRateLimit } from '@/lib/rate-limit';
 import type { File as FileType } from '@/types';
 
@@ -103,11 +104,17 @@ export async function POST(req: NextRequest) {
           isAcademicContent = analysis.isAcademic;
         }
 
-        // Generate unique storage path
+        // Categorize the file
+        const aiCategory = categorizeFile(file.name);
+        const categoryFolder = getCategoryFolder(aiCategory);
+
+        // Generate unique storage path with category folder
         const timestamp = Date.now();
         const randomStr = Math.random().toString(36).substring(7);
         const sanitizedName = sanitizeFilename(file.name);
-        const storagePath = `${user.id}/${courseId || 'uncategorized'}/${timestamp}-${randomStr}-${sanitizedName}`;
+        const storagePath = courseId 
+          ? `${user.id}/${courseId}/${categoryFolder}/${timestamp}-${randomStr}-${sanitizedName}`
+          : `${user.id}/general/${categoryFolder}/${timestamp}-${randomStr}-${sanitizedName}`;
 
         // Upload to Supabase Storage
         const { data: uploadData, error: uploadError } = await supabase.storage
@@ -146,6 +153,7 @@ export async function POST(req: NextRequest) {
           file_hash: fileHash,
           upload_source: 'web' as const,
           is_academic_content: isAcademicContent,
+          ai_category: aiCategory,
         };
 
         const { data: savedFile, error: dbError } = await supabase
