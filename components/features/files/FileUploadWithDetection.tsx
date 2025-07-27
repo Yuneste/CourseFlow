@@ -15,6 +15,7 @@ import {
   formatFileSize 
 } from '@/lib/utils/file-validation';
 import { detectCourseFromFile, getCourseSuggestions } from '@/lib/utils/course-detection';
+import { analyzeFileContent } from '@/lib/utils/file-content-analysis';
 import type { UploadProgress as UploadProgressType, File as FileType, Course } from '@/types';
 
 interface FileUploadWithDetectionProps {
@@ -36,6 +37,7 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
   const [isUploading, setIsUploading] = useState(false);
   const [checkingDuplicates, setCheckingDuplicates] = useState(false);
   const [duplicateFiles, setDuplicateFiles] = useState<Map<string, any>>(new Map());
+  const [analyzingContent, setAnalyzingContent] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
 
@@ -121,15 +123,56 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
       let fileWithSuggestion: FileWithSuggestion = { file };
       
       if (!courseId && courses.length > 0) {
-        const courseMatch = detectCourseFromFile(file.name, courses);
-        if (courseMatch) {
-          fileWithSuggestion = {
-            file,
-            suggestedCourseId: courseMatch.courseId,
-            confidence: courseMatch.confidence,
-            matchReasons: courseMatch.matchReasons,
-          };
+        setAnalyzingContent(true);
+        
+        // Try content analysis first for supported file types
+        if (file.type === 'application/pdf' || 
+            file.type.includes('wordprocessingml') || 
+            file.type.includes('msword') ||
+            file.type.startsWith('text/')) {
+          
+          // Send file to server for content analysis
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          try {
+            const response = await fetch('/api/files/analyze-content', {
+              method: 'POST',
+              body: formData,
+            });
+            
+            if (response.ok) {
+              const result = await response.json();
+              if (result.analysis && result.analysis.length > 0) {
+                const topMatch = result.analysis[0];
+                if (topMatch.confidence >= 30) {
+                  fileWithSuggestion = {
+                    file,
+                    suggestedCourseId: topMatch.courseId,
+                    confidence: topMatch.confidence,
+                    matchReasons: topMatch.matchReasons,
+                  };
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Content analysis failed, falling back to filename:', error);
+          }
         }
+        
+        // Fall back to filename detection if content analysis didn't work
+        if (!fileWithSuggestion.suggestedCourseId) {
+          const courseMatch = detectCourseFromFile(file.name, courses);
+          if (courseMatch) {
+            fileWithSuggestion = {
+              file,
+              suggestedCourseId: courseMatch.courseId,
+              confidence: courseMatch.confidence,
+              matchReasons: courseMatch.matchReasons,
+            };
+          }
+        }
+        
       } else if (courseId) {
         fileWithSuggestion.suggestedCourseId = courseId;
       }
@@ -145,6 +188,8 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
       setSelectedFiles(prev => [...prev, ...validFiles]);
       await checkForDuplicates(validFiles.map(f => f.file));
     }
+    
+    setAnalyzingContent(false);
   }, [courseId, courses, checkForDuplicates]);
 
   const handleUpload = async () => {
@@ -276,7 +321,10 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
             Drag and drop files here
           </p>
           <p className="text-sm text-muted-foreground mb-4">
-            Files will be automatically assigned to the right course
+            Files will be analyzed to automatically detect which course they belong to
+          </p>
+          <p className="text-xs text-muted-foreground mb-4">
+            Content analysis currently works for text files. PDF and Word analysis coming soon!
           </p>
           
           <div className="flex gap-2 justify-center">
@@ -318,6 +366,16 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
           />
         </div>
       </Card>
+
+      {/* Content Analysis Status */}
+      {analyzingContent && (
+        <Card className="p-4 border-primary bg-primary/10">
+          <div className="flex items-center gap-2">
+            <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent" />
+            <p className="text-sm">Analyzing file content to detect the appropriate course...</p>
+          </div>
+        </Card>
+      )}
 
       {/* Upload errors */}
       {uploadErrors.length > 0 && (
