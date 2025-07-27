@@ -21,11 +21,34 @@ export default async function Home({
   
   const { data: { user } } = await supabase.auth.getUser()
 
-  // If user is logged in, redirect to dashboard
-  if (user) {
-    redirect('/dashboard')
+  // If not logged in, show landing page
+  if (!user) {
+    redirect('/landing')
   }
   
-  // If not logged in, redirect to landing page
-  redirect('/landing')
+  // If user is logged in, check if they need onboarding
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('study_program, degree_type')
+    .eq('id', user.id)
+    .single()
+  
+  // Check if user has completed basic profile setup
+  if (!profile?.study_program || !profile?.degree_type) {
+    redirect('/onboarding')
+  }
+  
+  // Check if user has any courses
+  const { data: courses } = await supabase
+    .from('courses')
+    .select('id')
+    .eq('user_id', user.id)
+    .limit(1)
+  
+  if (!courses || courses.length === 0) {
+    redirect('/onboarding')
+  }
+  
+  // User has completed onboarding, go to dashboard
+  redirect('/dashboard')
 }

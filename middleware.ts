@@ -58,41 +58,15 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Allow access to onboarding page without checks
-  if (request.nextUrl.pathname === '/onboarding') {
-    return response
-  }
-
-  // Protect dashboard and settings routes
+  // Protect dashboard and settings routes - require authentication
   if ((request.nextUrl.pathname.startsWith('/dashboard') || 
        request.nextUrl.pathname.startsWith('/settings')) && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Check if user needs onboarding (for dashboard and settings pages)
-  if (user && (request.nextUrl.pathname.startsWith('/dashboard') || 
-               request.nextUrl.pathname.startsWith('/settings'))) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('study_program, degree_type')
-      .eq('id', user.id)
-      .single()
-    
-    // Check if user has completed basic profile setup
-    if (!profile?.study_program || !profile?.degree_type) {
-      return NextResponse.redirect(new URL('/onboarding', request.url))
-    }
-    
-    // Check if user has any courses
-    const { data: courses } = await supabase
-      .from('courses')
-      .select('id')
-      .eq('user_id', user.id)
-      .limit(1)
-    
-    if (!courses || courses.length === 0) {
-      return NextResponse.redirect(new URL('/onboarding', request.url))
-    }
+  // Protect onboarding page - require authentication
+  if (request.nextUrl.pathname === '/onboarding' && !user) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   // Redirect authenticated users away from auth pages (except update-password)
@@ -103,27 +77,6 @@ export async function middleware(request: NextRequest) {
       request.nextUrl.pathname === '/register' ||
       request.nextUrl.pathname === '/reset-password')
   ) {
-    // Check if user needs onboarding first
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('study_program, degree_type')
-      .eq('id', user.id)
-      .single()
-    
-    if (!profile?.study_program || !profile?.degree_type) {
-      return NextResponse.redirect(new URL('/onboarding', request.url))
-    }
-    
-    const { data: courses } = await supabase
-      .from('courses')
-      .select('id')
-      .eq('user_id', user.id)
-      .limit(1)
-    
-    if (!courses || courses.length === 0) {
-      return NextResponse.redirect(new URL('/onboarding', request.url))
-    }
-    
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
