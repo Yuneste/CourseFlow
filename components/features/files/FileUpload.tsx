@@ -25,6 +25,8 @@ export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadErrors, setUploadErrors] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [checkingDuplicates, setCheckingDuplicates] = useState(false);
+  const [duplicateFiles, setDuplicateFiles] = useState<Map<string, any>>(new Map());
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
 
@@ -62,7 +64,7 @@ export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
     }
   };
 
-  const handleFiles = (files: File[]) => {
+  const handleFiles = async (files: File[]) => {
     const errors: string[] = [];
     const validFiles: File[] = [];
 
@@ -91,6 +93,27 @@ export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
     });
 
     setUploadErrors(errors);
+    
+    // Check for duplicates
+    if (validFiles.length > 0) {
+      setCheckingDuplicates(true);
+      const duplicatesMap = new Map<string, any>();
+      
+      for (const file of validFiles) {
+        try {
+          const result = await filesService.checkDuplicate(file);
+          if (result.isDuplicate && result.existingFile) {
+            duplicatesMap.set(file.name, result.existingFile);
+          }
+        } catch (error) {
+          console.error('Error checking duplicate:', error);
+        }
+      }
+      
+      setDuplicateFiles(duplicatesMap);
+      setCheckingDuplicates(false);
+    }
+    
     setSelectedFiles(validFiles);
   };
 
@@ -149,6 +172,34 @@ export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
   const removeSelectedFile = (index: number) => {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
+
+  // Handle paste event for screenshots
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      const files: File[] = [];
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const blob = items[i].getAsFile();
+          if (blob) {
+            // Create a proper filename for the pasted image
+            const filename = `screenshot-${new Date().toISOString().replace(/[:.]/g, '-')}.png`;
+            const file = new File([blob], filename, { type: blob.type });
+            files.push(file);
+          }
+        }
+      }
+
+      if (files.length > 0) {
+        handleFiles(files);
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -214,6 +265,9 @@ export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
           <p className="text-xs text-muted-foreground mt-4">
             Maximum file size: 50MB | Supported formats: PDF, Word, PowerPoint, Images, Text, Spreadsheets
           </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            💡 Tip: You can also paste screenshots directly from clipboard (Ctrl+V)
+          </p>
         </div>
       </Card>
 
@@ -222,30 +276,49 @@ export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
         <Card className="p-4">
           <h3 className="font-medium mb-3">Selected Files ({selectedFiles.length})</h3>
           <div className="space-y-2 max-h-48 overflow-y-auto">
-            {selectedFiles.map((file, index) => (
-              <div key={index} className="flex items-center justify-between text-sm">
-                <div className="flex-1 truncate">
-                  <span className="font-medium">{file.name}</span>
-                  <span className="text-muted-foreground ml-2">
-                    ({formatFileSize(file.size)})
-                  </span>
+            {selectedFiles.map((file, index) => {
+              const isDuplicate = duplicateFiles.has(file.name);
+              const existingFile = duplicateFiles.get(file.name);
+              
+              return (
+                <div key={index} className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex-1 truncate">
+                      <span className="font-medium">{file.name}</span>
+                      <span className="text-muted-foreground ml-2">
+                        ({formatFileSize(file.size)})
+                      </span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeSelectedFile(index)}
+                      disabled={isUploading}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  {isDuplicate && existingFile && (
+                    <div className="ml-4 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs text-yellow-800 dark:text-yellow-200">
+                      <AlertCircle className="inline h-3 w-3 mr-1" />
+                      Duplicate: This file already exists (uploaded {new Date(existingFile.created_at).toLocaleDateString()})
+                    </div>
+                  )}
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeSelectedFile(index)}
-                  disabled={isUploading}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
+              );
+            })}
           </div>
+          
+          {checkingDuplicates && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Checking for duplicates...
+            </p>
+          )}
           
           <Button
             className="w-full mt-4"
             onClick={handleUpload}
-            disabled={isUploading || selectedFiles.length === 0}
+            disabled={isUploading || selectedFiles.length === 0 || checkingDuplicates}
           >
             {isUploading ? 'Uploading...' : `Upload ${selectedFiles.length} file(s)`}
           </Button>

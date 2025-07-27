@@ -73,14 +73,13 @@ export function FileList({ courseId }: FileListProps) {
 
   const handleDownload = async (file: File) => {
     try {
-      // Create a temporary download URL using the Supabase client
-      // The storage_url contains the path within the bucket
-      const downloadUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/user-files/${file.storage_url}`;
+      // Get signed URL from the API
+      const downloadData = await filesService.getDownloadUrl(file.id);
       
       // Create a temporary link and trigger download
       const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = file.display_name;
+      link.href = downloadData.url;
+      link.download = downloadData.filename;
       link.target = '_blank'; // Open in new tab as fallback
       document.body.appendChild(link);
       link.click();

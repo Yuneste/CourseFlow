@@ -185,6 +185,18 @@ class FilesService {
   }
 
   /**
+   * Get signed download URL for a file
+   */
+  async getDownloadUrl(fileId: string): Promise<{
+    url: string;
+    filename: string;
+    contentType: string;
+    size: number;
+  }> {
+    return api.get(`/files/${fileId}/download`);
+  }
+
+  /**
    * Get storage usage statistics
    */
   async getStorageStats(): Promise<{

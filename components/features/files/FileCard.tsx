@@ -49,8 +49,15 @@ export function FileCard({ file, onDelete, onDownload }: FileCardProps) {
   };
 
   const handleDelete = async () => {
-    setIsDeleting(true);
-    onDelete?.(file.id);
+    if (confirm(`Are you sure you want to delete "${file.display_name}"?`)) {
+      setIsDeleting(true);
+      try {
+        await onDelete?.(file.id);
+      } catch (error) {
+        console.error('Error deleting file:', error);
+        setIsDeleting(false);
+      }
+    }
   };
 
   const Icon = getFileIcon(file.file_type);

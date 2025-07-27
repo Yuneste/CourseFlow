@@ -5,6 +5,8 @@ import { Course, User } from '@/types';
 import { CourseList } from '@/components/features/courses/CourseList';
 import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileList } from '@/components/features/files/FileList';
+import { StorageUsage } from '@/components/features/files/StorageUsage';
+import { UploadStats } from '@/components/features/files/UploadStats';
 import { coursesService } from '@/lib/services/courses.service';
 import { useAppStore } from '@/stores/useAppStore';
 import { useRouter } from 'next/navigation';
@@ -152,6 +154,12 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
               <Upload className="mr-2 h-4 w-4" />
               {showFileUpload ? 'Hide Upload' : 'Upload Files'}
             </Button>
+          </div>
+
+          {/* Stats and Usage Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <StorageUsage userTier="free" />
+            <UploadStats />
           </div>
 
           {showFileUpload && (

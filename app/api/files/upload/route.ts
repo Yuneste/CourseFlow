@@ -119,7 +119,13 @@ export async function POST(req: NextRequest) {
 
         if (uploadError) {
           console.error('Storage upload error:', uploadError);
-          uploadResults.push({ error: 'Failed to upload file to storage', filename: file.name });
+          console.error('Storage path:', storagePath);
+          console.error('File type:', file.type);
+          console.error('File size:', file.size);
+          uploadResults.push({ 
+            error: `Failed to upload file to storage: ${uploadError.message}`, 
+            filename: file.name 
+          });
           continue;
         }
 

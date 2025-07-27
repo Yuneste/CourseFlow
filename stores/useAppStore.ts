@@ -49,6 +49,8 @@ interface AppState {
   updateUploadProgress: (fileId: string, updates: Partial<UploadProgress>) => void;
   removeFromUploadQueue: (fileId: string) => void;
   clearUploadQueue: () => void;
+  clearCompletedUploads: () => void;
+  getUploadsByStatus: (status: UploadProgress['status']) => UploadProgress[];
 
   // File utility actions
   getFilesByCourse: (courseId: string) => File[];
@@ -205,6 +207,16 @@ export const useAppStore = create<AppState>()(
           })),
 
         clearUploadQueue: () => set({ uploadQueue: [] }),
+
+        clearCompletedUploads: () =>
+          set((state) => ({
+            uploadQueue: state.uploadQueue.filter((upload) => upload.status !== 'completed'),
+          })),
+
+        getUploadsByStatus: (status) => {
+          const { uploadQueue } = get();
+          return uploadQueue.filter((upload) => upload.status === status);
+        },
 
         // File utility actions
         getFilesByCourse: (courseId) => {
