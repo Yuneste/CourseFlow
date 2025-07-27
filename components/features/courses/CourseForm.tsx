@@ -23,6 +23,16 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { AlertCircle } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface CourseFormProps {
   open: boolean;
@@ -75,6 +85,7 @@ export function CourseForm({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Reset form when course changes or dialog opens
   useEffect(() => {
@@ -154,7 +165,8 @@ export function CourseForm({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[525px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
@@ -334,12 +346,7 @@ export function CourseForm({
                 <Button
                   type="button"
                   variant="destructive"
-                  onClick={async () => {
-                    if (confirm(`Are you sure you want to delete "${course.name}"? This action cannot be undone.`)) {
-                      await onDelete();
-                      onOpenChange(false);
-                    }
-                  }}
+                  onClick={() => setShowDeleteConfirm(true)}
                   disabled={isSubmitting}
                 >
                   Delete Course
@@ -363,5 +370,32 @@ export function CourseForm({
         </form>
       </DialogContent>
     </Dialog>
+
+    <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Course</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete &quot;{course?.name}&quot;? This action cannot be undone.
+            Your files will not be deleted.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={async () => {
+              if (onDelete) {
+                await onDelete();
+                onOpenChange(false);
+              }
+            }}
+            className="bg-red-600 hover:bg-red-700"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }

@@ -55,54 +55,65 @@ export function generateAcademicTerms(
   switch (countryCode) {
     case 'US':
       // US: Fall (Aug-Dec), Spring (Jan-May), Summer (Jun-Aug)
+      // Academic year starts in Fall
       for (let year = startYear; year <= endYear; year++) {
-        // Fall semester spans two calendar years
+        if (year > startYear) {
+          terms.push(`Spring ${year}`);
+          terms.push(`Summer ${year}`);
+        }
         if (year < endYear) {
           terms.push(`Fall ${year}`);
         }
-        terms.push(`Spring ${year}`);
-        terms.push(`Summer ${year}`);
       }
       break;
       
     case 'CA':
       // Canada: Fall (Sep-Dec), Winter (Jan-Apr), Summer (May-Aug)
+      // Academic year starts in Fall
       for (let year = startYear; year <= endYear; year++) {
+        if (year > startYear) {
+          terms.push(`Winter ${year}`);
+          terms.push(`Summer ${year}`);
+        }
         if (year < endYear) {
           terms.push(`Fall ${year}`);
         }
-        terms.push(`Winter ${year}`);
-        terms.push(`Summer ${year}`);
       }
       break;
       
     case 'UK':
       // UK: Michaelmas (Oct-Dec), Hilary/Lent (Jan-Mar), Trinity (Apr-Jun)
+      // Academic year starts in Michaelmas
       for (let year = startYear; year <= endYear; year++) {
+        if (year > startYear) {
+          terms.push(`Hilary ${year}`);
+          terms.push(`Trinity ${year}`);
+        }
         if (year < endYear) {
           terms.push(`Michaelmas ${year}`);
         }
-        terms.push(`Hilary ${year}`);
-        terms.push(`Trinity ${year}`);
       }
       break;
       
     case 'DE':
       // Germany: Wintersemester (Oct-Mar), Sommersemester (Apr-Sep)
+      // Academic year starts in Wintersemester
       for (let year = startYear; year <= endYear; year++) {
-        // Wintersemester spans two calendar years
+        if (year > startYear) {
+          terms.push(`Sommersemester ${year}`);
+        }
         if (year < endYear) {
           const nextYear = year + 1;
           terms.push(`Wintersemester ${year}/${nextYear.toString().slice(-2)}`);
         }
-        terms.push(`Sommersemester ${year}`);
       }
       break;
       
     case 'NL':
       // Netherlands: Usually 4-6 periods per year
-      for (let year = startYear; year <= endYear; year++) {
-        const academicYear = year < endYear ? `${year}/${(year + 1).toString().slice(-2)}` : `${year}`;
+      // Academic year runs Sep-Aug
+      for (let year = startYear; year < endYear; year++) {
+        const academicYear = `${year}/${(year + 1).toString().slice(-2)}`;
         terms.push(`Period 1 (${academicYear})`);
         terms.push(`Period 2 (${academicYear})`);
         terms.push(`Period 3 (${academicYear})`);
