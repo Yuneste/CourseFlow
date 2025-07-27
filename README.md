@@ -170,15 +170,11 @@ npm i -g vercel
 vercel --prod
 ```
 
-## 🤝 Contributing
+## 🚫 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+**This repository is NOT accepting contributions.** 
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+This is a proprietary project that may be temporarily public for technical reasons. Please do not submit pull requests or attempt to contribute code. For questions or concerns, contact the repository owner directly.
 
 ## 📄 License
 
