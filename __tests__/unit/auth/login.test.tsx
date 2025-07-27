@@ -84,7 +84,7 @@ describe('LoginPage', () => {
       expect(mockSignInWithOAuth).toHaveBeenCalledWith({
         provider: 'google',
         options: {
-          redirectTo: expect.stringContaining('/oauth'),
+          redirectTo: expect.stringContaining('/auth/callback'),
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',

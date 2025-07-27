@@ -37,6 +37,18 @@ export default function RegisterPage() {
       return
     }
 
+    // Additional password strength validation
+    const hasUpperCase = /[A-Z]/.test(password)
+    const hasLowerCase = /[a-z]/.test(password)
+    const hasNumbers = /\d/.test(password)
+    const hasNonalphas = /\W/.test(password)
+    
+    if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
+      setError('Password must contain at least one uppercase letter, one lowercase letter, and one number')
+      setLoading(false)
+      return
+    }
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -63,7 +75,7 @@ export default function RegisterPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/oauth`,
+        redirectTo: `${window.location.origin}/auth/callback`,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
