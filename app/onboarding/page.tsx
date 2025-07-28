@@ -101,25 +101,37 @@ export default function OnboardingPage() {
 
   const handleComplete = async () => {
     try {
-      // Save study program information and mark onboarding as completed
+      // Prepare the update data
+      const updateData: any = {
+        onboarding_completed: true,
+        country: selectedCountry || 'US' // Default to US if not set
+      };
+      
+      // Only add study program data if it's been filled out
+      if (studyProgram.study_program) {
+        updateData.study_program = studyProgram.study_program;
+        updateData.degree_type = studyProgram.degree_type;
+        updateData.start_year = studyProgram.start_year;
+        updateData.expected_graduation_year = studyProgram.expected_graduation_year;
+      }
+      
       const response = await fetch('/api/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...studyProgram,
-          country: selectedCountry,
-          onboarding_completed: true,
-        }),
+        body: JSON.stringify(updateData),
       });
       
       if (!response.ok) {
         console.error('Failed to update profile');
+        // Try to navigate anyway
       }
       
-      router.push('/dashboard');
+      // Force a hard navigation to clear any cached state
+      window.location.href = '/dashboard';
     } catch (error) {
       console.error('Error completing onboarding:', error);
-      router.push('/dashboard');
+      // Force navigation even on error
+      window.location.href = '/dashboard';
     }
   };
 
