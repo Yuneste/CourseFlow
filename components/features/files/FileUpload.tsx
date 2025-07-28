@@ -20,6 +20,7 @@ interface FileUploadProps {
   courseId?: string;
   folderId?: string;
   onUploadComplete?: () => void;
+  onUploadStart?: () => void;
 }
 
 export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadProps) {
@@ -124,6 +125,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadP
 
     setIsUploading(true);
     setUploadErrors([]);
+    onUploadStart?.();
 
     try {
       // Clear previous upload queue
