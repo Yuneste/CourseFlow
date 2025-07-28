@@ -23,7 +23,7 @@ export function FeatureErrorBoundary({
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error in {featureName}</AlertTitle>
           <AlertDescription>
-            This feature encountered an error and couldn't load properly. 
+            This feature encountered an error and couldn&apos;t load properly. 
             Please try refreshing the page or contact support if the problem persists.
           </AlertDescription>
         </Alert>
