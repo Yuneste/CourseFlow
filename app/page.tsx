@@ -26,7 +26,17 @@ export default async function Home({
     redirect('/landing')
   }
   
-  // If user is logged in, always go to dashboard
-  // The dashboard will handle redirecting to onboarding if needed
+  // Check if user needs onboarding
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('onboarding_completed')
+    .eq('id', user.id)
+    .single()
+  
+  if (!profile?.onboarding_completed) {
+    redirect('/onboarding')
+  }
+  
+  // If user is logged in and onboarded, go to dashboard
   redirect('/dashboard')
 }

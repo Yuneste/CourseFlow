@@ -51,14 +51,14 @@ const StatsCard = ({ title, value, icon: Icon, delay }: any) => (
     transition={{ delay, duration: 0.5 }}
     className="relative"
   >
-    <Card className="p-4 border-0 bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow">
+    <Card className="p-4 border-0 bg-white shadow-md hover:shadow-lg transition-shadow">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-[#FFE4E1] dark:bg-[#FA8072]/20 rounded-lg">
+        <div className="p-2 bg-[#FFE4E1] rounded-lg">
           <Icon className="h-5 w-5 text-[#FA8072]" />
         </div>
         <div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">{title}</p>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+          <p className="text-xs text-gray-600">{title}</p>
+          <h3 className="text-xl font-bold text-gray-900">
             {value}
           </h3>
         </div>
@@ -88,7 +88,7 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
         <br />
         <span className="gradient-text">{userName}!</span>
       </h1>
-      <p className="text-xl text-gray-600 dark:text-gray-400">{randomGreeting}</p>
+      <p className="text-xl text-gray-600">{randomGreeting}</p>
     </motion.div>
   );
 };

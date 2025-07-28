@@ -46,12 +46,12 @@ export function CourseCard({
         style={{ backgroundColor: course.color || '#FA8072' }}
       />
       
-      <Card className="border-0 bg-white dark:bg-gray-800 relative">
+      <Card className="border-0 bg-white relative shadow-md hover:shadow-lg transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="absolute inset-0 bg-[#FFE4E1] dark:bg-[#FA8072]/20 rounded-2xl blur-xl opacity-60 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-[#FFE4E1] rounded-2xl blur-xl opacity-60 group-hover:opacity-100 transition-opacity" />
               <span 
                 className="text-5xl drop-shadow-lg transition-all duration-300 inline-block group-hover:scale-110 group-hover:rotate-6 relative z-10" 
                 role="img" 
@@ -61,9 +61,9 @@ export function CourseCard({
               </span>
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-xl line-clamp-1 text-gray-900 dark:text-white">{course.name}</h3>
+              <h3 className="font-bold text-xl line-clamp-1 text-gray-900">{course.name}</h3>
               {course.code && (
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <div className="text-sm text-gray-600 mt-1">
                   <span className="font-medium">{course.code}</span>
                 </div>
               )}

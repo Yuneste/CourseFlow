@@ -273,9 +273,9 @@ const CloudStorageDemo = () => {
   }, []);
 
   const devices = [
-    { name: 'Desktop', icon: '🖥️', position: { x: -80, y: 60, mobileX: -60, mobileY: 50 } },
-    { name: 'Mobile', icon: '📱', position: { x: 0, y: 80, mobileX: 0, mobileY: 60 } },
-    { name: 'Laptop', icon: '💻', position: { x: 80, y: 60, mobileX: 60, mobileY: 50 } }
+    { name: 'Desktop', icon: '🖥️', position: { x: -120, y: 80, mobileX: -80, mobileY: 60 } },
+    { name: 'Mobile', icon: '📱', position: { x: 0, y: 100, mobileX: 0, mobileY: 80 } },
+    { name: 'Laptop', icon: '💻', position: { x: 120, y: 80, mobileX: 80, mobileY: 60 } }
   ];
 
   const fileTypes = [
@@ -421,8 +421,8 @@ const CloudStorageDemo = () => {
               transform: 'translate(-50%, -50%)'
             }}
           >
-            <div className="bg-white rounded-full p-0.5 sm:p-1 shadow-md">
-              <span className="text-sm sm:text-base md:text-lg">{fileTypes[i].icon}</span>
+            <div className="bg-white rounded-full p-1 sm:p-1.5 shadow-md border-2 border-[#FA8072]/20">
+              <span className="text-base sm:text-lg md:text-xl">{fileTypes[i].icon}</span>
             </div>
           </motion.div>
         ))}
