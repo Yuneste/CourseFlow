@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { 
   Download, 
   Trash2, 
-  MoreVertical,
-  Eye
+  MoreVertical
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatFileSize } from '@/lib/utils/file-validation';
-import { FilePreview } from './FilePreview';
 import { getFileIcon } from '@/lib/utils/file-icons';
 import type { File as FileType } from '@/types';
 
@@ -24,12 +22,10 @@ interface FileCardProps {
   file: FileType;
   onDelete?: (fileId: string) => void;
   onDownload?: (file: FileType) => void;
-  onView?: (file: FileType) => void;
 }
 
-export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) {
+export function FileCard({ file, onDelete, onDownload }: FileCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
 
 
   const handleDelete = async () => {
@@ -44,7 +40,7 @@ export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) 
     }
   };
 
-  const iconConfig = getFileIcon(file.display_name, file.ai_category);
+  const iconConfig = getFileIcon(file.display_name);
   const Icon = iconConfig.icon;
 
   const formatDate = (date: Date | string) => {
@@ -74,12 +70,6 @@ export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) 
               <span>{formatFileSize(file.file_size)}</span>
               <span>•</span>
               <span>{formatDate(file.created_at)}</span>
-              {file.ai_category && (
-                <>
-                  <span>•</span>
-                  <span className="capitalize">{file.ai_category}</span>
-                </>
-              )}
             </div>
           </div>
 
@@ -90,10 +80,6 @@ export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) 
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setShowPreview(true)}>
-                <Eye className="mr-2 h-4 w-4" />
-                View
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDownload?.(file)}>
                 <Download className="mr-2 h-4 w-4" />
                 Download
@@ -115,12 +101,6 @@ export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) 
           </p>
         )}
       </Card>
-
-      <FilePreview
-        file={file}
-        open={showPreview}
-        onOpenChange={setShowPreview}
-      />
     </>
   );
 }

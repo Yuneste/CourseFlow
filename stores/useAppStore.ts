@@ -77,7 +77,15 @@ export const useAppStore = create<AppState>()(
         filesLastFetched: null,
 
         // User actions
-        setUser: (user) => set({ user }),
+        setUser: (user) => set((state) => {
+          // Clear files when user changes to prevent stale data
+          const isUserChange = state.user?.id !== user?.id;
+          return {
+            user,
+            files: isUserChange ? [] : state.files,
+            filesLastFetched: isUserChange ? null : state.filesLastFetched,
+          };
+        }),
 
         // Course actions
         setCourses: (courses) => 
@@ -246,13 +254,11 @@ export const useAppStore = create<AppState>()(
       {
         name: 'courseflow-app-store',
         partialize: (state) => ({
-          // Only persist user, courses, and files, not loading states or errors
+          // Only persist user and courses, not files or loading states
           user: state.user,
           courses: state.courses,
           selectedCourse: state.selectedCourse,
           coursesLastFetched: state.coursesLastFetched,
-          files: state.files,
-          filesLastFetched: state.filesLastFetched,
         }),
       }
     )

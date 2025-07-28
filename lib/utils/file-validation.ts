@@ -28,8 +28,8 @@ export const ALLOWED_MIME_TYPES = {
 
 // File size limits
 export const FILE_SIZE_LIMITS = {
-  MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
-  MAX_BATCH_FILES: 10,
+  MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB per file
+  MAX_BATCH_SIZE: 50 * 1024 * 1024, // 50MB total per batch
   STORAGE_QUOTA: {
     free: 50 * 1024 * 1024, // 50MB
     student: 5 * 1024 * 1024 * 1024, // 5GB
@@ -165,18 +165,12 @@ export function formatFileSize(bytes: number): string {
  * Validate batch of files
  */
 export function validateFileBatch(files: File[]): FileValidationResult {
-  if (files.length > FILE_SIZE_LIMITS.MAX_BATCH_FILES) {
-    return {
-      valid: false,
-      error: `Maximum ${FILE_SIZE_LIMITS.MAX_BATCH_FILES} files can be uploaded at once`,
-    };
-  }
-  
   const totalSize = files.reduce((sum, file) => sum + file.size, 0);
-  if (totalSize > FILE_SIZE_LIMITS.MAX_FILE_SIZE * 2) {
+  
+  if (totalSize > FILE_SIZE_LIMITS.MAX_BATCH_SIZE) {
     return {
       valid: false,
-      error: `Total batch size exceeds reasonable limits`,
+      error: `Total upload size exceeds ${formatFileSize(FILE_SIZE_LIMITS.MAX_BATCH_SIZE)} limit`,
     };
   }
   

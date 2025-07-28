@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Course, User } from '@/types';
 import { CourseList } from '@/components/features/courses/CourseList';
 import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileUploadErrorBoundary } from '@/components/features/files/FileUploadErrorBoundary';
 import { FileList } from '@/components/features/files/FileList';
-import { FileCategoryView } from '@/components/features/files/FileCategoryView';
+import { FileListView } from '@/components/features/files/FileListView';
 import { StorageUsage } from '@/components/features/files/StorageUsage';
 import { UploadStats } from '@/components/features/files/UploadStats';
 import { coursesService } from '@/lib/services/courses.service';
@@ -26,10 +27,21 @@ interface DashboardClientProps {
 
 export function DashboardClient({ initialCourses, userProfile }: DashboardClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showFileUpload, setShowFileUpload] = useState(false);
   const uploadSectionRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState<'courses' | 'files'>('courses');
+  const [activeTab, setActiveTab] = useState<'courses' | 'files'>(
+    (searchParams.get('tab') as 'courses' | 'files') || 'courses'
+  );
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
+  // Update URL when tab changes
+  const handleTabChange = (tab: 'courses' | 'files') => {
+    setActiveTab(tab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.push(`/dashboard?${params.toString()}`);
+  };
   
   // Get state and actions from Zustand store
   const {
@@ -154,14 +166,14 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       <div className="flex gap-2 border-b">
         <Button
           variant={activeTab === 'courses' ? 'default' : 'ghost'}
-          onClick={() => setActiveTab('courses')}
+          onClick={() => handleTabChange('courses')}
           className="rounded-b-none"
         >
           Courses
         </Button>
         <Button
           variant={activeTab === 'files' ? 'default' : 'ghost'}
-          onClick={() => setActiveTab('files')}
+          onClick={() => handleTabChange('files')}
           className="rounded-b-none"
         >
           <FolderOpen className="mr-2 h-4 w-4" />
@@ -295,7 +307,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
             </div>
           )}
 
-          <FileCategoryView 
+          <FileListView 
             courseId={selectedCourse?.id}
             onFileDelete={handleFileDelete}
             onFileDownload={handleFileDownload}
