@@ -15,6 +15,15 @@ export interface User {
   avatar_url?: string;
 }
 
+export interface CourseFolder {
+  id: string;
+  name: string;
+  path: string;
+  parent_id?: string;
+  course_id: string;
+  created_at: Date;
+}
+
 export interface Course {
   id: string;
   user_id: string;
@@ -35,6 +44,8 @@ export interface File {
   id: string;
   user_id: string;
   course_id?: string;
+  folder_id?: string;
+  folder_path?: string;
   original_name: string;
   display_name: string;
   storage_url: string;

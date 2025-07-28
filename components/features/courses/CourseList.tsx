@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Course } from '@/types';
 import { CourseCard } from './CourseCard';
 import { CourseForm } from './CourseForm';
+import { CourseListSkeleton } from './CourseListSkeleton';
 import { Button } from '@/components/ui/button';
 import { Plus, Grid3x3, List, Filter } from 'lucide-react';
 import {
@@ -93,11 +94,15 @@ export function CourseList({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading courses...</p>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-semibold">Your Courses</h2>
+          <Button disabled>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Course
+          </Button>
         </div>
+        <CourseListSkeleton />
       </div>
     );
   }

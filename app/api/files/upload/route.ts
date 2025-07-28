@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const files = formData.getAll('files') as File[];
     const courseId = formData.get('course_id') as string | null;
+    const folderId = formData.get('folder_id') as string | null;
 
     if (!files || files.length === 0) {
       return NextResponse.json({ error: 'No files provided' }, { status: 400 });
@@ -140,6 +141,7 @@ export async function POST(req: NextRequest) {
         const fileRecord = {
           user_id: user.id,
           course_id: courseId,
+          folder_id: folderId,
           original_name: file.name,
           display_name: file.name,
           storage_url: storagePath,

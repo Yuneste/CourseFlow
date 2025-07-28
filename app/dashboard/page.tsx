@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ProfileDropdown } from '@/components/features/profile/ProfileDropdown'
-import { DashboardClient } from './dashboard-client'
+import { DashboardClient } from './dashboard-client-v2'
 
 export default async function DashboardPage() {
   const supabase = await createClient()

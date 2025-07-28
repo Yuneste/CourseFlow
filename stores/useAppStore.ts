@@ -198,9 +198,21 @@ export const useAppStore = create<AppState>()(
 
         // Upload queue actions
         addToUploadQueue: (upload) =>
-          set((state) => ({
-            uploadQueue: [...state.uploadQueue, upload],
-          })),
+          set((state) => {
+            // Check if this file is already in the queue
+            const existingIndex = state.uploadQueue.findIndex(
+              (u) => u.fileId === upload.fileId
+            );
+            
+            if (existingIndex >= 0) {
+              // Update existing entry instead of adding duplicate
+              const newQueue = [...state.uploadQueue];
+              newQueue[existingIndex] = upload;
+              return { uploadQueue: newQueue };
+            }
+            
+            return { uploadQueue: [...state.uploadQueue, upload] };
+          }),
 
         updateUploadProgress: (fileId, updates) =>
           set((state) => ({

@@ -17,10 +17,11 @@ import type { UploadProgress as UploadProgressType, File as FileType } from '@/t
 
 interface FileUploadProps {
   courseId?: string;
+  folderId?: string;
   onUploadComplete?: () => void;
 }
 
-export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
+export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadErrors, setUploadErrors] = useState<string[]>([]);
@@ -130,6 +131,7 @@ export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
       // Upload files with progress tracking
       const result = await filesService.uploadWithQueue(selectedFiles, {
         courseId,
+        folderId,
         onFileProgress: (fileId, progress) => {
           if (progress.status === 'uploading') {
             addToUploadQueue(progress);
@@ -325,29 +327,36 @@ export function FileUpload({ courseId, onUploadComplete }: FileUploadProps) {
         </Card>
       )}
 
-      {/* Upload progress */}
+      {/* Inline upload progress */}
       {uploadQueue.length > 0 && (
-        <Card className="p-4">
-          <h3 className="font-medium mb-3">Upload Progress</h3>
-          <div className="space-y-3">
-            {uploadQueue.map((upload) => (
-              <div key={upload.fileId} className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="truncate flex-1">{upload.fileName}</span>
-                  <span className="text-muted-foreground">
-                    {upload.status === 'completed' ? 'Complete' : 
-                     upload.status === 'failed' ? 'Failed' : 
-                     `${Math.round(upload.progress)}%`}
-                  </span>
-                </div>
-                <Progress value={upload.progress} className="h-2" />
-                {upload.error && (
-                  <p className="text-xs text-destructive">{upload.error}</p>
-                )}
+        <div className="space-y-2">
+          {uploadQueue.map((upload) => (
+            <div key={upload.fileId} className="bg-gray-50 dark:bg-gray-900 rounded-md p-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-medium truncate flex-1">
+                  {upload.fileName}
+                </span>
+                <span className="text-xs text-muted-foreground ml-2">
+                  {upload.status === 'completed' ? '✓' : 
+                   upload.status === 'failed' ? '✗' : 
+                   `${Math.round(upload.progress)}%`}
+                </span>
               </div>
-            ))}
-          </div>
-        </Card>
+              <Progress 
+                value={upload.progress} 
+                className="h-1" 
+                indicatorClassName={
+                  upload.status === 'completed' ? 'bg-green-500' :
+                  upload.status === 'failed' ? 'bg-red-500' :
+                  ''
+                }
+              />
+              {upload.error && (
+                <p className="text-xs text-destructive mt-1">{upload.error}</p>
+              )}
+            </div>
+          ))}
+        </div>
       )}
 
       {/* Errors */}

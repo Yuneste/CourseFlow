@@ -6,6 +6,7 @@ import { withRetry } from '@/lib/utils/retry';
 
 export interface UploadOptions {
   courseId?: string;
+  folderId?: string;
   onProgress?: (progress: number) => void;
   onFileProgress?: (fileId: string, progress: UploadProgress) => void;
 }
@@ -63,13 +64,16 @@ class FilesService {
    * Upload files with progress tracking
    */
   private async upload(files: File[], options: UploadOptions = {}, uploadId?: string) {
-    const { courseId, onProgress, onFileProgress } = options;
+    const { courseId, folderId, onProgress, onFileProgress } = options;
     const formData = new FormData();
     
     // Add files to form data
     files.forEach(file => formData.append('files', file));
     if (courseId) {
       formData.append('course_id', courseId);
+    }
+    if (folderId) {
+      formData.append('folder_id', folderId);
     }
     
     // Use XMLHttpRequest for progress tracking
@@ -127,7 +131,7 @@ class FilesService {
    * Upload files with individual progress tracking
    */
   async uploadWithQueue(files: File[], options: UploadOptions = {}): Promise<{ files: FileType[]; errors: any[] }> {
-    const { courseId, onFileProgress } = options;
+    const { courseId, folderId, onFileProgress } = options;
     const results: { files: FileType[]; errors: any[] } = { files: [], errors: [] };
     
     // Process files sequentially for better progress tracking
@@ -150,6 +154,7 @@ class FilesService {
         const response = await withRetry(
           () => this.upload([file], {
             courseId,
+            folderId,
             onProgress: (progress) => {
               if (onFileProgress) {
                 onFileProgress(tempId, {
