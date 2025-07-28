@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Course } from '@/types';
 import { CourseCard } from './CourseCard';
 import { CourseForm } from './CourseForm';
@@ -40,6 +40,8 @@ interface CourseListProps {
   onCourseClick?: (course: Course) => void;
   viewMode?: 'grid' | 'list';
   className?: string;
+  showCreateForm?: boolean;
+  onCloseCreateForm?: () => void;
 }
 
 export function CourseList({
@@ -52,12 +54,21 @@ export function CourseList({
   onCourseClick,
   viewMode = 'grid',
   className,
+  showCreateForm = false,
+  onCloseCreateForm,
 }: CourseListProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [deletingCourse, setDeletingCourse] = useState<Course | null>(null);
   const [currentViewMode, setCurrentViewMode] = useState(viewMode);
   const [selectedTerm, setSelectedTerm] = useState<string>('all');
+
+  // Update form state when showCreateForm prop changes
+  useEffect(() => {
+    if (showCreateForm) {
+      setIsFormOpen(true);
+    }
+  }, [showCreateForm]);
 
   const handleEdit = (course: Course) => {
     setEditingCourse(course);
@@ -89,6 +100,7 @@ export function CourseList({
     setIsFormOpen(open);
     if (!open) {
       setEditingCourse(null);
+      onCloseCreateForm?.();
     }
   };
 

@@ -23,7 +23,7 @@ interface FileUploadProps {
   onUploadStart?: () => void;
 }
 
-export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadProps) {
+export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadErrors, setUploadErrors] = useState<string[]>([]);

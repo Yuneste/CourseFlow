@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { ProfileDropdown } from '@/components/features/profile/ProfileDropdown'
-import { DashboardClient } from './dashboard-client-v2'
+import { DashboardClient } from './dashboard-client-v3'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -53,20 +52,15 @@ export default async function DashboardPage() {
       
       {/* Content */}
       <div className="relative z-10 container mx-auto py-6">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
-              Dashboard
-            </h1>
-            {profile?.full_name && (
-              <p className="text-gray-600 mt-1">
-                Welcome back, {profile.full_name}!
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-4">
-            <ProfileDropdown user={user} profile={profile} />
-          </div>
+        <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          {profile?.full_name && (
+            <p className="text-gray-600 mt-1">
+              Welcome back, {profile.full_name}!
+            </p>
+          )}
         </div>
         
         <DashboardClient 

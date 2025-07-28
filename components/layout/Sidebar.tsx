@@ -29,13 +29,27 @@ interface SidebarProps {
 
 export function Sidebar({ user, onSignOut }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sidebar-collapsed') === 'true';
+    }
+    return false;
+  });
   const pathname = usePathname();
 
   // Close sidebar on route change (mobile)
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
+
+  // Save collapsed state to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sidebar-collapsed', isCollapsed.toString());
+      // Emit custom event for other components
+      window.dispatchEvent(new Event('storage'));
+    }
+  }, [isCollapsed]);
 
   const navItems = [
     {

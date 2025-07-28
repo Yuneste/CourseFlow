@@ -313,7 +313,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
       {/* Header */}
       <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
@@ -585,7 +585,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                   No files in {selectedFolder ? 'this folder' : 'this course'} yet
                 </p>
                 <p className="text-sm text-gray-500 mt-2">
-                  Click "Upload Files" to add your course materials
+                  Click &quot;Upload Files&quot; to add your course materials
                 </p>
               </Card>
             )}

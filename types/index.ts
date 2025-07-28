@@ -1,18 +1,20 @@
 export interface User {
   id: string;
   email: string;
-  full_name: string;
+  full_name: string | null;
   university?: string;
   study_program?: string;
   degree_type?: 'bachelor' | 'master' | 'phd' | 'diploma' | 'associate' | 'undergraduate' | 'graduate' | 'postgraduate' | 'other';
   start_year?: number;
   expected_graduation_year?: number;
-  preferred_locale: string;
-  country: string;
-  timezone: string;
-  academic_system: 'gpa' | 'ects' | 'uk_honours' | 'percentage';
+  preferred_locale?: string;
+  country?: string;
+  timezone?: string;
+  academic_system?: 'gpa' | 'ects' | 'uk_honours' | 'percentage';
   created_at: Date;
+  updated_at: Date;
   avatar_url?: string;
+  onboarding_completed?: boolean;
 }
 
 export interface CourseFolder {
