@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Course, User } from '@/types';
 import { CourseList } from '@/components/features/courses/CourseList';
 import { FileUpload } from '@/components/features/files/FileUpload';
@@ -27,9 +27,9 @@ interface DashboardClientProps {
 export function DashboardClient({ initialCourses, userProfile }: DashboardClientProps) {
   const router = useRouter();
   const [showFileUpload, setShowFileUpload] = useState(false);
+  const uploadSectionRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<'courses' | 'files'>('courses');
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [fileViewMode, setFileViewMode] = useState<'list' | 'category'>('category');
   
   // Get state and actions from Zustand store
   const {
@@ -131,6 +131,24 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
 
   return (
     <div className="space-y-6">
+      {/* Quick Upload Button - Always Visible */}
+      <div className="mb-4">
+        <Button
+          onClick={() => {
+            setActiveTab('files');
+            setShowFileUpload(true);
+            setTimeout(() => {
+              uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+          }}
+          size="lg"
+          className="w-full sm:w-auto bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] hover:from-[#FF6B6B] hover:to-[#FA8072] text-white shadow-lg"
+        >
+          <Upload className="mr-2 h-5 w-5" />
+          Upload Files
+        </Button>
+      </div>
+
       {/* Tab Navigation */}
       <div className="flex gap-2 border-b">
         <Button
@@ -178,26 +196,16 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">My Files</h2>
             <div className="flex items-center gap-2">
-              <div className="flex items-center border rounded-lg">
-                <Button
-                  variant={fileViewMode === 'category' ? 'default' : 'ghost'}
-                  size="sm"
-                  className="rounded-r-none"
-                  onClick={() => setFileViewMode('category')}
-                >
-                  <Grid3x3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={fileViewMode === 'list' ? 'default' : 'ghost'}
-                  size="sm"
-                  className="rounded-l-none"
-                  onClick={() => setFileViewMode('list')}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
               <Button
-                onClick={() => setShowFileUpload(!showFileUpload)}
+                onClick={() => {
+                  setShowFileUpload(!showFileUpload);
+                  // Auto-scroll to upload section when opened
+                  if (!showFileUpload) {
+                    setTimeout(() => {
+                      uploadSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                  }
+                }}
                 variant={showFileUpload ? 'secondary' : 'default'}
               >
                 <Upload className="mr-2 h-4 w-4" />
@@ -226,56 +234,70 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
             </select>
           </div>
 
-          {/* Stats and Usage Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <StorageUsage userTier="free" />
-            <UploadStats />
-          </div>
-
           {showFileUpload && (
-            <Card className="p-6">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Select Course for Upload
-                  </label>
-                  <select
-                    className="w-full p-2 border rounded-md"
-                    value={selectedCourse?.id || ''}
-                    onChange={(e) => {
-                      const course = courses.find(c => c.id === e.target.value);
-                      setSelectedCourse(course || null);
-                    }}
-                  >
-                    <option value="">No specific course (General files)</option>
-                    {courses.map(course => (
-                      <option key={course.id} value={course.id}>
-                        {course.emoji} {course.name} ({course.term})
-                      </option>
-                    ))}
-                  </select>
+            <div ref={uploadSectionRef}>
+              <Card className="p-6 bg-gradient-to-br from-white to-gray-50/50">
+                {/* Storage Stats Header */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <StorageUsage userTier="free" />
+                  <UploadStats />
                 </div>
                 
-                <FileUploadWithDetection
-                  courseId={selectedCourse?.id}
-                  onUploadComplete={() => {
-                    // Files are automatically added to the store
-                    // No need to reload
-                  }}
-                />
-              </div>
-            </Card>
+                <div className="border-t pt-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Left side - Recently Uploaded Files */}
+                    <div className="space-y-4 order-2 lg:order-1">
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3">Recently Uploaded</h3>
+                        <div className="bg-gray-50 rounded-lg p-4 min-h-[200px]">
+                          <p className="text-sm text-gray-600">Your uploaded files will appear here...</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Right side - Upload Section */}
+                    <div className="space-y-4 order-1 lg:order-2">
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3">Upload New Files</h3>
+                        <div className="space-y-3">
+                          <select
+                            className="w-full p-2 border rounded-md text-sm"
+                            value={selectedCourse?.id || ''}
+                            onChange={(e) => {
+                              const course = courses.find(c => c.id === e.target.value);
+                              setSelectedCourse(course || null);
+                            }}
+                          >
+                            <option value="">Auto-detect course from content</option>
+                            {courses.map(course => (
+                              <option key={course.id} value={course.id}>
+                                {course.emoji} {course.name} ({course.term})
+                              </option>
+                            ))}
+                          </select>
+                          
+                          <FileUploadWithDetection
+                            courseId={selectedCourse?.id}
+                            onUploadComplete={() => {
+                              // Files are automatically added to the store
+                              // No need to reload
+                            }}
+                            compact={true}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
           )}
 
-          {fileViewMode === 'list' ? (
-            <FileList courseId={selectedCourse?.id} />
-          ) : (
-            <FileCategoryView 
-              courseId={selectedCourse?.id}
-              onFileDelete={handleFileDelete}
-              onFileDownload={handleFileDownload}
-            />
-          )}
+          <FileCategoryView 
+            courseId={selectedCourse?.id}
+            onFileDelete={handleFileDelete}
+            onFileDownload={handleFileDownload}
+          />
         </div>
       )}
     </div>

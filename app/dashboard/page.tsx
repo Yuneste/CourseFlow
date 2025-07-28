@@ -64,7 +64,9 @@ export default async function DashboardPage() {
               </p>
             )}
           </div>
-          <ProfileDropdown user={user} profile={profile} />
+          <div className="flex items-center gap-4">
+            <ProfileDropdown user={user} profile={profile} />
+          </div>
         </div>
         
         <DashboardClient 

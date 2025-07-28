@@ -21,6 +21,7 @@ import type { UploadProgress as UploadProgressType, File as FileType, Course } f
 interface FileUploadWithDetectionProps {
   courseId?: string;
   onUploadComplete?: () => void;
+  compact?: boolean;
 }
 
 interface FileWithSuggestion {
@@ -30,7 +31,7 @@ interface FileWithSuggestion {
   matchReasons?: string[];
 }
 
-export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUploadWithDetectionProps) {
+export function FileUploadWithDetection({ courseId, onUploadComplete, compact = false }: FileUploadWithDetectionProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileWithSuggestion[]>([]);
   const [uploadErrors, setUploadErrors] = useState<string[]>([]);
@@ -321,18 +322,22 @@ export function FileUploadWithDetection({ courseId, onUploadComplete }: FileUplo
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className="p-8 text-center"
+          className={compact ? "p-4 text-center" : "p-8 text-center"}
         >
-          <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-lg font-medium mb-2">
+          <Upload className={`mx-auto ${compact ? 'h-8 w-8' : 'h-12 w-12'} text-muted-foreground mb-${compact ? '2' : '4'}`} />
+          <p className={`${compact ? 'text-sm' : 'text-lg'} font-medium mb-2`}>
             Drag and drop files here
           </p>
-          <p className="text-sm text-muted-foreground mb-4">
-            Files will be analyzed to automatically detect which course they belong to
-          </p>
-          <p className="text-xs text-muted-foreground mb-4">
-            Content analysis currently works for text files. PDF and Word analysis coming soon!
-          </p>
+          {!compact && (
+            <>
+              <p className="text-sm text-muted-foreground mb-4">
+                Files will be analyzed to automatically detect which course they belong to
+              </p>
+              <p className="text-xs text-muted-foreground mb-4">
+                Content analysis currently works for text files. PDF and Word analysis coming soon!
+              </p>
+            </>
+          )}
           
           <div className="flex gap-2 justify-center">
             <Button

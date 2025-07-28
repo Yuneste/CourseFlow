@@ -2,10 +2,6 @@
 
 import { useState } from 'react';
 import { 
-  FileText, 
-  FileImage, 
-  FileSpreadsheet, 
-  File, 
   Download, 
   Trash2, 
   MoreVertical,
@@ -21,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { formatFileSize } from '@/lib/utils/file-validation';
 import { FilePreview } from './FilePreview';
+import { getFileIcon } from '@/lib/utils/file-icons';
 import type { File as FileType } from '@/types';
 
 interface FileCardProps {
@@ -34,23 +31,6 @@ export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) 
   const [isDeleting, setIsDeleting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
-  const getFileIcon = (fileType: string) => {
-    if (fileType.startsWith('image/')) return FileImage;
-    if (fileType.includes('spreadsheet') || fileType.includes('excel') || fileType === 'text/csv') 
-      return FileSpreadsheet;
-    if (fileType.includes('pdf') || fileType.includes('document') || fileType.includes('text'))
-      return FileText;
-    return File;
-  };
-
-  const getFileColor = (fileType: string) => {
-    if (fileType.startsWith('image/')) return 'text-blue-600';
-    if (fileType.includes('spreadsheet') || fileType.includes('excel') || fileType === 'text/csv') 
-      return 'text-green-600';
-    if (fileType.includes('pdf')) return 'text-red-600';
-    if (fileType.includes('document')) return 'text-blue-800';
-    return 'text-gray-600';
-  };
 
   const handleDelete = async () => {
     if (confirm(`Are you sure you want to delete "${file.display_name}"?`)) {
@@ -64,8 +44,8 @@ export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) 
     }
   };
 
-  const Icon = getFileIcon(file.file_type);
-  const iconColor = getFileColor(file.file_type);
+  const iconConfig = getFileIcon(file.display_name, file.ai_category);
+  const Icon = iconConfig.icon;
 
   const formatDate = (date: Date | string) => {
     const d = new Date(date);
@@ -82,8 +62,8 @@ export function FileCard({ file, onDelete, onDownload, onView }: FileCardProps) 
     <>
       <Card className="p-4 hover:shadow-md transition-shadow">
         <div className="flex items-start gap-3">
-          <div className={`p-2 rounded-lg bg-muted ${iconColor}`}>
-            <Icon className="h-6 w-6" />
+          <div className={`p-2 rounded-lg ${iconConfig.bgColor}`}>
+            <Icon className={`h-6 w-6 ${iconConfig.color}`} />
           </div>
 
           <div className="flex-1 min-w-0">

@@ -86,7 +86,8 @@ function analyzeText(
       const codeRegex = new RegExp(`\\b${course.code.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
       const codeMatches = (text.match(codeRegex) || []).length;
       if (codeMatches > 0) {
-        confidence += Math.min(40 + (codeMatches * 2), 50);
+        // Higher confidence for course codes as they're more unique
+        confidence += Math.min(50 + (codeMatches * 5), 70);
         matchReasons.push(`Course code "${course.code}" found ${codeMatches} times in content`);
       }
     }
@@ -107,9 +108,20 @@ function analyzeText(
     }
 
     if (nameMatchCount > 0) {
-      const nameMatchScore = (nameMatchCount / courseNameWords.length) * 30;
-      confidence += nameMatchScore;
-      matchReasons.push(`Course name keywords found: ${nameMatchCount}/${courseNameWords.length}`);
+      // Check if full course name appears in content
+      const fullNameRegex = new RegExp(course.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+      const fullNameMatches = (text.match(fullNameRegex) || []).length;
+      
+      if (fullNameMatches > 0) {
+        // Very high confidence for exact course name matches
+        confidence += Math.min(40 + (fullNameMatches * 10), 60);
+        matchReasons.push(`Exact course name "${course.name}" found ${fullNameMatches} times`);
+      } else {
+        // Partial name match
+        const nameMatchScore = (nameMatchCount / courseNameWords.length) * 25;
+        confidence += nameMatchScore;
+        matchReasons.push(`Course name keywords found: ${nameMatchCount}/${courseNameWords.length}`);
+      }
     }
 
     // Check for professor name in content
@@ -163,7 +175,8 @@ function analyzeText(
     matches.sort((a, b) => b.confidence - a.confidence);
     
     // Only return if confidence is above threshold
-    if (matches[0].confidence >= 25) {
+    // Increased threshold to 60% for better accuracy
+    if (matches[0].confidence >= 60) {
       return matches[0];
     }
   }
