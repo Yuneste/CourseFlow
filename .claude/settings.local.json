@@ -30,7 +30,8 @@
       "Bash(mv:*)",
       "Bash(curl:*)",
       "Bash(python:*)",
-      "Bash(del create_icons.py)"
+      "Bash(del create_icons.py)",
+      "Bash(npx shadcn@latest add:*)"
     ],
     "deny": []
   }
