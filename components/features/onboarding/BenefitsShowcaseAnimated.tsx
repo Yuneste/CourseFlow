@@ -286,11 +286,16 @@ const CloudStorageDemo = () => {
 
   return (
     <div className="relative w-full h-48 sm:h-56 md:h-64 mx-auto">
-      {/* Cloud at center */}
+      {/* Cloud positioned higher and to the left */}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -mt-8"
+        className="absolute"
+        style={{
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%) translate(-10px, -60px)'
+        }}
       >
         <Cloud className="h-16 sm:h-20 md:h-24 w-16 sm:w-20 md:w-24 text-[#FA8072]" />
         <motion.div
@@ -314,12 +319,12 @@ const CloudStorageDemo = () => {
           const y = isMobile ? device.position.mobileY : device.position.y;
           
           // Calculate positions as percentages of viewBox
-          const centerX = 50; // Center X as percentage
-          const centerY = 35; // Center Y as percentage (cloud position)
+          const cloudX = 47; // Cloud X position (slightly left)
+          const cloudY = 25; // Cloud Y position (higher up)
           
           // Convert pixel offsets to percentage offsets
-          const deviceX = centerX + (x / 4); // Scale down for viewBox
-          const deviceY = centerY + (y / 4); // Scale down for viewBox
+          const deviceX = 50 + (x / 4); // Device positions from center
+          const deviceY = 50 + (y / 4); // Device positions from center
           
           return (
             <g key={i}>
@@ -327,8 +332,8 @@ const CloudStorageDemo = () => {
               <motion.line
                 x1={deviceX}
                 y1={deviceY}
-                x2={centerX}
-                y2={centerY + 5}
+                x2={cloudX + 3}
+                y2={cloudY + 10}
                 stroke="#FA8072"
                 strokeWidth="0.5"
                 strokeDasharray="1 1"
@@ -355,7 +360,7 @@ const CloudStorageDemo = () => {
                   <animateMotion
                     dur="2s"
                     repeatCount="indefinite"
-                    path={`M ${deviceX},${deviceY} L ${centerX},${centerY + 5}`}
+                    path={`M ${deviceX},${deviceY} L ${cloudX + 3},${cloudY + 10}`}
                   />
                 </motion.circle>
               )}
