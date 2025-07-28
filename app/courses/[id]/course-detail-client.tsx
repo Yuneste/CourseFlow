@@ -121,16 +121,14 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   const handleFileSelect = (fileId: string, isMultiple: boolean) => {
     setSelectedFiles(prev => {
       const newSet = new Set(prev);
-      if (isMultiple) {
-        // Multi-select: toggle the file
-        if (newSet.has(fileId)) {
-          newSet.delete(fileId);
-        } else {
-          newSet.add(fileId);
-        }
+      // Always toggle on click
+      if (newSet.has(fileId)) {
+        newSet.delete(fileId);
       } else {
-        // Single select: clear others and select this one
-        newSet.clear();
+        // If not multi-select (Ctrl/Cmd held), clear others first
+        if (!isMultiple) {
+          newSet.clear();
+        }
         newSet.add(fileId);
       }
       return newSet;
@@ -379,13 +377,28 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
               </div>
               
               {/* Bulk actions bar */}
-              {selectedFiles.size > 0 && (
-                <Card className="p-3 bg-muted/50">
+              {(selectedFiles.size > 0 || currentFiles.length > 0) && (
+                <Card className="p-3 bg-muted/50 animate-in slide-in-from-top-2 duration-200">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
-                      {selectedFiles.size} file{selectedFiles.size > 1 ? 's' : ''} selected
+                      {selectedFiles.size > 0 
+                        ? `${selectedFiles.size} file${selectedFiles.size > 1 ? 's' : ''} selected`
+                        : `${currentFiles.length} file${currentFiles.length > 1 ? 's' : ''} available`
+                      }
                     </span>
                     <div className="flex gap-2">
+                      {selectedFiles.size !== currentFiles.length && currentFiles.length > 0 && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            const allFileIds = new Set(currentFiles.map(f => f.id));
+                            setSelectedFiles(allFileIds);
+                          }}
+                        >
+                          Select All
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         variant="outline"

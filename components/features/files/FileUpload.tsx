@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, DragEvent, ChangeEvent } from 'react';
 import { Upload, Folder, X, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -341,9 +342,9 @@ export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadP
           {uploadQueue.map((upload) => (
             <div 
               key={upload.fileId} 
-              className={`rounded-md p-3 transition-all duration-500 ${
-                upload.status === 'completed' ? 'opacity-0' : 'opacity-100'
-              } bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700`}
+              className={`rounded-lg p-3 transition-all duration-500 animate-in slide-in-from-top-2 ${
+                upload.status === 'completed' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+              } bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md`}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm font-medium truncate flex-1 text-gray-900 dark:text-gray-100">
@@ -357,12 +358,13 @@ export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadP
               </div>
               <Progress 
                 value={upload.progress} 
-                className="h-1 bg-gray-200 dark:bg-gray-700" 
-                indicatorClassName={
-                  upload.status === 'completed' ? 'bg-green-500' :
-                  upload.status === 'failed' ? 'bg-red-500' :
-                  'bg-blue-500'
-                }
+                className="h-2 bg-gray-200 dark:bg-gray-700 overflow-hidden rounded-full" 
+                indicatorClassName={cn(
+                  "transition-all duration-300 ease-out",
+                  upload.status === 'completed' ? 'bg-gradient-to-r from-green-500 to-green-600' :
+                  upload.status === 'failed' ? 'bg-gradient-to-r from-red-500 to-red-600' :
+                  'bg-gradient-to-r from-blue-500 to-blue-600'
+                )}
               />
               {upload.error && (
                 <p className="text-xs text-red-600 dark:text-red-400 mt-1">{upload.error}</p>

@@ -91,9 +91,11 @@ export function FileCardDraggable({
   return (
     <Card 
       className={cn(
-        "p-4 hover:shadow-md transition-all cursor-pointer select-none",
-        isSelected && "ring-2 ring-primary bg-primary/5",
-        isDragging && "opacity-50"
+        "group p-4 transition-all duration-200 cursor-pointer select-none",
+        "hover:shadow-lg hover:scale-[1.02] hover:-translate-y-0.5",
+        "active:scale-[0.98] active:shadow-sm",
+        isSelected && "ring-2 ring-primary bg-primary/5 shadow-md scale-[1.01]",
+        isDragging && "opacity-50 scale-95"
       )}
       onClick={handleClick}
       draggable
@@ -101,8 +103,15 @@ export function FileCardDraggable({
       onDragEnd={handleDragEnd}
     >
       <div className="flex items-start gap-3">
-        <div className={`p-2 rounded-lg ${iconConfig.bgColor}`}>
-          <Icon className={`h-6 w-6 ${iconConfig.color}`} />
+        <div className={cn(
+          "p-2 rounded-lg transition-all duration-200",
+          iconConfig.bgColor,
+          "group-hover:scale-110 group-hover:rotate-3"
+        )}>
+          <Icon className={cn(
+            "h-6 w-6 transition-transform duration-200",
+            iconConfig.color
+          )} />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -118,7 +127,12 @@ export function FileCardDraggable({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="sm" disabled={isDeleting}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              disabled={isDeleting}
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            >
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>

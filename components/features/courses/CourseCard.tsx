@@ -28,22 +28,21 @@ export function CourseCard({
   onClick,
   className,
 }: CourseCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  // Removed isHovered state as we're using CSS hover now
 
   return (
     <div
       className={cn(
-        'relative overflow-hidden transition-all duration-300 cursor-pointer group glass-effect rounded-lg',
-        isHovered && 'shadow-2xl scale-[1.02] course-card-float',
+        'relative overflow-hidden transition-all duration-300 cursor-pointer group',
+        'hover:shadow-xl hover:scale-[1.03] hover:-translate-y-1',
+        'active:scale-[0.98] active:shadow-md',
         className
       )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       onClick={() => onClick?.(course)}
     >
       {/* Color band at top */}
       <div 
-        className="absolute top-0 left-0 right-0 h-1"
+        className="absolute top-0 left-0 right-0 h-1 group-hover:h-2 transition-all duration-300"
         style={{ backgroundColor: course.color }}
       />
       
@@ -55,12 +54,16 @@ export function CourseCard({
         }}
       />
       
-      <Card className="border-0 bg-transparent">
+      <Card className="border-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <span className="text-4xl drop-shadow-md" role="img" aria-label="Course emoji">
+              <span 
+                className="text-4xl drop-shadow-md transition-all duration-300 inline-block group-hover:scale-110 group-hover:rotate-6" 
+                role="img" 
+                aria-label="Course emoji"
+              >
                 {course.emoji || '📚'}
               </span>
             </div>
