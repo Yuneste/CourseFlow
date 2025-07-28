@@ -95,7 +95,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   const academicSystem = {
     terms: systemInfo.terms,
     periodType: systemInfo.periodType,
-    creditSystem: userProfile?.academic_system || 'percentage'
+    creditSystem: systemInfo.creditSystem
   };
 
   return (

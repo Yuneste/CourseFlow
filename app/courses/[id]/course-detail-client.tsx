@@ -55,6 +55,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
   const [draggedFiles, setDraggedFiles] = useState<string[]>([]);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Build folder tree structure
   const buildFolderTree = (): FolderNode[] => {
@@ -388,16 +389,30 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => {
-                          // Download selected files
-                          Array.from(selectedFiles).forEach(fileId => {
-                            const file = currentFiles.find(f => f.id === fileId);
-                            if (file) handleFileDownload(file);
-                          });
+                        disabled={isDownloading}
+                        onClick={async () => {
+                          setIsDownloading(true);
+                          try {
+                            // Download selected files with delay to prevent browser blocking
+                            const fileIds = Array.from(selectedFiles);
+                            for (let i = 0; i < fileIds.length; i++) {
+                              const file = currentFiles.find(f => f.id === fileIds[i]);
+                              if (file) {
+                                await handleFileDownload(file);
+                                // Add delay between downloads to prevent browser from blocking
+                                if (i < fileIds.length - 1) {
+                                  await new Promise(resolve => setTimeout(resolve, 500));
+                                }
+                              }
+                            }
+                            toast.success(`Downloaded ${fileIds.length} file${fileIds.length > 1 ? 's' : ''}`);
+                          } finally {
+                            setIsDownloading(false);
+                          }
                         }}
                       >
                         <Download className="h-4 w-4 mr-1" />
-                        Download
+                        {isDownloading ? 'Downloading...' : 'Download'}
                       </Button>
                       <Button
                         size="sm"
