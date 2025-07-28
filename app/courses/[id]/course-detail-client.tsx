@@ -274,7 +274,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                   {currentFiles.length > 0 ? (
                     <div className="space-y-3">
                       {currentFiles.map((file) => (
-                        <FileCard
+                        <FileCardDraggable
                           key={file.id}
                           file={file}
                           onDelete={handleFileDelete}
@@ -298,7 +298,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                 {currentFiles.length > 0 ? (
                   <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                     {currentFiles.map((file) => (
-                      <FileCard
+                      <FileCardDraggable
                         key={file.id}
                         file={file}
                         onDelete={handleFileDelete}

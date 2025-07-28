@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Course, User } from '@/types';
+import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
 import { CourseList } from '@/components/features/courses/CourseList';
 import { coursesService } from '@/lib/services/courses.service';
 import { useAppStore } from '@/stores/useAppStore';
@@ -88,9 +89,12 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
     }
   };
 
+  const country = userProfile?.country || 'US';
+  const systemInfo = getAcademicSystemWithTerms(country);
+  
   const academicSystem = {
-    terms: ['Fall 2024', 'Spring 2025', 'Summer 2025'],
-    periodType: (userProfile?.academic_system === 'uk_honours' ? 'term' : 'semester') as 'term' | 'semester' | 'trimester',
+    terms: systemInfo.terms,
+    periodType: systemInfo.periodType,
     creditSystem: userProfile?.academic_system || 'percentage'
   };
 
