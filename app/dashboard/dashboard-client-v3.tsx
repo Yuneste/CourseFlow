@@ -3,7 +3,21 @@
 import { useState, useEffect } from 'react';
 import { Course, User } from '@/types';
 import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
-import { CourseList } from '@/components/features/courses/CourseList';
+import dynamic from 'next/dynamic';
+
+// Lazy load CourseList to reduce initial bundle size
+const CourseList = dynamic(
+  () => import('@/components/features/courses/CourseList').then(mod => ({ default: mod.CourseList })),
+  { 
+    loading: () => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    )
+  }
+);
 import { coursesService } from '@/lib/services/courses.service';
 import { useAppStore } from '@/stores/useAppStore';
 import { useRouter } from 'next/navigation';
