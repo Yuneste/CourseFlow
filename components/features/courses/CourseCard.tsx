@@ -53,10 +53,10 @@ export function CourseCard({
                 <h3 className="font-medium text-gray-900 line-clamp-1 group-hover:text-[#FA8072] transition-colors">
                   {course.name}
                 </h3>
-                {course.course_code && (
+                {course.code && (
                   <p className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
                     <Hash className="w-3 h-3" />
-                    {course.course_code}
+                    {course.code}
                   </p>
                 )}
               </div>
