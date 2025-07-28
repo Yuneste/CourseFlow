@@ -31,20 +31,6 @@ import {
   Share2
 } from 'lucide-react';
 
-// Hook to check if mobile
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-  
-  return isMobile;
-};
-
 interface BenefitsShowcaseProps {
   onComplete: () => void;
 }
@@ -53,7 +39,14 @@ interface BenefitsShowcaseProps {
 export const FileOrganizationDemo = () => {
   const [detectedText, setDetectedText] = useState('');
   const [movedToFolder, setMovedToFolder] = useState(false);
-  const isMobile = useIsMobile();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const timer1 = setTimeout(() => setDetectedText('binomial formula'), 1500);
@@ -71,10 +64,10 @@ export const FileOrganizationDemo = () => {
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`absolute left-0 top-1/2 -translate-y-1/2 ${isMobile ? 'w-28 h-36' : 'w-40 h-48'} bg-white rounded-lg shadow-lg p-2 sm:p-3`}
+        className="absolute left-0 top-1/2 -translate-y-1/2 w-40 h-48 bg-white rounded-lg shadow-lg p-3"
       >
-        <div className="text-[10px] sm:text-xs text-gray-400 mb-1 sm:mb-2">lecture_notes.pdf</div>
-        <div className="space-y-1 text-[10px] sm:text-xs text-gray-600">
+        <div className="text-xs text-gray-400 mb-2">lecture_notes.pdf</div>
+        <div className="space-y-1 text-xs text-gray-600">
           <div className="h-1 bg-gray-200 rounded w-full"></div>
           <div className="h-1 bg-gray-200 rounded w-3/4"></div>
           <motion.div 
@@ -103,12 +96,12 @@ export const FileOrganizationDemo = () => {
           transition={{ duration: detectedText ? 0.5 : 2, repeat: detectedText ? 0 : Infinity, ease: "linear" }}
           className="relative"
         >
-          <Cpu className="h-8 sm:h-10 md:h-12 w-8 sm:w-10 md:w-12 text-[#FA8072]" />
+          <Cpu className="h-12 w-12 text-[#FA8072]" />
           {detectedText && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute -top-6 sm:-top-8 left-1/2 -translate-x-1/2 bg-[#FA8072] text-white text-[10px] sm:text-xs px-1 sm:px-2 py-0.5 sm:py-1 rounded"
+              className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#FA8072] text-white text-xs px-2 py-1 rounded"
             >
               Found: Math!
             </motion.div>
@@ -122,7 +115,7 @@ export const FileOrganizationDemo = () => {
           initial={{ x: -200, y: 0, opacity: 1 }}
           animate={{ x: 200, y: -20, opacity: 0 }}
           transition={{ duration: 0.8 }}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs sm:text-sm font-semibold text-[#FA8072]"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-semibold text-[#FA8072]"
         >
           binomial formula →
         </motion.div>
@@ -133,16 +126,16 @@ export const FileOrganizationDemo = () => {
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.8 }}
-        className={`absolute right-0 top-1/2 -translate-y-1/2 grid grid-cols-2 gap-1 sm:gap-2`}
+        className="absolute right-0 top-1/2 -translate-y-1/2 grid grid-cols-2 gap-2"
       >
         {['Math', 'CS', 'Bio', 'Eng'].map((subject, i) => (
           <motion.div
             key={subject}
             animate={movedToFolder && subject === 'Math' ? { scale: [1, 1.2, 1] } : {}}
-            className={`${isMobile ? 'w-12 h-12' : 'w-16 h-16'} ${movedToFolder && subject === 'Math' ? 'bg-[#FA8072] text-white' : 'bg-[#FFE4E1]'} rounded-lg shadow-md flex flex-col items-center justify-center transition-colors`}
+            className={`w-16 h-16 ${movedToFolder && subject === 'Math' ? 'bg-[#FA8072] text-white' : 'bg-[#FFE4E1]'} rounded-lg shadow-md flex flex-col items-center justify-center transition-colors`}
           >
-            <FolderCheck className={`${isMobile ? 'h-4 w-4' : 'h-6 w-6'} ${movedToFolder && subject === 'Math' ? 'text-white' : 'text-[#FA8072]'}`} />
-            <span className={`text-[10px] sm:text-xs mt-0.5 sm:mt-1 ${movedToFolder && subject === 'Math' ? 'text-white font-semibold' : 'text-gray-700'}`}>{subject}</span>
+            <FolderCheck className={`h-6 w-6 ${movedToFolder && subject === 'Math' ? 'text-white' : 'text-[#FA8072]'}`} />
+            <span className={`text-xs mt-1 ${movedToFolder && subject === 'Math' ? 'text-white font-semibold' : 'text-gray-700'}`}>{subject}</span>
           </motion.div>
         ))}
       </motion.div>
@@ -153,7 +146,6 @@ export const FileOrganizationDemo = () => {
 const AIAssistantDemo = () => {
   const [currentSubject, setCurrentSubject] = useState(0);
   const [showFlashcards, setShowFlashcards] = useState(false);
-  const isMobile = useIsMobile();
   
   const subjects = [
     {
@@ -201,17 +193,17 @@ const AIAssistantDemo = () => {
   }, [currentSubject, subjects.length]);
 
   return (
-    <div className={`relative w-full ${isMobile ? 'h-80' : 'h-64'} mx-auto ${isMobile ? 'space-y-4' : 'flex gap-4'}`}>
+    <div className="relative w-full h-64 mx-auto flex gap-4">
       {/* Chat Section */}
       <motion.div
         key={currentSubject}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className={`${isMobile ? 'w-full' : 'flex-1'} bg-white rounded-lg shadow-lg p-3 sm:p-4`}
+        className="flex-1 bg-white rounded-lg shadow-lg p-4"
       >
-        <div className="flex items-center gap-2 mb-2 sm:mb-3">
-          <Bot className="h-5 sm:h-6 w-5 sm:w-6 text-[#FA8072]" />
-          <span className="text-xs sm:text-sm font-semibold">AI Assistant</span>
+        <div className="flex items-center gap-2 mb-3">
+          <Bot className="h-6 w-6 text-[#FA8072]" />
+          <span className="text-sm font-semibold">AI Assistant</span>
         </div>
 
         <div className="space-y-2">
@@ -224,7 +216,7 @@ const AIAssistantDemo = () => {
                 transition={{ delay: i * 0.8 }}
                 className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs max-w-[80%] ${
+                <div className={`px-3 py-1.5 rounded-lg text-xs max-w-[80%] ${
                   msg.isUser 
                     ? 'bg-gray-200 text-gray-700' 
                     : 'bg-[#FA8072] text-white'
@@ -242,16 +234,16 @@ const AIAssistantDemo = () => {
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: showFlashcards ? 1 : 0, scale: showFlashcards ? 1 : 0 }}
         transition={{ delay: 0.2 }}
-        className={`${isMobile ? 'w-full' : 'w-32'} space-y-2`}
+        className="w-32 space-y-2"
       >
-        <div className="text-[10px] sm:text-xs font-semibold text-gray-600 mb-1">Generated Cards:</div>
+        <div className="text-xs font-semibold text-gray-600 mb-1">Generated Cards:</div>
         {current.flashcards.map((card, i) => (
           <motion.div
             key={`${currentSubject}-card-${i}`}
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.3 + i * 0.1 }}
-            className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] text-white p-1.5 sm:p-2 rounded text-[10px] sm:text-xs shadow-md"
+            className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] text-white p-2 rounded text-xs shadow-md"
           >
             {card}
           </motion.div>
@@ -263,7 +255,6 @@ const AIAssistantDemo = () => {
 
 const CloudStorageDemo = () => {
   const [syncActive, setSyncActive] = useState(false);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -273,9 +264,9 @@ const CloudStorageDemo = () => {
   }, []);
 
   const devices = [
-    { name: 'Desktop', icon: '🖥️', position: { x: -80, y: 60, mobileX: -60, mobileY: 50 } },
-    { name: 'Mobile', icon: '📱', position: { x: 0, y: 80, mobileX: 0, mobileY: 60 } },
-    { name: 'Laptop', icon: '💻', position: { x: 80, y: 60, mobileX: 60, mobileY: 50 } }
+    { name: 'Desktop', icon: '🖥️', position: { x: -120, y: 80 } },
+    { name: 'Mobile', icon: '📱', position: { x: 0, y: 100 } },
+    { name: 'Laptop', icon: '💻', position: { x: 120, y: 80 } }
   ];
 
   const fileTypes = [
@@ -285,14 +276,14 @@ const CloudStorageDemo = () => {
   ];
 
   return (
-    <div className="relative w-full h-48 sm:h-56 md:h-64 mx-auto">
+    <div className="relative w-full h-64 mx-auto">
       {/* Cloud at center */}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -mt-8"
       >
-        <Cloud className="h-16 sm:h-20 md:h-24 w-16 sm:w-20 md:w-24 text-[#FA8072]" />
+        <Cloud className="h-24 w-24 text-[#FA8072]" />
         <motion.div
           animate={{ scale: syncActive ? [1, 1.3, 1] : 1 }}
           transition={{ duration: 0.5 }}
@@ -301,7 +292,7 @@ const CloudStorageDemo = () => {
         {/* Cloud storage indicator */}
         <motion.div
           animate={{ opacity: syncActive ? 1 : 0.5 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] sm:text-xs font-semibold text-white"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-semibold text-white"
         >
           Cloud
         </motion.div>
@@ -318,12 +309,10 @@ const CloudStorageDemo = () => {
         
         {devices.map((device, i) => {
           // Calculate line coordinates from device to cloud
-          const x = isMobile ? device.position.mobileX : device.position.x;
-          const y = isMobile ? device.position.mobileY : device.position.y;
           const centerX = 50; // Center of cloud (%)
           const centerY = 40; // Center of cloud (%)
-          const deviceX = 50 + (x / 400) * 100; // Convert to percentage
-          const deviceY = 50 + (y / 200) * 100; // Convert to percentage
+          const deviceX = 50 + (device.position.x / 400) * 100; // Convert to percentage
+          const deviceY = 50 + (device.position.y / 200) * 100; // Convert to percentage
           
           return (
             <g key={i}>
@@ -376,8 +365,8 @@ const CloudStorageDemo = () => {
           transition={{ delay: 0.2 + i * 0.1 }}
           className="absolute"
           style={{
-            left: `calc(50% + ${isMobile ? device.position.mobileX : device.position.x}px)`,
-            top: `calc(50% + ${isMobile ? device.position.mobileY : device.position.y}px)`,
+            left: `calc(50% + ${device.position.x}px)`,
+            top: `calc(50% + ${device.position.y}px)`,
             transform: 'translate(-50%, -50%)'
           }}
         >
@@ -385,18 +374,18 @@ const CloudStorageDemo = () => {
             <motion.div
               animate={syncActive ? { scale: [1, 1.1, 1] } : {}}
               transition={{ delay: i * 0.2 }}
-              className="text-2xl sm:text-3xl md:text-4xl mb-1"
+              className="text-4xl mb-1"
             >
               {device.icon}
             </motion.div>
-            <span className="text-[10px] sm:text-xs text-gray-600 font-medium">{device.name}</span>
+            <span className="text-xs text-gray-600 font-medium">{device.name}</span>
             {syncActive && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ delay: 0.5 + i * 0.1 }}
-                className="absolute -top-6 sm:-top-8 bg-green-500 text-white text-[10px] sm:text-xs px-1 sm:px-2 py-0.5 rounded-full"
+                className="absolute -top-8 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full"
               >
                 Synced!
               </motion.div>
@@ -416,13 +405,13 @@ const CloudStorageDemo = () => {
             transition={{ delay: 0.3 + i * 0.1 }}
             className="absolute"
             style={{
-              left: `calc(50% + ${(isMobile ? device.position.mobileX : device.position.x) / 2}px)`,
-              top: `calc(50% + ${(isMobile ? device.position.mobileY : device.position.y) / 2 - 20}px)`,
+              left: `calc(50% + ${device.position.x / 2}px)`,
+              top: `calc(50% + ${device.position.y / 2 - 20}px)`,
               transform: 'translate(-50%, -50%)'
             }}
           >
-            <div className="bg-white rounded-full p-0.5 sm:p-1 shadow-md">
-              <span className="text-sm sm:text-base md:text-lg">{fileTypes[i].icon}</span>
+            <div className="bg-white rounded-full p-1 shadow-md">
+              <span className="text-lg">{fileTypes[i].icon}</span>
             </div>
           </motion.div>
         ))}
@@ -443,7 +432,7 @@ const CloudStorageDemo = () => {
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white px-1 sm:px-2 py-0.5 sm:py-1 rounded-full shadow-sm text-[10px] sm:text-xs font-medium flex items-center gap-1"
+                className="bg-white px-2 py-1 rounded-full shadow-sm text-xs font-medium flex items-center gap-1"
               >
                 <span>{type.icon}</span>
                 <span>{type.label}</span>
@@ -457,19 +446,17 @@ const CloudStorageDemo = () => {
 };
 
 const DeadlineTrackerDemo = () => {
-  const isMobile = useIsMobile();
-  
   return (
-    <div className="relative w-full h-48 sm:h-56 md:h-64 mx-auto">
+    <div className="relative w-full h-64 mx-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`bg-white rounded-lg shadow-lg p-3 sm:p-4 ${isMobile ? 'max-w-full' : 'max-w-sm'} mx-auto`}
+        className="bg-white rounded-lg shadow-lg p-4 max-w-sm mx-auto"
       >
         {/* Calendar header */}
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <Calendar className="h-5 sm:h-6 w-5 sm:w-6 text-[#FA8072]" />
-          <span className="font-semibold text-sm sm:text-base">March 2024</span>
+        <div className="flex items-center justify-between mb-4">
+          <Calendar className="h-6 w-6 text-[#FA8072]" />
+          <span className="font-semibold">March 2024</span>
         </div>
 
         {/* Deadline items */}
@@ -484,7 +471,7 @@ const DeadlineTrackerDemo = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 + i * 0.2 }}
-              className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-50 rounded"
+              className="flex items-center justify-between p-2 bg-gray-50 rounded"
             >
               <div className="flex items-center gap-2">
                 <motion.div
@@ -492,14 +479,14 @@ const DeadlineTrackerDemo = () => {
                   transition={{ duration: 2, repeat: Infinity }}
                 >
                   {item.done ? (
-                    <CheckCircle className="h-3 sm:h-4 w-3 sm:w-4 text-green-500" />
+                    <CheckCircle className="h-4 w-4 text-green-500" />
                   ) : (
-                    <Clock className="h-3 sm:h-4 w-3 sm:w-4 text-[#FA8072]" />
+                    <Clock className="h-4 w-4 text-[#FA8072]" />
                   )}
                 </motion.div>
-                <span className="text-xs sm:text-sm">{item.task}</span>
+                <span className="text-sm">{item.task}</span>
               </div>
-              <span className="text-[10px] sm:text-xs text-gray-500">{item.date}</span>
+              <span className="text-xs text-gray-500">{item.date}</span>
             </motion.div>
           ))}
         </div>
@@ -511,7 +498,6 @@ const DeadlineTrackerDemo = () => {
 export const ResourceRecommendationDemo = () => {
   const [showResources, setShowResources] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const timer1 = setTimeout(() => setSelectedCourse(0), 1000);
@@ -541,11 +527,11 @@ export const ResourceRecommendationDemo = () => {
   };
 
   return (
-    <div className={`relative w-full ${isMobile ? 'h-80' : 'h-64'} mx-auto`}>
-      <div className={`${isMobile ? 'space-y-4' : 'flex gap-8'} items-start justify-center h-full`}>
+    <div className="relative w-full h-64 mx-auto">
+      <div className="flex gap-8 items-start justify-center h-full">
         {/* Your Courses */}
-        <div className={`space-y-2 ${isMobile ? 'w-full' : ''}`}>
-          <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-2 sm:mb-3">Your Courses</h3>
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-gray-600 mb-3">Your Courses</h3>
           {courses.map((course, i) => (
             <motion.div
               key={i}
@@ -553,48 +539,46 @@ export const ResourceRecommendationDemo = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
               onClick={() => setSelectedCourse(i)}
-              className={`cursor-pointer p-2 sm:p-3 rounded-lg transition-all ${
+              className={`cursor-pointer p-3 rounded-lg transition-all ${
                 selectedCourse === i 
                   ? 'bg-[#FA8072] text-white shadow-lg scale-105' 
                   : 'bg-gray-100 hover:bg-gray-200'
               }`}
             >
               <div className="flex items-center gap-2">
-                <span className="text-lg sm:text-xl md:text-2xl">{course.emoji}</span>
-                <span className="text-xs sm:text-sm font-medium">{course.name}</span>
+                <span className="text-2xl">{course.emoji}</span>
+                <span className="text-sm font-medium">{course.name}</span>
               </div>
             </motion.div>
           ))}
         </div>
 
         {/* AI Brain */}
-        {!isMobile && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 }}
+          className="relative"
+        >
           <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5 }}
-            className="relative"
+            animate={selectedCourse !== null ? { rotate: 360 } : {}}
+            transition={{ duration: 1 }}
           >
-            <motion.div
-              animate={selectedCourse !== null ? { rotate: 360 } : {}}
-              transition={{ duration: 1 }}
-            >
-              <Brain className="h-8 sm:h-10 md:h-12 w-8 sm:w-10 md:w-12 text-[#FA8072]" />
-            </motion.div>
-            {selectedCourse !== null && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="absolute inset-0 bg-[#FA8072] rounded-full opacity-20 blur-xl"
-              />
-            )}
+            <Brain className="h-12 w-12 text-[#FA8072]" />
           </motion.div>
-        )}
+          {selectedCourse !== null && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute inset-0 bg-[#FA8072] rounded-full opacity-20 blur-xl"
+            />
+          )}
+        </motion.div>
 
         {/* Recommended Resources */}
-        <div className={`space-y-2 ${isMobile ? 'w-full' : ''}`}>
-          <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-2 sm:mb-3">Recommended Resources</h3>
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-gray-600 mb-3">Recommended Resources</h3>
           <AnimatePresence mode="wait">
             {showResources && selectedCourse !== null && (
               <motion.div
@@ -610,14 +594,14 @@ export const ResourceRecommendationDemo = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 bg-gradient-to-r from-[#FFE4E1] to-white rounded-lg shadow-sm"
+                    className="flex items-center gap-3 p-2 bg-gradient-to-r from-[#FFE4E1] to-white rounded-lg shadow-sm"
                   >
-                    <span className="text-base sm:text-lg md:text-xl">{resourceIcons[resource as keyof typeof resourceIcons]}</span>
+                    <span className="text-xl">{resourceIcons[resource as keyof typeof resourceIcons]}</span>
                     <div className="flex-1">
-                      <div className="text-xs sm:text-sm font-medium text-gray-700">{resource}</div>
-                      <div className="text-[10px] sm:text-xs text-gray-500">Free resource</div>
+                      <div className="text-sm font-medium text-gray-700">{resource}</div>
+                      <div className="text-xs text-gray-500">Free resource</div>
                     </div>
-                    <Link className="h-3 sm:h-4 w-3 sm:w-4 text-[#FA8072]" />
+                    <Link className="h-4 w-4 text-[#FA8072]" />
                   </motion.div>
                 ))}
               </motion.div>
@@ -632,7 +616,6 @@ export const ResourceRecommendationDemo = () => {
 export const CollaborationDemo = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showFiles, setShowFiles] = useState(false);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const timer1 = setTimeout(() => setShowNotifications(true), 1000);
@@ -658,22 +641,22 @@ export const CollaborationDemo = () => {
   ];
 
   return (
-    <div className={`relative w-full ${isMobile ? 'h-80' : 'h-64'} mx-auto`}>
-      <div className={`${isMobile ? 'space-y-4' : 'flex gap-8'} items-center justify-center h-full`}>
+    <div className="relative w-full h-64 mx-auto">
+      <div className="flex gap-8 items-center justify-center h-full">
         {/* Study Group */}
         <div className="relative">
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
-            className={`bg-white rounded-lg shadow-lg p-3 sm:p-4 md:p-6 ${isMobile ? 'w-full' : 'w-64'}`}
+            className="bg-white rounded-lg shadow-lg p-6 w-64"
           >
-            <div className="flex items-center gap-2 mb-2 sm:mb-4">
-              <Users className="h-4 sm:h-5 w-4 sm:w-5 text-[#FA8072]" />
-              <span className="font-semibold text-xs sm:text-sm">Study Group: CS 101</span>
+            <div className="flex items-center gap-2 mb-4">
+              <Users className="h-5 w-5 text-[#FA8072]" />
+              <span className="font-semibold text-sm">Study Group: CS 101</span>
             </div>
             
             {/* User avatars */}
-            <div className="flex -space-x-2 mb-2 sm:mb-4">
+            <div className="flex -space-x-2 mb-4">
               {users.map((user, i) => (
                 <motion.div
                   key={user.name}
@@ -683,7 +666,7 @@ export const CollaborationDemo = () => {
                   className="relative"
                 >
                   <div 
-                    className="w-8 sm:w-10 h-8 sm:h-10 rounded-full flex items-center justify-center text-sm sm:text-lg border-2 border-white"
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 border-white"
                     style={{ backgroundColor: user.color }}
                   >
                     {user.avatar}
@@ -691,7 +674,7 @@ export const CollaborationDemo = () => {
                   <motion.div
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
-                    className="absolute -bottom-1 -right-1 w-2 sm:w-3 h-2 sm:h-3 bg-green-500 rounded-full border-2 border-white"
+                    className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"
                   />
                 </motion.div>
               ))}
@@ -700,9 +683,9 @@ export const CollaborationDemo = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
                 whileHover={{ scale: 1.1 }}
-                className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-white hover:bg-gray-300 transition-colors"
+                className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-white hover:bg-gray-300 transition-colors"
               >
-                <UserPlus className="h-3 sm:h-4 w-3 sm:w-4 text-gray-600" />
+                <UserPlus className="h-4 w-4 text-gray-600" />
               </motion.button>
             </div>
 
@@ -720,7 +703,7 @@ export const CollaborationDemo = () => {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.2 }}
-                      className="text-[10px] sm:text-xs text-gray-600 flex items-center gap-1"
+                      className="text-xs text-gray-600 flex items-center gap-1"
                     >
                       <span className="font-semibold">{notif.user}</span>
                       <span>{notif.action}</span>
@@ -733,46 +716,44 @@ export const CollaborationDemo = () => {
         </div>
 
         {/* Shared Files */}
-        {!isMobile && (
-          <AnimatePresence>
-            {showFiles && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0, rotate: -180 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ type: 'spring' }}
-                className="relative"
-              >
-                <Share2 className="h-8 sm:h-10 md:h-12 w-8 sm:w-10 md:w-12 text-[#FA8072]" />
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ scale: 0, x: 0, y: 0 }}
-                    animate={{ 
-                      scale: 1,
-                      x: (i - 1) * 50,
-                      y: -30
-                    }}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                    className="absolute top-0 left-1/2 -translate-x-1/2"
-                  >
-                    <FileText className="h-4 sm:h-5 md:h-6 w-4 sm:w-5 md:w-6 text-[#FA8072]" />
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        )}
+        <AnimatePresence>
+          {showFiles && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0, rotate: -180 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ type: 'spring' }}
+              className="relative"
+            >
+              <Share2 className="h-12 w-12 text-[#FA8072]" />
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  initial={{ scale: 0, x: 0, y: 0 }}
+                  animate={{ 
+                    scale: 1,
+                    x: (i - 1) * 50,
+                    y: -30
+                  }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  className="absolute top-0 left-1/2 -translate-x-1/2"
+                >
+                  <FileText className="h-6 w-6 text-[#FA8072]" />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Shared folder */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className={`bg-gradient-to-br from-[#FFE4E1] to-white rounded-lg shadow-lg p-3 sm:p-4 md:p-6 ${isMobile ? 'w-full' : ''}`}
+          className="bg-gradient-to-br from-[#FFE4E1] to-white rounded-lg shadow-lg p-6"
         >
-          <div className="flex items-center gap-2 mb-2 sm:mb-3">
-            <FolderOpen className="h-4 sm:h-5 w-4 sm:w-5 text-[#FA8072]" />
-            <span className="font-semibold text-xs sm:text-sm">Shared Materials</span>
+          <div className="flex items-center gap-2 mb-3">
+            <FolderOpen className="h-5 w-5 text-[#FA8072]" />
+            <span className="font-semibold text-sm">Shared Materials</span>
           </div>
           
           <div className="space-y-2">
@@ -782,20 +763,20 @@ export const CollaborationDemo = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 + i * 0.1 }}
-                className="flex items-center gap-2 text-[10px] sm:text-xs text-gray-700"
+                className="flex items-center gap-2 text-xs text-gray-700"
               >
                 <motion.div
                   animate={showFiles ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ delay: i * 0.2 }}
                 >
-                  <FileText className="h-3 sm:h-4 w-3 sm:w-4 text-[#FA8072]" />
+                  <FileText className="h-4 w-4 text-[#FA8072]" />
                 </motion.div>
                 <span>{item}</span>
                 <motion.span
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1 + i * 0.1 }}
-                  className="ml-auto text-[8px] sm:text-[10px] text-gray-500"
+                  className="ml-auto text-[10px] text-gray-500"
                 >
                   {4 - i} users
                 </motion.span>
@@ -810,7 +791,6 @@ export const CollaborationDemo = () => {
 
 const ProgressTrackerDemo = () => {
   const [showImprovement, setShowImprovement] = useState(false);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const timer = setTimeout(() => setShowImprovement(true), 2000);
@@ -824,64 +804,62 @@ const ProgressTrackerDemo = () => {
   ];
 
   return (
-    <div className={`relative w-full ${isMobile ? 'h-80' : 'h-64'} mx-auto ${isMobile ? 'space-y-4' : 'flex gap-6'} items-center justify-center`}>
+    <div className="relative w-full h-64 mx-auto flex gap-6 items-center justify-center">
       {/* Before CourseFlow */}
       <motion.div
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
-        className={`bg-gray-100 rounded-lg shadow-lg p-3 sm:p-4 ${isMobile ? 'w-full' : 'w-48'}`}
+        className="bg-gray-100 rounded-lg shadow-lg p-4 w-48"
       >
-        <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-2 sm:mb-3">Before CourseFlow</h3>
+        <h3 className="text-sm font-semibold text-gray-600 mb-3">Before CourseFlow</h3>
         <div className="space-y-2">
           {grades.map((grade, i) => (
             <div key={i} className="flex justify-between items-center">
-              <span className="text-[10px] sm:text-xs text-gray-600">{grade.subject}:</span>
-              <span className="text-base sm:text-lg font-bold text-red-500">{grade.before}</span>
+              <span className="text-xs text-gray-600">{grade.subject}:</span>
+              <span className="text-lg font-bold text-red-500">{grade.before}</span>
             </div>
           ))}
         </div>
-        <div className="mt-2 sm:mt-3 text-center">
-          <span className="text-[10px] sm:text-xs text-gray-500">GPA: 2.3</span>
+        <div className="mt-3 text-center">
+          <span className="text-xs text-gray-500">GPA: 2.3</span>
         </div>
       </motion.div>
 
       {/* Arrow */}
-      {!isMobile && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-[#FA8072]"
-        >
-          <ChevronRight className="h-6 sm:h-8 w-6 sm:w-8" />
-        </motion.div>
-      )}
+      <motion.div
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5 }}
+        className="text-[#FA8072]"
+      >
+        <ChevronRight className="h-8 w-8" />
+      </motion.div>
 
       {/* After CourseFlow */}
       <motion.div
         initial={{ opacity: 0, x: 30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.3 }}
-        className={`bg-gradient-to-br from-[#FFE4E1] to-white rounded-lg shadow-lg p-3 sm:p-4 ${isMobile ? 'w-full' : 'w-48'}`}
+        className="bg-gradient-to-br from-[#FFE4E1] to-white rounded-lg shadow-lg p-4 w-48"
       >
-        <h3 className="text-xs sm:text-sm font-semibold text-[#FA8072] mb-2 sm:mb-3">With CourseFlow</h3>
+        <h3 className="text-sm font-semibold text-[#FA8072] mb-3">With CourseFlow</h3>
         <div className="space-y-2">
           {grades.map((grade, i) => (
             <div key={i} className="flex justify-between items-center">
-              <span className="text-[10px] sm:text-xs text-gray-600">{grade.subject}:</span>
+              <span className="text-xs text-gray-600">{grade.subject}:</span>
               <div className="flex items-center gap-1">
                 {showImprovement && (
                   <motion.span
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: i * 0.1 }}
-                    className="text-base sm:text-lg font-bold text-green-600"
+                    className="text-lg font-bold text-green-600"
                   >
                     {grade.after}
                   </motion.span>
                 )}
                 {!showImprovement && (
-                  <span className="text-base sm:text-lg font-bold text-gray-400">?</span>
+                  <span className="text-lg font-bold text-gray-400">?</span>
                 )}
                 {showImprovement && (
                   <motion.div
@@ -889,7 +867,7 @@ const ProgressTrackerDemo = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + i * 0.1 }}
                   >
-                    <TrendingUp className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-green-500" />
+                    <TrendingUp className="h-3 w-3 text-green-500" />
                   </motion.div>
                 )}
               </div>
@@ -900,9 +878,9 @@ const ProgressTrackerDemo = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: showImprovement ? 1 : 0 }}
           transition={{ delay: 1 }}
-          className="mt-2 sm:mt-3 text-center"
+          className="mt-3 text-center"
         >
-          <span className="text-[10px] sm:text-xs font-semibold text-[#FA8072]">GPA: 3.6 ✨</span>
+          <span className="text-xs font-semibold text-[#FA8072]">GPA: 3.6 ✨</span>
         </motion.div>
       </motion.div>
 
@@ -912,7 +890,7 @@ const ProgressTrackerDemo = () => {
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1.5 }}
-          className={`${isMobile ? 'relative' : 'absolute top-0 right-0'} bg-green-500 text-white text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-full`}
+          className="absolute top-0 right-0 bg-green-500 text-white text-xs px-3 py-1 rounded-full"
         >
           +56% improvement!
         </motion.div>
@@ -1006,22 +984,22 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
         >
           <div className="absolute inset-0 bg-grid-pattern opacity-5" />
           
-          <div className="relative h-full flex flex-col items-center justify-center p-4 sm:p-6 md:p-8">
+          <div className="relative h-full flex flex-col items-center justify-center p-8">
             <motion.div
               key={currentIndex}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="max-w-4xl w-full px-4"
+              className="max-w-4xl w-full"
             >
               {/* Title and description */}
-              <div className="text-center mb-4 sm:mb-6 md:mb-8">
+              <div className="text-center mb-8">
                 <motion.h2
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 sm:mb-4"
+                  className="text-4xl font-bold text-gray-900 mb-4"
                 >
                   {currentBenefit.title}
                 </motion.h2>
@@ -1030,7 +1008,7 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4"
+                  className="text-xl text-gray-600 max-w-2xl mx-auto"
                 >
                   {currentBenefit.description}
                 </motion.p>
@@ -1041,7 +1019,7 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 }}
-                className="mb-6 sm:mb-8 md:mb-12"
+                className="mb-12"
               >
                 <Demo />
               </motion.div>
@@ -1051,17 +1029,17 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="flex items-center justify-center gap-1 sm:gap-2 mb-4 sm:mb-6 md:mb-8"
+                className="flex items-center justify-center gap-2 mb-8"
               >
                 {benefits.map((_, index) => (
                   <div
                     key={index}
-                    className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+                    className={`h-2 rounded-full transition-all duration-300 ${
                       index === currentIndex
-                        ? 'w-6 sm:w-8 bg-[#FA8072]'
+                        ? 'w-8 bg-[#FA8072]'
                         : index < currentIndex
-                        ? 'w-1.5 sm:w-2 bg-[#FFB6B0]'
-                        : 'w-1.5 sm:w-2 bg-gray-300'
+                        ? 'w-2 bg-[#FFB6B0]'
+                        : 'w-2 bg-gray-300'
                     }`}
                   />
                 ))}
@@ -1076,17 +1054,17 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
               >
                 <Button
                   onClick={handleNext}
-                  className="px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all bg-[#FA8072] hover:bg-[#FF6B6B] text-white border-0"
+                  className="px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all bg-[#FA8072] hover:bg-[#FF6B6B] text-white border-0"
                 >
                   {currentIndex === benefits.length - 1 ? (
                     <>
                       Get Started
-                      <Sparkles className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
+                      <Sparkles className="ml-2 h-5 w-5" />
                     </>
                   ) : (
                     <>
                       Next
-                      <ChevronRight className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
+                      <ChevronRight className="ml-2 h-5 w-5" />
                     </>
                   )}
                 </Button>
@@ -1097,7 +1075,7 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               transition={{ delay: 0.7 }}
-              className="absolute bottom-4 sm:bottom-8 text-xs sm:text-sm text-gray-500"
+              className="absolute bottom-8 text-sm text-gray-500"
             >
               Press Space or → to continue
             </motion.div>
@@ -1114,7 +1092,7 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute top-10 sm:top-20 left-10 sm:left-20 w-32 sm:w-48 md:w-64 h-32 sm:h-48 md:h-64 bg-[#FFB6B0] rounded-full blur-3xl opacity-20"
+            className="absolute top-20 left-20 w-64 h-64 bg-[#FFB6B0] rounded-full blur-3xl opacity-20"
           />
           <motion.div
             animate={{
@@ -1126,7 +1104,7 @@ export function BenefitsShowcaseAnimated({ onComplete }: BenefitsShowcaseProps) 
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute bottom-10 sm:bottom-20 right-10 sm:right-20 w-48 sm:w-64 md:w-96 h-48 sm:h-64 md:h-96 bg-[#FFDAB9] rounded-full blur-3xl opacity-20"
+            className="absolute bottom-20 right-20 w-96 h-96 bg-[#FFDAB9] rounded-full blur-3xl opacity-20"
           />
         </motion.div>
       )}

@@ -149,12 +149,12 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 px-4">
         <div className="container mx-auto text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-bold mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6"
           >
             Your Academic Success
             <br />
@@ -167,7 +167,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto"
+            className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto px-4"
           >
             The all-in-one platform that organizes your courses, powers your study sessions, 
             and helps you achieve better grades with AI assistance.
@@ -179,18 +179,18 @@ export default function LandingPage() {
             transition={{ delay: 0.2 }}
             className="flex flex-col md:flex-row gap-4 justify-center mb-8"
           >
-            <Button size="lg" className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white px-8 py-6 text-lg" asChild>
+            <Button size="lg" className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" asChild>
               <Link href="/register">
                 Start Free Trial
-                <Sparkles className="ml-2 h-5 w-5" />
+                <Sparkles className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="px-8 py-6 text-lg" onClick={() => {
+            <Button size="lg" variant="outline" className="px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" onClick={() => {
               const element = document.getElementById('features');
               element?.scrollIntoView({ behavior: 'smooth' });
             }}>
               See Features
-              <ChevronRight className="ml-2 h-5 w-5" />
+              <ChevronRight className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
             </Button>
           </motion.div>
 
@@ -206,19 +206,19 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4">
+      <section id="features" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="text-center mb-8 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
               Features that Power Your
               <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> Success</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               See how CourseFlow transforms your academic journey with intelligent features
             </p>
           </div>
 
-          <div className="space-y-24">
+          <div className="space-y-12 md:space-y-24">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -226,16 +226,16 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-12`}
+                className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-8 md:gap-12`}
               >
                 <div className="flex-1 max-w-xl">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 bg-[#FFE4E1] rounded-lg">
-                      <feature.icon className="h-8 w-8 text-[#FA8072]" />
+                    <div className="p-2 sm:p-3 bg-[#FFE4E1] rounded-lg">
+                      <feature.icon className="h-6 sm:h-8 w-6 sm:w-8 text-[#FA8072]" />
                     </div>
-                    <h3 className="text-3xl font-bold">{feature.title}</h3>
+                    <h3 className="text-2xl sm:text-3xl font-bold">{feature.title}</h3>
                   </div>
-                  <p className="text-lg text-gray-600 mb-6">{feature.description}</p>
+                  <p className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6">{feature.description}</p>
                   <ul className="space-y-3">
                     <li className="flex items-center gap-2">
                       <Check className="h-5 w-5 text-green-500" />
@@ -252,7 +252,7 @@ export default function LandingPage() {
                   </ul>
                 </div>
                 <div className="flex-1 max-w-2xl w-full">
-                  <div className="bg-white rounded-xl shadow-xl p-8">
+                  <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 md:p-8 overflow-hidden">
                     <feature.Demo />
                   </div>
                 </div>
@@ -263,19 +263,19 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 px-4 bg-white/50">
+      <section id="testimonials" className="py-12 md:py-20 px-4 bg-white/50">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="text-center mb-8 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
               Students Love
               <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> CourseFlow</span>
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg sm:text-xl text-gray-600">
               Join thousands of students achieving their academic goals
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
@@ -302,19 +302,19 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4">
+      <section id="pricing" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="text-center mb-8 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
               Simple, Transparent
               <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> Pricing</span>
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg sm:text-xl text-gray-600">
               Choose the plan that fits your needs
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             {pricingPlans.map((plan, index) => (
               <motion.div
                 key={index}
@@ -365,27 +365,27 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-[#FA8072] to-[#FF6B6B]">
+      <section className="py-12 md:py-20 px-4 bg-gradient-to-r from-[#FA8072] to-[#FF6B6B]">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 md:mb-6">
             Ready to Transform Your Studies?
           </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
             Join thousands of students who are already achieving better grades with CourseFlow
           </p>
-          <Button size="lg" className="bg-white text-[#FA8072] hover:bg-gray-100 px-8 py-6 text-lg" asChild>
+          <Button size="lg" className="bg-white text-[#FA8072] hover:bg-gray-100 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg" asChild>
             <Link href="/register">
               Start Your Free Trial
-              <Sparkles className="ml-2 h-5 w-5" />
+              <Sparkles className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
             </Link>
           </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 bg-gray-900 text-white">
+      <footer className="py-8 md:py-12 px-4 bg-gray-900 text-white">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <GraduationCap className="h-6 w-6" />

@@ -40,24 +40,13 @@ export function CourseCard({
       )}
       onClick={() => onClick?.(course)}
     >
-      {/* Beautiful gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-[#FFF5F5] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
-      {/* Color accent */}
+      {/* Color accent bar at top */}
       <div 
-        className="absolute top-0 left-0 right-0 h-1 group-hover:h-1.5 transition-all duration-300"
+        className="absolute top-0 left-0 right-0 h-2 transition-all duration-300"
         style={{ backgroundColor: course.color || '#FA8072' }}
       />
       
-      {/* Gradient overlay */}
-      <div 
-        className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
-        style={{
-          background: `linear-gradient(135deg, ${course.color}20 0%, transparent 100%)`
-        }}
-      />
-      
-      <Card className="border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm relative">
+      <Card className="border-0 bg-white dark:bg-gray-800 relative">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">

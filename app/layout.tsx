@@ -29,20 +29,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* Preconnect to Supabase */}
-        <link rel="preconnect" href="https://your-supabase-url.supabase.co" />
-        <link rel="dns-prefetch" href="https://your-supabase-url.supabase.co" />
-        
-        {/* Preload critical fonts */}
-        <link
-          rel="preload"
-          href="/fonts/inter-var-latin.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-      </head>
       <body className={inter.className}>{children}</body>
     </html>
   )

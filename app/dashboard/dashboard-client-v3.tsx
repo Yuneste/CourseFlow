@@ -32,8 +32,10 @@ import {
   Calendar,
   Target,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  BarChart3
 } from 'lucide-react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 interface DashboardClientProps {
@@ -41,34 +43,25 @@ interface DashboardClientProps {
   userProfile: User;
 }
 
-// Animated stats card
+// Compact stats card
 const StatsCard = ({ title, value, icon: Icon, delay }: any) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.5 }}
-    whileHover={{ scale: 1.05, y: -5 }}
-    className="relative overflow-hidden group"
+    className="relative"
   >
-    <Card className="p-6 border-0 bg-white dark:bg-gray-900 relative overflow-hidden">
-      {/* Gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#FA8072]/5 to-[#FF6B6B]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <div className="p-3 bg-[#FFE4E1] dark:bg-[#FA8072]/20 rounded-xl">
-            <Icon className="h-6 w-6 text-[#FA8072]" />
-          </div>
-          <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute -top-8 -right-8 w-32 h-32 bg-[#FA8072] rounded-full opacity-5"
-          />
+    <Card className="p-4 border-0 bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow">
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-[#FFE4E1] dark:bg-[#FA8072]/20 rounded-lg">
+          <Icon className="h-5 w-5 text-[#FA8072]" />
         </div>
-        <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-          {value}
-        </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
+        <div>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{title}</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            {value}
+          </h3>
+        </div>
       </div>
     </Card>
   </motion.div>
@@ -186,7 +179,6 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   };
 
   // Calculate stats
-  const totalCredits = courses.reduce((sum, course) => sum + (course.credits || 0), 0);
   const activeCourses = courses.length;
   const completedCourses = 0; // TODO: Add completion tracking later
 
@@ -218,60 +210,43 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       <div className="container mx-auto px-4 py-8 space-y-8">
         <WelcomeMessage userName={userProfile.full_name || 'Student'} />
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatsCard
-            title="Active Courses"
-            value={activeCourses}
-            icon={BookOpen}
-            delay={0.1}
-          />
-          <StatsCard
-            title="Total Credits"
-            value={totalCredits}
-            icon={TrendingUp}
-            delay={0.2}
-          />
-          <StatsCard
-            title="Completed"
-            value={completedCourses}
-            icon={Target}
-            delay={0.3}
-          />
-          <StatsCard
-            title="Current Term"
-            value={systemInfo.currentTerm}
-            icon={Calendar}
-            delay={0.4}
-          />
+        {/* Stats Grid - Compact */}
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-4 justify-center">
+            <StatsCard
+              title="Active Courses"
+              value={activeCourses}
+              icon={BookOpen}
+              delay={0.1}
+            />
+            <StatsCard
+              title="Completed"
+              value={completedCourses}
+              icon={Target}
+              delay={0.2}
+            />
+            <StatsCard
+              title="Current Term"
+              value={systemInfo.currentTerm}
+              icon={Calendar}
+              delay={0.3}
+            />
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="flex justify-center"
+          >
+            <Link href="/dashboard/stats">
+              <Button variant="outline" size="sm" className="text-[#FA8072] border-[#FA8072] hover:bg-[#FFF5F5]">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                View Statistics
+              </Button>
+            </Link>
+          </motion.div>
         </div>
 
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex flex-wrap gap-4 justify-center mb-12"
-        >
-          <Button
-            size="lg"
-            onClick={() => setShowCreateForm(true)}
-            className="px-8 py-6 text-lg"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            Add New Course
-          </Button>
-          
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() => router.push('/dashboard/stats')}
-            className="px-8 py-6 text-lg"
-          >
-            View Statistics
-            <ChevronRight className="h-5 w-5 ml-2" />
-          </Button>
-        </motion.div>
 
         {/* Error display */}
         <AnimatePresence>
@@ -298,6 +273,19 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
               My Courses
               <Sparkles className="h-6 w-6 text-[#FA8072]" />
             </h2>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Button
+                onClick={() => setShowCreateForm(true)}
+                className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] text-white hover:from-[#FF6B6B] hover:to-[#FA8072] rounded-md px-4 py-4"
+                size="icon"
+              >
+                <Plus className="h-5 w-5" />
+              </Button>
+            </motion.div>
           </div>
 
           <CourseList
