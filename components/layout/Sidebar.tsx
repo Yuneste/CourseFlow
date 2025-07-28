@@ -117,7 +117,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-40 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300",
+          "fixed top-0 left-0 z-40 h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-r border-gray-200 dark:border-gray-800 transition-all duration-300 shadow-xl",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           isCollapsed ? "w-16" : "w-64"
         )}
@@ -183,14 +183,17 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
-                    "hover:bg-gray-100 dark:hover:bg-gray-800",
-                    isActive(item.href) && "bg-primary/10 text-primary",
+                    "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
+                    "hover:bg-[#FFF5F5] dark:hover:bg-gray-800 hover:scale-105",
+                    isActive(item.href) && "bg-[#FFE4E1] dark:bg-[#FA8072]/20 text-[#FA8072] font-medium shadow-sm",
                     isCollapsed && "justify-center"
                   )}
                   title={isCollapsed ? item.title : undefined}
                 >
-                  <Icon className="h-5 w-5 flex-shrink-0" />
+                  <Icon className={cn(
+                    "h-5 w-5 flex-shrink-0",
+                    isActive(item.href) ? "text-[#FA8072]" : "text-gray-600 dark:text-gray-400"
+                  )} />
                   {!isCollapsed && <span>{item.title}</span>}
                 </Link>
               );
@@ -206,14 +209,17 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
-                    "hover:bg-gray-100 dark:hover:bg-gray-800",
-                    isActive(item.href) && "bg-primary/10 text-primary",
+                    "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
+                    "hover:bg-[#FFF5F5] dark:hover:bg-gray-800 hover:scale-105",
+                    isActive(item.href) && "bg-[#FFE4E1] dark:bg-[#FA8072]/20 text-[#FA8072] font-medium shadow-sm",
                     isCollapsed && "justify-center"
                   )}
                   title={isCollapsed ? item.title : undefined}
                 >
-                  <Icon className="h-5 w-5 flex-shrink-0" />
+                  <Icon className={cn(
+                    "h-5 w-5 flex-shrink-0",
+                    isActive(item.href) ? "text-[#FA8072]" : "text-gray-600 dark:text-gray-400"
+                  )} />
                   {!isCollapsed && <span>{item.title}</span>}
                 </Link>
               );

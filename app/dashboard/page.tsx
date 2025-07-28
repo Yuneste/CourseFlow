@@ -31,38 +31,20 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Geometric pattern background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]">
-        {/* Diamond pattern */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="diamond-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#FA8072" strokeWidth="1"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#diamond-pattern)" />
-        </svg>
+    <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
+      {/* Beautiful animated background */}
+      <div className="absolute inset-0">
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]"></div>
         
-        {/* Subtle animated elements */}
-        <div className="absolute top-20 left-20 w-64 h-64 bg-[#FFE4E1] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
-        <div className="absolute top-40 right-20 w-72 h-72 bg-[#FFF0ED] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-[#FFEBE7] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+        {/* Animated blobs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFE4E1] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-[#FFDAB9] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-10 left-1/2 w-72 h-72 bg-[#FFB6B0] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
       
       {/* Content */}
-      <div className="relative z-10 container mx-auto py-6">
-        <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
-            Dashboard
-          </h1>
-          {profile?.full_name && (
-            <p className="text-gray-600 mt-1">
-              Welcome back, {profile.full_name}!
-            </p>
-          )}
-        </div>
-        
+      <div className="relative z-10">
         <DashboardClient 
           initialCourses={courses || []} 
           userProfile={profile}

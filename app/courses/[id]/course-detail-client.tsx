@@ -310,9 +310,17 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
+    <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
+      {/* Beautiful animated background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFE4E1] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-[#FFDAB9] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-10 left-1/2 w-72 h-72 bg-[#FFB6B0] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
       {/* Header */}
-      <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b sticky top-0 z-30">
+      <div className="relative z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b sticky top-0 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -320,17 +328,19 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                 variant="ghost"
                 size="sm"
                 onClick={() => router.push('/dashboard')}
-                className="hover:scale-105 transition-transform"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Courses
+                Back
               </Button>
-              <div className="flex items-center gap-3 animate-in fade-in duration-500">
-                <span className="text-4xl transform hover:rotate-12 transition-transform duration-300">
-                  {course.emoji}
-                </span>
+              <div className="flex items-center gap-4 animate-in fade-in duration-500">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-[#FFE4E1] dark:bg-[#FA8072]/20 rounded-2xl blur-xl" />
+                  <span className="text-5xl relative z-10">
+                    {course.emoji}
+                  </span>
+                </div>
                 <div>
-                  <h1 className="text-2xl font-bold">{course.name}</h1>
+                  <h1 className="text-3xl font-bold gradient-text">{course.name}</h1>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {course.code && `${course.code} • `}
                     {course.professor && `Prof. ${course.professor} • `}

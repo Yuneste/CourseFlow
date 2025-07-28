@@ -34,16 +34,19 @@ export function CourseCard({
     <div
       className={cn(
         'relative overflow-hidden transition-all duration-300 cursor-pointer group',
-        'hover:shadow-xl hover:scale-[1.03] hover:-translate-y-1',
+        'hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2',
         'active:scale-[0.98] active:shadow-md',
         className
       )}
       onClick={() => onClick?.(course)}
     >
-      {/* Color band at top */}
+      {/* Beautiful gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-[#FFF5F5] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      {/* Color accent */}
       <div 
-        className="absolute top-0 left-0 right-0 h-1 group-hover:h-2 transition-all duration-300"
-        style={{ backgroundColor: course.color }}
+        className="absolute top-0 left-0 right-0 h-1 group-hover:h-1.5 transition-all duration-300"
+        style={{ backgroundColor: course.color || '#FA8072' }}
       />
       
       {/* Gradient overlay */}
@@ -54,13 +57,14 @@ export function CourseCard({
         }}
       />
       
-      <Card className="border-0 bg-transparent">
+      <Card className="border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm relative">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <div className="relative">
+              <div className="absolute inset-0 bg-[#FFE4E1] dark:bg-[#FA8072]/20 rounded-2xl blur-xl opacity-60 group-hover:opacity-100 transition-opacity" />
               <span 
-                className="text-4xl drop-shadow-md transition-all duration-300 inline-block group-hover:scale-110 group-hover:rotate-6" 
+                className="text-5xl drop-shadow-lg transition-all duration-300 inline-block group-hover:scale-110 group-hover:rotate-6 relative z-10" 
                 role="img" 
                 aria-label="Course emoji"
               >
@@ -68,10 +72,10 @@ export function CourseCard({
               </span>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-lg line-clamp-1">{course.name}</h3>
+              <h3 className="font-bold text-xl line-clamp-1 text-gray-900 dark:text-white">{course.name}</h3>
               {course.code && (
-                <div className="text-sm text-muted-foreground mt-1">
-                  <span>{course.code}</span>
+                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  <span className="font-medium">{course.code}</span>
                 </div>
               )}
             </div>

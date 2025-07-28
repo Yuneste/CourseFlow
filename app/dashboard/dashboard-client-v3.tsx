@@ -48,21 +48,28 @@ const StatsCard = ({ title, value, icon: Icon, delay }: any) => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.5 }}
     whileHover={{ scale: 1.05, y: -5 }}
-    className="relative overflow-hidden"
+    className="relative overflow-hidden group"
   >
-    <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
-      <div className="flex items-center justify-between mb-2">
-        <Icon className="h-8 w-8 text-[#FA8072]" />
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-4 -right-4 w-24 h-24 bg-[#FA8072] rounded-full opacity-5"
-        />
+    <Card className="p-6 border-0 bg-white dark:bg-gray-900 relative overflow-hidden">
+      {/* Gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#FA8072]/5 to-[#FF6B6B]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="p-3 bg-[#FFE4E1] dark:bg-[#FA8072]/20 rounded-xl">
+            <Icon className="h-6 w-6 text-[#FA8072]" />
+          </div>
+          <motion.div
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute -top-8 -right-8 w-32 h-32 bg-[#FA8072] rounded-full opacity-5"
+          />
+        </div>
+        <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+          {value}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
       </div>
-      <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-        {value}
-      </h3>
-      <p className="text-sm text-gray-600 dark:text-gray-400">{title}</p>
     </Card>
   </motion.div>
 );
@@ -79,16 +86,16 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -30 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="mb-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mb-12 text-center"
     >
-      <h1 className="text-4xl font-bold mb-2">
-        <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
-          Welcome back, {userName}!
-        </span>
+      <h1 className="text-5xl md:text-6xl font-bold mb-4">
+        Welcome back,
+        <br />
+        <span className="gradient-text">{userName}!</span>
       </h1>
-      <p className="text-lg text-gray-600 dark:text-gray-400">{randomGreeting}</p>
+      <p className="text-xl text-gray-600 dark:text-gray-400">{randomGreeting}</p>
     </motion.div>
   );
 };
@@ -208,7 +215,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         )}
       </AnimatePresence>
 
-      <div className="space-y-8">
+      <div className="container mx-auto px-4 py-8 space-y-8">
         <WelcomeMessage userName={userProfile.full_name || 'Student'} />
 
         {/* Stats Grid */}
@@ -244,23 +251,25 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="flex flex-wrap gap-4 mb-8"
+          className="flex flex-wrap gap-4 justify-center mb-12"
         >
           <Button
+            size="lg"
             onClick={() => setShowCreateForm(true)}
-            className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] text-white hover:from-[#FF6B6B] hover:to-[#FA8072] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="px-8 py-6 text-lg"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-5 w-5 mr-2" />
             Add New Course
           </Button>
           
           <Button
+            size="lg"
             variant="outline"
             onClick={() => router.push('/dashboard/stats')}
-            className="hover:scale-105 transition-transform"
+            className="px-8 py-6 text-lg"
           >
             View Statistics
-            <ChevronRight className="h-4 w-4 ml-2" />
+            <ChevronRight className="h-5 w-5 ml-2" />
           </Button>
         </motion.div>
 
