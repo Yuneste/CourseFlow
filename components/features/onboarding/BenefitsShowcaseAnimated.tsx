@@ -308,16 +308,18 @@ const CloudStorageDemo = () => {
       </motion.div>
 
       {/* Tree structure connections with animated data */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none">
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
         {devices.map((device, i) => {
           const x = isMobile ? device.position.mobileX : device.position.x;
           const y = isMobile ? device.position.mobileY : device.position.y;
           
-          // Calculate positions relative to container center
-          const centerX = 200; // Center X in pixels
-          const centerY = 100; // Center Y in pixels for cloud
-          const deviceX = centerX + x;
-          const deviceY = centerY + y;
+          // Calculate positions as percentages of viewBox
+          const centerX = 50; // Center X as percentage
+          const centerY = 35; // Center Y as percentage (cloud position)
+          
+          // Convert pixel offsets to percentage offsets
+          const deviceX = centerX + (x / 4); // Scale down for viewBox
+          const deviceY = centerY + (y / 4); // Scale down for viewBox
           
           return (
             <g key={i}>
@@ -326,10 +328,10 @@ const CloudStorageDemo = () => {
                 x1={deviceX}
                 y1={deviceY}
                 x2={centerX}
-                y2={centerY + 20}
+                y2={centerY + 5}
                 stroke="#FA8072"
-                strokeWidth="2"
-                strokeDasharray="4 4"
+                strokeWidth="0.5"
+                strokeDasharray="1 1"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ 
                   pathLength: 1, 
@@ -344,7 +346,7 @@ const CloudStorageDemo = () => {
               {/* Animated dots along the line */}
               {syncActive && (
                 <motion.circle
-                  r="6"
+                  r="1.5"
                   fill={fileTypes[i].color}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: [0, 1, 0] }}
@@ -353,7 +355,7 @@ const CloudStorageDemo = () => {
                   <animateMotion
                     dur="2s"
                     repeatCount="indefinite"
-                    path={`M ${deviceX},${deviceY} L ${centerX},${centerY + 20}`}
+                    path={`M ${deviceX},${deviceY} L ${centerX},${centerY + 5}`}
                   />
                 </motion.circle>
               )}
