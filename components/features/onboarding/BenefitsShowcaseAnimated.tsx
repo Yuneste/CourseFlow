@@ -400,11 +400,15 @@ const CloudStorageDemo = () => {
         </motion.div>
       ))}
 
-      {/* File type indicators near devices */}
+      {/* File type indicators beside devices */}
       <AnimatePresence>
         {syncActive && devices.map((device, i) => {
           const x = isMobile ? device.position.mobileX : device.position.x;
           const y = isMobile ? device.position.mobileY : device.position.y;
+          
+          // Position file indicators to the side of devices
+          const offsetX = x > 0 ? 40 : x < 0 ? -40 : 0; // Right side for right devices, left for left
+          const offsetY = 0; // Keep at same vertical level as device
           
           return (
             <motion.div
@@ -415,8 +419,8 @@ const CloudStorageDemo = () => {
               transition={{ delay: 0.3 + i * 0.1 }}
               className="absolute"
               style={{
-                left: `calc(50% + ${x - (x > 0 ? 30 : x < 0 ? -30 : 0)}px)`,
-                top: `calc(50% + ${y - 30}px)`,
+                left: `calc(50% + ${x + offsetX}px)`,
+                top: `calc(50% + ${y + offsetY}px)`,
                 transform: 'translate(-50%, -50%)'
               }}
             >
