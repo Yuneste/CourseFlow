@@ -286,15 +286,15 @@ const CloudStorageDemo = () => {
 
   return (
     <div className="relative w-full h-48 sm:h-56 md:h-64 mx-auto">
-      {/* Cloud positioned higher and to the left */}
+      {/* Cloud at the TOP */}
       <motion.div
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
         className="absolute"
         style={{
           left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%) translate(-10px, -60px)'
+          top: '20%',
+          transform: 'translate(-50%, -50%)'
         }}
       >
         <Cloud className="h-16 sm:h-20 md:h-24 w-16 sm:w-20 md:w-24 text-[#FA8072]" />
@@ -319,12 +319,15 @@ const CloudStorageDemo = () => {
           const y = isMobile ? device.position.mobileY : device.position.y;
           
           // Calculate positions as percentages of viewBox
-          const cloudX = 47; // Cloud X position (slightly left)
-          const cloudY = 25; // Cloud Y position (higher up)
+          const cloudX = 50; // Cloud X position (centered)
+          const cloudY = 20; // Cloud Y position (at the top)
           
           // Convert pixel offsets to percentage offsets
           const deviceX = 50 + (x / 4); // Device positions from center
           const deviceY = 50 + (y / 4); // Device positions from center
+          
+          // Shift lines horizontally to the right
+          const lineOffsetX = 5; // Shift lines 5% to the right
           
           return (
             <g key={i}>
@@ -332,8 +335,8 @@ const CloudStorageDemo = () => {
               <motion.line
                 x1={deviceX}
                 y1={deviceY}
-                x2={cloudX + 3}
-                y2={cloudY + 10}
+                x2={cloudX + lineOffsetX}
+                y2={cloudY + 5}
                 stroke="#FA8072"
                 strokeWidth="0.5"
                 strokeDasharray="1 1"
@@ -360,7 +363,7 @@ const CloudStorageDemo = () => {
                   <animateMotion
                     dur="2s"
                     repeatCount="indefinite"
-                    path={`M ${deviceX},${deviceY} L ${cloudX + 3},${cloudY + 10}`}
+                    path={`M ${deviceX},${deviceY} L ${cloudX + lineOffsetX},${cloudY + 5}`}
                   />
                 </motion.circle>
               )}
@@ -407,15 +410,16 @@ const CloudStorageDemo = () => {
         </motion.div>
       ))}
 
-      {/* File type indicators beside devices */}
+      {/* File type indicators BETWEEN lines and devices */}
       <AnimatePresence>
         {syncActive && devices.map((device, i) => {
           const x = isMobile ? device.position.mobileX : device.position.x;
           const y = isMobile ? device.position.mobileY : device.position.y;
           
-          // Position file indicators to the side of devices
-          const offsetX = x > 0 ? 40 : x < 0 ? -40 : 0; // Right side for right devices, left for left
-          const offsetY = 0; // Keep at same vertical level as device
+          // Position file indicators between lines and devices
+          // Lines are at center, devices are at x,y, so place icons at midpoint
+          const iconX = x / 2; // Halfway between center and device
+          const iconY = y / 2 - 20; // Halfway up, slightly higher
           
           return (
             <motion.div
@@ -426,8 +430,8 @@ const CloudStorageDemo = () => {
               transition={{ delay: 0.3 + i * 0.1 }}
               className="absolute"
               style={{
-                left: `calc(50% + ${x + offsetX}px)`,
-                top: `calc(50% + ${y + offsetY}px)`,
+                left: `calc(50% + ${iconX}px)`,
+                top: `calc(50% + ${iconY}px)`,
                 transform: 'translate(-50%, -50%)'
               }}
             >
