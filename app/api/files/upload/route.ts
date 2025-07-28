@@ -100,6 +100,25 @@ export async function POST(req: NextRequest) {
         // For MVP, all content is considered valid
         const isAcademicContent = true;
 
+        // Check for duplicate file in the same course
+        if (fileHash && courseId) {
+          const { data: existingFile } = await supabase
+            .from('files')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('course_id', courseId)
+            .eq('file_hash', fileHash)
+            .single();
+
+          if (existingFile) {
+            uploadResults.push({ 
+              error: 'This file already exists in this course', 
+              filename: file.name 
+            });
+            continue;
+          }
+        }
+
         // Categorize the file
         const aiCategory = categorizeFile(file.name);
         const categoryFolder = getCategoryFolder(aiCategory);

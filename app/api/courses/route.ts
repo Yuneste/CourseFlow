@@ -176,26 +176,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create directory structure for the course
-    // In Supabase Storage, directories are created automatically when files are uploaded
-    // So we'll create placeholder files for each category
-    const categories = ['Lectures', 'Assignments', 'Notes', 'Exams', 'Others'];
-    const placeholderContent = new Blob([`${course.name} - ${course.term}`], { type: 'text/plain' });
+    // Create default folder structure for the course
+    const defaultFolders = [
+      { name: 'Lectures', display_order: 1, is_special: false },
+      { name: 'Assignments', display_order: 2, is_special: false },
+      { name: 'Notes', display_order: 3, is_special: false },
+      { name: 'Exams', display_order: 4, is_special: false },
+      { name: 'Documents', display_order: 5, is_special: false },
+      { name: 'Resources', display_order: 6, is_special: true },
+    ];
     
-    for (const category of categories) {
-      const placeholderPath = `${user.id}/${course.id}/${category}/.placeholder`;
-      
-      try {
-        await supabase.storage
-          .from('user-files')
-          .upload(placeholderPath, placeholderContent, {
-            contentType: 'text/plain',
-            upsert: true,
-          });
-      } catch (storageError) {
-        // Log but don't fail course creation if placeholder creation fails
-        console.error(`Failed to create placeholder for ${category}:`, storageError);
-      }
+    const folderData = defaultFolders.map(folder => ({
+      course_id: course.id,
+      name: folder.name,
+      path: folder.name.toLowerCase(),
+      parent_id: null,
+      display_order: folder.display_order,
+      is_special: folder.is_special,
+    }));
+    
+    const { error: folderError } = await supabase
+      .from('course_folders')
+      .insert(folderData);
+    
+    if (folderError) {
+      console.error('Error creating default folders:', folderError);
+      // Don't fail course creation if folder creation fails
     }
 
     return NextResponse.json(course, { status: 201 });

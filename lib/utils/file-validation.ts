@@ -19,11 +19,26 @@ export const ALLOWED_MIME_TYPES = {
   // Text
   'text/plain': { ext: '.txt', category: 'text' },
   'text/markdown': { ext: '.md', category: 'text' },
+  'text/html': { ext: '.html', category: 'text' },
+  'text/css': { ext: '.css', category: 'text' },
+  'text/javascript': { ext: '.js', category: 'text' },
+  'application/javascript': { ext: '.js', category: 'text' },
+  'application/json': { ext: '.json', category: 'text' },
+  'text/xml': { ext: '.xml', category: 'text' },
   
   // Spreadsheets
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { ext: '.xlsx', category: 'spreadsheet' },
   'application/vnd.ms-excel': { ext: '.xls', category: 'spreadsheet' },
   'text/csv': { ext: '.csv', category: 'spreadsheet' },
+  
+  // Archives (for downloading course folders)
+  'application/zip': { ext: '.zip', category: 'archive' },
+  'application/x-rar-compressed': { ext: '.rar', category: 'archive' },
+  
+  // Videos (common lecture formats)
+  'video/mp4': { ext: '.mp4', category: 'video' },
+  'video/webm': { ext: '.webm', category: 'video' },
+  'video/quicktime': { ext: '.mov', category: 'video' },
 } as const;
 
 // File size limits

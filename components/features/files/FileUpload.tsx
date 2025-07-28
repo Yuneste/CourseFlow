@@ -162,18 +162,26 @@ export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadP
       setUploadErrors([error instanceof Error ? error.message : 'Upload failed']);
     } finally {
       setIsUploading(false);
-      // Clear completed uploads after a delay with fade out
-      setTimeout(() => {
-        uploadQueue
-          .filter(u => u.status === 'completed')
-          .forEach(u => removeFromUploadQueue(u.fileId));
-      }, 2000);
+      // Completed uploads will be removed individually by useEffect
     }
   };
 
   const removeSelectedFile = (index: number) => {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
+
+  // Auto-remove completed uploads after fade-out
+  useEffect(() => {
+    const completedUploads = uploadQueue.filter(u => u.status === 'completed');
+    
+    if (completedUploads.length > 0) {
+      const timer = setTimeout(() => {
+        completedUploads.forEach(u => removeFromUploadQueue(u.fileId));
+      }, 2000); // 2 seconds to match the fade-out duration
+      
+      return () => clearTimeout(timer);
+    }
+  }, [uploadQueue, removeFromUploadQueue]);
 
   // Handle paste event for screenshots
   useEffect(() => {
@@ -369,14 +377,27 @@ export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadP
         <Card className="p-4 border-destructive/50 bg-destructive/5">
           <div className="flex items-start gap-2">
             <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
-            <div className="space-y-1">
+            <div className="flex-1 space-y-1">
               <h4 className="font-medium text-destructive">Upload Errors</h4>
-              {uploadErrors.map((error, index) => (
+              {uploadErrors.slice(0, 5).map((error, index) => (
                 <p key={index} className="text-sm text-destructive/90">
                   {error}
                 </p>
               ))}
+              {uploadErrors.length > 5 && (
+                <p className="text-sm text-destructive/70 italic">
+                  ...and {uploadErrors.length - 5} more errors
+                </p>
+              )}
             </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setUploadErrors([])}
+              className="text-destructive hover:text-destructive/80 -mt-1"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
         </Card>
       )}
