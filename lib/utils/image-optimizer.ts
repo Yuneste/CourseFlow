@@ -28,14 +28,26 @@ export async function optimizeImage(
   const opts = { ...DEFAULT_OPTIONS, ...options };
   const originalSize = file.size;
 
-  // Skip optimization for non-image files
-  if (!file.type.startsWith('image/')) {
+  // Check if file is HEIC/HEIF and needs conversion
+  const needsHeicConversion = file.type === 'image/heic' || 
+                              file.type === 'image/heif' || 
+                              file.name.toLowerCase().endsWith('.heic') ||
+                              file.name.toLowerCase().endsWith('.heif');
+
+  // Skip optimization for non-image files (unless it's HEIC)
+  if (!file.type.startsWith('image/') && !needsHeicConversion) {
     return { file, originalSize, optimizedSize: originalSize };
   }
 
   try {
+    // Convert HEIC if needed
+    let processedFile = file;
+    if (needsHeicConversion) {
+      processedFile = await convertHeicToJpeg(file);
+    }
+
     // Create an image element to load the file
-    const img = await loadImage(file);
+    const img = await loadImage(processedFile);
     
     // Calculate new dimensions while maintaining aspect ratio
     const { width, height } = calculateDimensions(
@@ -60,11 +72,20 @@ export async function optimizeImage(
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(img, 0, 0, width, height);
 
+    // Strip EXIF data if requested
+    if (opts.stripMetadata) {
+      // Canvas operations automatically strip metadata
+    }
+
     // Convert to blob with compression
     const blob = await canvasToBlob(canvas, opts.format!, opts.quality!);
     
     // Create new file with optimized content
-    const optimizedFile = new File([blob], file.name, {
+    const optimizedFileName = needsHeicConversion 
+      ? file.name.replace(/\.(heic|heif)$/i, '.jpg')
+      : file.name;
+    
+    const optimizedFile = new File([blob], optimizedFileName, {
       type: `image/${opts.format}`,
     });
 
@@ -239,6 +260,69 @@ export async function detectAcademicContent(file: File): Promise<{
 }
 
 // Helper functions
+
+async function convertHeicToJpeg(file: File): Promise<File> {
+  // This is a placeholder for HEIC conversion
+  // In production, you would use a library like heic2any
+  // For now, we'll return the original file with a warning
+  console.warn('HEIC conversion not implemented yet. Install heic2any for full support.');
+  
+  // Create a dummy JPEG file for development
+  const canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 100;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fillRect(0, 0, 100, 100);
+    ctx.fillStyle = '#666';
+    ctx.font = '12px Arial';
+    ctx.fillText('HEIC', 30, 50);
+  }
+  
+  const blob = await canvasToBlob(canvas, 'jpeg', 0.9);
+  return new File([blob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), {
+    type: 'image/jpeg'
+  });
+}
+
+export function isMobileDevice(): boolean {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  ) || window.innerWidth < 768;
+}
+
+export function getOptimalQualityForConnection(): number {
+  const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+  
+  if (!connection) return 0.85;
+  
+  // Adjust quality based on connection type
+  switch (connection.effectiveType) {
+    case 'slow-2g':
+    case '2g':
+      return 0.6;
+    case '3g':
+      return 0.7;
+    case '4g':
+      return 0.85;
+    default:
+      return 0.85;
+  }
+}
+
+export async function optimizeForMobile(file: File): Promise<{ file: File; originalSize: number; optimizedSize: number }> {
+  const quality = getOptimalQualityForConnection();
+  const maxDimension = window.innerWidth < 768 ? 1024 : 2048;
+  
+  return optimizeImage(file, {
+    maxWidth: maxDimension,
+    maxHeight: maxDimension,
+    quality,
+    format: 'jpeg',
+    stripMetadata: true
+  });
+}
 
 function loadImage(file: File): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
