@@ -29,19 +29,45 @@ export async function PATCH(request: NextRequest) {
     if (body.full_name !== undefined) updateData.full_name = body.full_name;
     if (body.onboarding_completed !== undefined) updateData.onboarding_completed = body.onboarding_completed;
     
-    const { error } = await supabase
+    console.log('Updating profile for user:', user.id, 'with data:', updateData);
+    
+    // First try to update
+    const { data: updateResult, error: updateError } = await supabase
       .from('profiles')
       .update(updateData)
-      .eq('id', user.id);
+      .eq('id', user.id)
+      .select();
 
-    if (error) {
-      console.error('Error updating profile:', error);
-      return NextResponse.json(
-        { error: 'Failed to update profile' },
-        { status: 500 }
-      );
+    if (updateError) {
+      console.error('Error updating profile:', updateError);
+      
+      // If update fails, try to create the profile
+      if (updateError.code === 'PGRST116') { // No rows returned
+        console.log('Profile not found, creating new profile');
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            email: user.email,
+            ...updateData
+          });
+          
+        if (insertError) {
+          console.error('Error creating profile:', insertError);
+          return NextResponse.json(
+            { error: 'Failed to create profile' },
+            { status: 500 }
+          );
+        }
+      } else {
+        return NextResponse.json(
+          { error: 'Failed to update profile' },
+          { status: 500 }
+        );
+      }
     }
-
+    
+    console.log('Profile updated successfully:', updateResult);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Unexpected error in PATCH /api/profile:', error);

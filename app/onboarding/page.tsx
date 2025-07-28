@@ -115,14 +115,19 @@ export default function OnboardingPage() {
         updateData.expected_graduation_year = studyProgram.expected_graduation_year;
       }
       
+      console.log('Sending onboarding completion with data:', updateData);
+      
       const response = await fetch('/api/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData),
       });
       
+      const result = await response.json();
+      console.log('Profile update response:', result);
+      
       if (!response.ok) {
-        console.error('Failed to update profile');
+        console.error('Failed to update profile:', result);
         // Try to navigate anyway
       }
       

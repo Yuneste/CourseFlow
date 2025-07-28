@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'CourseFlow',
   },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
 }
 
 export const viewport = {
