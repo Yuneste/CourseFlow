@@ -6,7 +6,6 @@ import {
   validateMagicBytes,
   calculateFileHash,
   sanitizeFilename,
-  detectAcademicContent,
   ALLOWED_MIME_TYPES
 } from '@/lib/utils/file-validation';
 import { categorizeFile, getCategoryFolder } from '@/lib/utils/file-categorization';
@@ -97,12 +96,8 @@ export async function POST(req: NextRequest) {
           continue;
         }
 
-        // Detect academic content for images
-        let isAcademicContent = true;
-        if (fileCategory === 'image') {
-          const analysis = await detectAcademicContent(file);
-          isAcademicContent = analysis.isAcademic;
-        }
+        // For MVP, all content is considered valid
+        const isAcademicContent = true;
 
         // Categorize the file
         const aiCategory = categorizeFile(file.name);
@@ -183,12 +178,6 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        // Queue AI processing tasks post-upload
-        if (typeof window !== 'undefined') {
-          // This would normally be done in a client component or background job
-          // For now, we'll just add a comment about what should happen
-          // In production, this would be handled by a queue system like BullMQ or AWS SQS
-        }
 
         uploadResults.push(savedFile);
 
@@ -209,10 +198,17 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       files: successfulUploads,
       errors: failedUploads.length > 0 ? failedUploads : undefined,
     });
+
+    // Add security headers
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' blob: data:; script-src 'self'");
+    
+    return response;
 
   } catch (error) {
     console.error('Unexpected error in POST /api/files/upload:', error);

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Course, User } from '@/types';
 import { CourseList } from '@/components/features/courses/CourseList';
 import { FileUpload } from '@/components/features/files/FileUpload';
-import { FileUploadWithDetection } from '@/components/features/files/FileUploadWithDetection';
+import { FileUploadErrorBoundary } from '@/components/features/files/FileUploadErrorBoundary';
 import { FileList } from '@/components/features/files/FileList';
 import { FileCategoryView } from '@/components/features/files/FileCategoryView';
 import { StorageUsage } from '@/components/features/files/StorageUsage';
@@ -269,7 +269,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
                               setSelectedCourse(course || null);
                             }}
                           >
-                            <option value="">Auto-detect course from content</option>
+                            <option value="">General Files (no course)</option>
                             {courses.map(course => (
                               <option key={course.id} value={course.id}>
                                 {course.emoji} {course.name} ({course.term})
@@ -277,14 +277,15 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
                             ))}
                           </select>
                           
-                          <FileUploadWithDetection
-                            courseId={selectedCourse?.id}
-                            onUploadComplete={() => {
-                              // Files are automatically added to the store
-                              // No need to reload
-                            }}
-                            compact={true}
-                          />
+                          <FileUploadErrorBoundary>
+                            <FileUpload
+                              courseId={selectedCourse?.id}
+                              onUploadComplete={() => {
+                                // Files are automatically added to the store
+                                // No need to reload
+                              }}
+                            />
+                          </FileUploadErrorBoundary>
                         </div>
                       </div>
                     </div>

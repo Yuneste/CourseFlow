@@ -2,6 +2,7 @@ import { api } from '@/lib/api/client';
 import type { File as FileType, UploadProgress } from '@/types';
 import { calculateFileHash } from '@/lib/utils/file-validation';
 import { createResumableUpload, checkResumableSession } from '@/lib/utils/tus-upload';
+import { withRetry } from '@/lib/utils/retry';
 
 export interface UploadOptions {
   courseId?: string;
@@ -21,10 +22,47 @@ export interface DuplicateCheckResult {
 }
 
 class FilesService {
+  private activeUploads = new Map<string, XMLHttpRequest>();
+  /**
+   * Upload files with progress tracking
+   * Returns both promise and uploadId for cancellation
+   */
+  uploadWithCancel(files: File[], options: UploadOptions = {}): { promise: Promise<{ files: FileType[]; errors?: any[] }>; uploadId: string } {
+    const uploadId = `upload-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    
+    const promise = this.upload(files, options, uploadId);
+    return { promise, uploadId };
+  }
+  
+  /**
+   * Cancel an active upload
+   */
+  cancelUpload(uploadId: string): boolean {
+    const xhr = this.activeUploads.get(uploadId);
+    if (xhr && xhr.readyState !== XMLHttpRequest.DONE) {
+      xhr.abort();
+      this.activeUploads.delete(uploadId);
+      return true;
+    }
+    return false;
+  }
+  
+  /**
+   * Cancel all active uploads
+   */
+  cancelAllUploads(): void {
+    this.activeUploads.forEach((xhr, uploadId) => {
+      if (xhr.readyState !== XMLHttpRequest.DONE) {
+        xhr.abort();
+      }
+    });
+    this.activeUploads.clear();
+  }
+
   /**
    * Upload files with progress tracking
    */
-  async upload(files: File[], options: UploadOptions = {}) {
+  private async upload(files: File[], options: UploadOptions = {}, uploadId?: string) {
     const { courseId, onProgress, onFileProgress } = options;
     const formData = new FormData();
     
@@ -67,9 +105,21 @@ class FilesService {
         reject(new Error('Upload cancelled'));
       };
       
+      // Track active upload if uploadId provided
+      if (uploadId) {
+        this.activeUploads.set(uploadId, xhr);
+      }
+      
       // Send request
       xhr.open('POST', '/api/files/upload');
       xhr.send(formData);
+      
+      // Clean up on completion
+      xhr.onloadend = () => {
+        if (uploadId) {
+          this.activeUploads.delete(uploadId);
+        }
+      };
     });
   }
 
@@ -96,20 +146,33 @@ class FilesService {
           });
         }
         
-        // Upload single file
-        const response = await this.upload([file], {
-          courseId,
-          onProgress: (progress) => {
-            if (onFileProgress) {
-              onFileProgress(tempId, {
-                fileId: tempId,
-                fileName: file.name,
-                progress,
-                status: 'uploading',
-              });
+        // Upload single file with retry
+        const response = await withRetry(
+          () => this.upload([file], {
+            courseId,
+            onProgress: (progress) => {
+              if (onFileProgress) {
+                onFileProgress(tempId, {
+                  fileId: tempId,
+                  fileName: file.name,
+                  progress,
+                  status: 'uploading',
+                });
+              }
             }
-          },
-        });
+          }),
+          {
+            maxRetries: 3,
+            shouldRetry: (error) => {
+              // Don't retry validation errors
+              if (error.message?.includes('File type not allowed')) return false;
+              if (error.message?.includes('File size exceeds')) return false;
+              if (error.message?.includes('Duplicate file')) return false;
+              // Retry network and server errors
+              return true;
+            }
+          }
+        );
         
         if (response.files && response.files.length > 0) {
           results.files.push(...response.files);

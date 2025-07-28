@@ -1,4 +1,5 @@
-import crypto from 'crypto';
+// Note: We use Web Crypto API (crypto.subtle) instead of Node.js crypto module
+// This ensures compatibility with both server and client environments
 
 // Allowed MIME types for MVP
 export const ALLOWED_MIME_TYPES = {
@@ -50,13 +51,6 @@ export interface FileValidationResult {
   valid: boolean;
   error?: string;
   category?: string;
-}
-
-export interface ImageAnalysis {
-  isAcademic: boolean;
-  confidence: number;
-  detectedContent: 'screenshot' | 'diagram' | 'photo' | 'document_scan';
-  warnings: string[];
 }
 
 /**
@@ -189,30 +183,6 @@ export function validateFileBatch(files: File[]): FileValidationResult {
   return { valid: true };
 }
 
-/**
- * Detect if an image contains academic content
- * This is a placeholder - in production, this would use AI/ML
- */
-export async function detectAcademicContent(file: File): Promise<ImageAnalysis> {
-  // For MVP, we'll use simple heuristics
-  const fileName = file.name.toLowerCase();
-  const isScreenshot = fileName.includes('screenshot') || fileName.includes('screen');
-  const isDiagram = fileName.includes('diagram') || fileName.includes('chart') || fileName.includes('graph');
-  const isScan = fileName.includes('scan') || fileName.includes('document');
-  
-  // Basic academic detection based on filename patterns
-  const academicKeywords = ['lecture', 'notes', 'assignment', 'homework', 'exam', 'quiz', 'study', 'course'];
-  const hasAcademicKeyword = academicKeywords.some(keyword => fileName.includes(keyword));
-  
-  return {
-    isAcademic: hasAcademicKeyword || isScreenshot || isDiagram || isScan,
-    confidence: hasAcademicKeyword ? 0.9 : 0.5,
-    detectedContent: isScreenshot ? 'screenshot' : isDiagram ? 'diagram' : isScan ? 'document_scan' : 'photo',
-    warnings: !hasAcademicKeyword && !isScreenshot && !isDiagram && !isScan 
-      ? ['This image may not contain academic content'] 
-      : [],
-  };
-}
 
 /**
  * Get file extension from filename

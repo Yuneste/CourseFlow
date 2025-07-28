@@ -3,7 +3,7 @@
  * Using Supabase Storage resumable upload feature
  */
 
-import { createClient } from '@/lib/supabase/client';
+import { getSupabaseClient } from '@/lib/supabase/client-singleton';
 import { 
   saveUploadSession, 
   getUploadSession, 
@@ -82,7 +82,7 @@ export class TusResumableUpload implements TusUpload {
   }
 
   private async initializeUpload(): Promise<void> {
-    const supabase = createClient();
+    const supabase = getSupabaseClient();
     const fileName = `${Date.now()}-${this.file.name}`;
     const filePath = this.courseId 
       ? `user-files/${this.courseId}/${fileName}`

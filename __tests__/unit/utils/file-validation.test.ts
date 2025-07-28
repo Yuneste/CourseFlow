@@ -3,6 +3,7 @@ import {
   validateFileType,
   validateFileSize,
   validateFileBatch,
+  validateMagicBytes,
   formatFileSize,
   calculateFileHash,
   sanitizeFilename,
@@ -106,6 +107,43 @@ describe('File Validation Utils', () => {
     });
   });
 
+  describe('validateMagicBytes', () => {
+    it('should validate PDF magic bytes', async () => {
+      // Create a file with PDF magic bytes
+      const pdfBytes = new Uint8Array([0x25, 0x50, 0x44, 0x46]); // %PDF
+      const file = new File([pdfBytes], 'test.pdf', { type: 'application/pdf' });
+      
+      const result = await validateMagicBytes(file);
+      expect(result.valid).toBe(true);
+    });
+
+    it('should validate PNG magic bytes', async () => {
+      // Create a file with PNG magic bytes
+      const pngBytes = new Uint8Array([0x89, 0x50, 0x4E, 0x47]); // PNG
+      const file = new File([pngBytes], 'test.png', { type: 'image/png' });
+      
+      const result = await validateMagicBytes(file);
+      expect(result.valid).toBe(true);
+    });
+
+    it('should reject files with invalid magic bytes', async () => {
+      // Create a file with wrong magic bytes
+      const wrongBytes = new Uint8Array([0xFF, 0xFF, 0xFF, 0xFF]);
+      const file = new File([wrongBytes], 'test.pdf', { type: 'application/pdf' });
+      
+      const result = await validateMagicBytes(file);
+      expect(result.valid).toBe(false);
+      expect(result.error).toContain('does not match the expected format');
+    });
+
+    it('should accept text files without magic bytes check', async () => {
+      const file = new File(['plain text content'], 'test.txt', { type: 'text/plain' });
+      
+      const result = await validateMagicBytes(file);
+      expect(result.valid).toBe(true);
+    });
+  });
+
   describe('calculateFileHash', () => {
     it('should calculate SHA-256 hash', async () => {
       // Mock crypto.subtle.digest
@@ -121,6 +159,18 @@ describe('File Validation Utils', () => {
       
       expect(mockDigest).toHaveBeenCalledWith('SHA-256', expect.any(ArrayBuffer));
       expect(hash).toMatch(/^[0-9a-f]{64}$/); // SHA-256 hex string
+    });
+
+    it('should handle fallback when crypto.subtle is not available', async () => {
+      // Remove crypto.subtle
+      global.crypto = {} as any;
+
+      const file = new File(['test content'], 'test.pdf', { type: 'application/pdf' });
+      const hash = await calculateFileHash(file);
+      
+      // Should return a base64 encoded fallback hash
+      expect(hash).toBeTruthy();
+      expect(hash.length).toBeGreaterThan(0);
     });
   });
 });
