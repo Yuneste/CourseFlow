@@ -283,29 +283,31 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                 </div>
               </div>
             ) : (
-              /* Files Grid - No upload mode */
-              currentFiles.length > 0 ? (
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                {currentFiles.map((file) => (
-                  <FileCard
-                    key={file.id}
-                    file={file}
-                    onDelete={handleFileDelete}
-                    onDownload={handleFileDownload}
-                  />
-                ))}
-              </div>
-            ) : (
-              <Card className="p-12 text-center">
-                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">
-                  No files in {selectedFolder ? 'this folder' : 'this course'} yet
-                </p>
-                <p className="text-sm text-gray-500 mt-2">
-                  Click "Upload Files" to add your course materials
-                </p>
-              </Card>
-            )}
+              <>
+                {/* Files Grid - No upload mode */}
+                {currentFiles.length > 0 ? (
+                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+                    {currentFiles.map((file) => (
+                      <FileCard
+                        key={file.id}
+                        file={file}
+                        onDelete={handleFileDelete}
+                        onDownload={handleFileDownload}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="p-12 text-center">
+                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600">
+                      No files in {selectedFolder ? 'this folder' : 'this course'} yet
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Click &quot;Upload Files&quot; to add your course materials
+                    </p>
+                  </Card>
+                )}
+              </>
             )}
           </div>
         </div>

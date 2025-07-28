@@ -37,5 +37,5 @@ export default async function CoursePage({ params }: { params: { id: string } })
     .eq('course_id', params.id)
     .order('created_at', { ascending: false });
 
-  return <CourseDetailClient course={course} folders={folders} files={files} />;
+  return <CourseDetailClient course={course} folders={folders || []} files={files || []} />;
 }

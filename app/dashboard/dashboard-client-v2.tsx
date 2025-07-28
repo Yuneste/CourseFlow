@@ -51,10 +51,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
     setIsLoading(true);
     setLoadingCourses(true);
     try {
-      const newCourse = await coursesService.createCourse({
-        ...courseData,
-        user_id: userProfile.id
-      });
+      const newCourse = await coursesService.createCourse(courseData as any);
       addCourse(newCourse);
     } catch (error) {
       console.error('Failed to create course:', error);
@@ -91,7 +88,11 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
     }
   };
 
-  const academicSystem = userProfile?.academic_system || 'percentage';
+  const academicSystem = {
+    terms: ['Fall 2024', 'Spring 2025', 'Summer 2025'],
+    periodType: (userProfile?.academic_system === 'uk_honours' ? 'term' : 'semester') as 'term' | 'semester' | 'trimester',
+    creditSystem: userProfile?.academic_system || 'percentage'
+  };
 
   return (
     <>

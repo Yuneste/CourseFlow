@@ -25,7 +25,8 @@
       "Bash(npm i:*)",
       "Bash(npm uninstall:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npx supabase:*)"
     ],
     "deny": []
   }
