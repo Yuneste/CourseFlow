@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Course } from '@/types';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MoreVertical, Edit, Trash2, BookOpen, User } from 'lucide-react';
+import { MoreVertical, Edit, Trash2, BookOpen, User, Calendar, Hash } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface CourseCardProps {
   course: Course;
@@ -28,108 +29,107 @@ export function CourseCard({
   onClick,
   className,
 }: CourseCardProps) {
-  // Removed isHovered state as we're using CSS hover now
-
   return (
-    <div
-      className={cn(
-        'relative overflow-hidden transition-all duration-300 cursor-pointer group',
-        'hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2',
-        'active:scale-[0.98] active:shadow-md',
-        className
-      )}
+    <motion.div
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      className={cn('relative group', className)}
       onClick={() => onClick?.(course)}
     >
-      {/* Color accent bar at top */}
-      <div 
-        className="absolute top-0 left-0 right-0 h-2 transition-all duration-300"
-        style={{ backgroundColor: course.color || '#FA8072' }}
-      />
-      
-      <Card className="border-0 bg-white relative shadow-md hover:shadow-lg transition-shadow">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="absolute inset-0 bg-[#FFE4E1] rounded-2xl blur-xl opacity-60 group-hover:opacity-100 transition-opacity" />
-              <span 
-                className="text-5xl drop-shadow-lg transition-all duration-300 inline-block group-hover:scale-110 group-hover:rotate-6 relative z-10" 
-                role="img" 
-                aria-label="Course emoji"
-              >
-                {course.emoji || '📚'}
-              </span>
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-xl line-clamp-1 text-gray-900">{course.name}</h3>
-              {course.code && (
-                <div className="text-sm text-gray-600 mt-1">
-                  <span className="font-medium">{course.code}</span>
-                </div>
-              )}
-            </div>
-          </div>
-          {(onEdit || onDelete) && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {onEdit && (
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEdit(course);
-                    }}
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
-                  </DropdownMenuItem>
+      <Card className="overflow-hidden border border-gray-200/60 bg-white/70 backdrop-blur-sm hover:border-[#FA8072]/20 hover:shadow-lg hover:shadow-[#FA8072]/5 transition-all duration-200 cursor-pointer">
+        {/* Subtle gradient line at top */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FA8072]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              {/* Icon with subtle background */}
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-[#FFF5F5] to-[#FFE4E1] flex items-center justify-center group-hover:from-[#FFE4E1] group-hover:to-[#FFDDD9] transition-colors">
+                <BookOpen className="w-5 h-5 text-[#FA8072]" />
+              </div>
+              
+              {/* Course info */}
+              <div className="flex-1 min-w-0">
+                <h3 className="font-medium text-gray-900 line-clamp-1 group-hover:text-[#FA8072] transition-colors">
+                  {course.name}
+                </h3>
+                {course.course_code && (
+                  <p className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
+                    <Hash className="w-3 h-3" />
+                    {course.course_code}
+                  </p>
                 )}
-                {onDelete && (
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(course);
-                    }}
-                    className="text-red-600"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <div className="space-y-2">
-          {course.professor && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <User className="h-3 w-3" />
-              <span className="line-clamp-1">{course.professor}</span>
+              </div>
             </div>
-          )}
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">{course.term}</span>
-            {(course.credits || course.ects_credits) && (
-              <span className="font-medium">
-                {course.credits
-                  ? `${course.credits} credits`
-                  : `${course.ects_credits} ECTS`}
-              </span>
+
+            {/* Action menu */}
+            {(onEdit || onDelete) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {onEdit && (
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(course);
+                      }}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </DropdownMenuItem>
+                  )}
+                  {onDelete && (
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(course);
+                      }}
+                      className="text-red-600"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
-        </div>
-      </CardContent>
-    </Card>
-    </div>
+        </CardHeader>
+        
+        <CardContent className="pt-0">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 text-sm text-gray-600 min-w-0">
+              {course.professor && (
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <User className="h-3.5 w-3.5 flex-shrink-0" />
+                  <span className="truncate">{course.professor}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
+                <span>{course.term}</span>
+              </div>
+            </div>
+            
+            {(course.credits || course.ects_credits) && (
+              <div className="flex-shrink-0">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                  {course.credits ? `${course.credits} credits` : `${course.ects_credits} ECTS`}
+                </span>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

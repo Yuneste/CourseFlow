@@ -60,11 +60,17 @@ export default function PrivacySettingsPage() {
       
       if (error) throw error;
 
-      // Sign out
-      await supabase.auth.signOut();
+      // Sign out and clear all session data
+      await supabase.auth.signOut({ scope: 'local' });
+      await supabase.auth.signOut({ scope: 'global' });
       
+      // Clear any cached data
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Force reload to clear any in-memory cache
       toast.success('Your account has been deleted');
-      router.push('/');
+      window.location.href = '/';
     } catch (error) {
       console.error('Error deleting account:', error);
       toast.error('Failed to delete account. Please try again.');

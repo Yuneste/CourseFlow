@@ -308,35 +308,32 @@ const CloudStorageDemo = () => {
       </motion.div>
 
       {/* Tree structure connections with animated data */}
-      <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
-        <defs>
-          <marker id="arrowhead" markerWidth="10" markerHeight="7" 
-           refX="0" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#FA8072" />
-          </marker>
-        </defs>
-        
+      <svg className="absolute inset-0 w-full h-full pointer-events-none">
         {devices.map((device, i) => {
-          // Calculate line coordinates from device to cloud
           const x = isMobile ? device.position.mobileX : device.position.x;
           const y = isMobile ? device.position.mobileY : device.position.y;
-          const centerX = 50; // Center of cloud (%)
-          const centerY = 40; // Center of cloud (%)
-          const deviceX = 50 + (x / 400) * 100; // Convert to percentage
-          const deviceY = 50 + (y / 200) * 100; // Convert to percentage
+          
+          // Calculate positions relative to container center
+          const centerX = 200; // Center X in pixels
+          const centerY = 100; // Center Y in pixels for cloud
+          const deviceX = centerX + x;
+          const deviceY = centerY + y;
           
           return (
             <g key={i}>
-              {/* Main connection line */}
-              <motion.path
-                d={`M ${deviceX} ${deviceY} Q ${(centerX + deviceX) / 2} ${centerY + 10} ${centerX} ${centerY + 10}`}
+              {/* Connection line */}
+              <motion.line
+                x1={deviceX}
+                y1={deviceY}
+                x2={centerX}
+                y2={centerY + 20}
                 stroke="#FA8072"
-                strokeWidth="3"
-                fill="none"
+                strokeWidth="2"
+                strokeDasharray="4 4"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ 
                   pathLength: 1, 
-                  opacity: 0.4
+                  opacity: 0.3
                 }}
                 transition={{ 
                   delay: 0.5 + i * 0.2,
@@ -344,24 +341,22 @@ const CloudStorageDemo = () => {
                 }}
               />
               
-              {/* Animated data particles flowing through the line */}
-              <AnimatePresence>
-                {syncActive && (
-                  <motion.circle
-                    r="4"
-                    fill={fileTypes[i].color}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <animateMotion
-                      dur="2s"
-                      repeatCount="3"
-                      path={`M ${deviceX} ${deviceY} Q ${(centerX + deviceX) / 2} ${centerY + 10} ${centerX} ${centerY + 10}`}
-                    />
-                  </motion.circle>
-                )}
-              </AnimatePresence>
+              {/* Animated dots along the line */}
+              {syncActive && (
+                <motion.circle
+                  r="6"
+                  fill={fileTypes[i].color}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                >
+                  <animateMotion
+                    dur="2s"
+                    repeatCount="indefinite"
+                    path={`M ${deviceX},${deviceY} L ${centerX},${centerY + 20}`}
+                  />
+                </motion.circle>
+              )}
             </g>
           );
         })}
@@ -405,27 +400,32 @@ const CloudStorageDemo = () => {
         </motion.div>
       ))}
 
-      {/* File type indicators on the lines */}
+      {/* File type indicators near devices */}
       <AnimatePresence>
-        {syncActive && devices.map((device, i) => (
-          <motion.div
-            key={`file-type-${i}`}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ delay: 0.3 + i * 0.1 }}
-            className="absolute"
-            style={{
-              left: `calc(50% + ${(isMobile ? device.position.mobileX : device.position.x) / 2}px)`,
-              top: `calc(50% + ${(isMobile ? device.position.mobileY : device.position.y) / 2 - 20}px)`,
-              transform: 'translate(-50%, -50%)'
-            }}
-          >
-            <div className="bg-white rounded-full p-1 sm:p-1.5 shadow-md border-2 border-[#FA8072]/20">
-              <span className="text-base sm:text-lg md:text-xl">{fileTypes[i].icon}</span>
-            </div>
-          </motion.div>
-        ))}
+        {syncActive && devices.map((device, i) => {
+          const x = isMobile ? device.position.mobileX : device.position.x;
+          const y = isMobile ? device.position.mobileY : device.position.y;
+          
+          return (
+            <motion.div
+              key={`file-type-${i}`}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0 }}
+              transition={{ delay: 0.3 + i * 0.1 }}
+              className="absolute"
+              style={{
+                left: `calc(50% + ${x - (x > 0 ? 30 : x < 0 ? -30 : 0)}px)`,
+                top: `calc(50% + ${y - 30}px)`,
+                transform: 'translate(-50%, -50%)'
+              }}
+            >
+              <div className="bg-white rounded-full p-1.5 sm:p-2 shadow-lg border-2 border-[#FA8072]/30">
+                <span className="text-lg sm:text-xl md:text-2xl">{fileTypes[i].icon}</span>
+              </div>
+            </motion.div>
+          );
+        })}
       </AnimatePresence>
 
       {/* Labels for file types being synced */}
