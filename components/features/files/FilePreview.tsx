@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Download, ExternalLink, FileText, Image } from 'lucide-react';
+import { X, Download, ExternalLink, FileText, Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -66,7 +67,7 @@ export function FilePreview({ file, open, onOpenChange }: FilePreviewProps) {
         <DialogHeader className="flex-shrink-0">
           <DialogTitle className="flex items-center justify-between pr-8">
             <div className="flex items-center gap-2">
-              {isImage ? <Image className="h-5 w-5" /> : <FileText className="h-5 w-5" />}
+              {isImage ? <ImageIcon className="h-5 w-5" /> : <FileText className="h-5 w-5" />}
               <span className="truncate">{file.display_name}</span>
             </div>
             <div className="flex items-center gap-2">
@@ -105,11 +106,13 @@ export function FilePreview({ file, open, onOpenChange }: FilePreviewProps) {
           {!isLoading && previewUrl && (
             <>
               {isImage && (
-                <div className="flex items-center justify-center h-full">
-                  <img
+                <div className="flex items-center justify-center h-full relative w-full">
+                  <Image
                     src={previewUrl}
                     alt={file.display_name}
-                    className="max-w-full max-h-full object-contain"
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
               )}

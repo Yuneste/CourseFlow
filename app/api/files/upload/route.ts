@@ -183,6 +183,13 @@ export async function POST(req: NextRequest) {
           },
         });
 
+        // Queue AI processing tasks post-upload
+        if (typeof window !== 'undefined') {
+          // This would normally be done in a client component or background job
+          // For now, we'll just add a comment about what should happen
+          // In production, this would be handled by a queue system like BullMQ or AWS SQS
+        }
+
         uploadResults.push(savedFile);
 
       } catch (fileError) {

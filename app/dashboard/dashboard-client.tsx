@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Upload, FolderOpen, Grid3x3, List } from 'lucide-react';
 import { filesService } from '@/lib/services/files.service';
 import type { File } from '@/types';
+import { AIAssistantFAB } from '@/components/features/ai-assistant/AIAssistantFAB';
 
 interface DashboardClientProps {
   initialCourses: Course[];
@@ -130,7 +131,8 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <div className="space-y-6">
       {/* Quick Upload Button - Always Visible */}
       <div className="mb-4">
         <Button
@@ -301,5 +303,9 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         </div>
       )}
     </div>
+
+      {/* AI Assistant FAB */}
+      <AIAssistantFAB courseId={selectedCourse?.id} />
+    </>
   );
 }

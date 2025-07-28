@@ -182,7 +182,7 @@ const AIAssistantDemo = () => {
       clearInterval(cycleTimer);
       clearTimeout(flashcardTimer);
     };
-  }, [currentSubject]);
+  }, [currentSubject, subjects.length]);
 
   return (
     <div className="relative w-full h-64 mx-auto flex gap-4">

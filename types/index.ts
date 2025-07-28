@@ -56,7 +56,11 @@ export interface File {
 export interface UploadProgress {
   fileId: string;
   fileName: string;
+  fileSize?: number;
   progress: number;
-  status: 'pending' | 'uploading' | 'completed' | 'failed' | 'cancelled';
+  status: 'pending' | 'uploading' | 'paused' | 'completed' | 'failed' | 'cancelled';
   error?: string;
+  uploadSpeed?: number; // bytes per second
+  pausedAt?: Date;
+  resumeData?: any; // Data needed to resume upload
 }

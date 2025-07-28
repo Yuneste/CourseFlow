@@ -14,6 +14,7 @@ import { useAppStore } from '@/stores/useAppStore';
 import { getCategoryLabel } from '@/lib/utils/file-categorization';
 import type { Course, File } from '@/types';
 import type { FileCategory } from '@/lib/utils/file-categorization';
+import { AIAssistantFAB } from '@/components/features/ai-assistant/AIAssistantFAB';
 
 interface CourseDetailClientProps {
   course: Course;
@@ -67,7 +68,8 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
   const categories: FileCategory[] = ['lecture', 'assignment', 'notes', 'exam', 'other'];
 
   return (
-    <div className="space-y-6">
+    <>
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -202,5 +204,9 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
         />
       )}
     </div>
+
+    {/* AI Assistant FAB */}
+    <AIAssistantFAB courseId={course.id} />
+    </>
   );
 }

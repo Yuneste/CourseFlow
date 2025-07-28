@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { UploadProgress } from './UploadProgress';
 import { filesService } from '@/lib/services/files.service';
 import { useAppStore } from '@/stores/useAppStore';
 import { 
@@ -16,6 +17,9 @@ import {
 } from '@/lib/utils/file-validation';
 import { detectCourseFromFile, getCourseSuggestions } from '@/lib/utils/course-detection';
 import { analyzeFileContent } from '@/lib/utils/file-content-analysis';
+import { detectAcademicContent } from '@/lib/utils/academic-detector';
+import { optimizeImage } from '@/lib/utils/image-optimizer';
+import { aiProcessingQueue } from '@/lib/utils/ai-processing-queue';
 import type { UploadProgress as UploadProgressType, File as FileType, Course } from '@/types';
 
 interface FileUploadWithDetectionProps {
@@ -120,8 +124,27 @@ export function FileUploadWithDetection({ courseId, onUploadComplete, compact = 
         continue;
       }
 
+      // Detect academic content for images
+      let processedFile = file;
+      if (file.type.startsWith('image/')) {
+        const academicCheck = await detectAcademicContent(file);
+        if (!academicCheck.isAcademic && academicCheck.confidence > 0.6) {
+          errors.push(`${file.name}: ${academicCheck.warnings.join(', ')}`);
+          continue;
+        }
+        
+        // Optimize image
+        try {
+          const optimized = await optimizeImage(file);
+          processedFile = optimized.file;
+          console.log(`Optimized ${file.name}: ${formatFileSize(optimized.originalSize)} → ${formatFileSize(optimized.optimizedSize)}`);
+        } catch (error) {
+          console.error('Image optimization failed:', error);
+        }
+      }
+
       // Detect course if not already specified
-      let fileWithSuggestion: FileWithSuggestion = { file };
+      let fileWithSuggestion: FileWithSuggestion = { file: processedFile };
       
       if (!courseId && courses.length > 0) {
         setAnalyzingContent(true);
@@ -242,7 +265,17 @@ export function FileUploadWithDetection({ courseId, onUploadComplete, compact = 
       // Add uploaded files to the store
       if (allResults.length > 0) {
         // Add files to the store so they show immediately
-        allResults.forEach(file => addFile(file));
+        allResults.forEach(file => {
+          addFile(file);
+          
+          // Queue AI processing tasks for each uploaded file
+          aiProcessingQueue.queueFileProcessing({
+            id: file.id,
+            name: file.display_name,
+            type: file.file_type,
+            courseId: file.course_id,
+          });
+        });
       }
 
       // Clear selected files if all successful

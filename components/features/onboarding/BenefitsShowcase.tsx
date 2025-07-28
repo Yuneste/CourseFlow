@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
@@ -77,14 +77,14 @@ export function BenefitsShowcase({ onComplete }: BenefitsShowcaseProps) {
   const currentBenefit = benefits[currentIndex];
   const Icon = currentBenefit.icon;
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < benefits.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       setIsVisible(false);
       setTimeout(onComplete, 500);
     }
-  };
+  }, [currentIndex, onComplete]);
 
   const handleSkip = () => {
     setIsVisible(false);
@@ -100,7 +100,7 @@ export function BenefitsShowcase({ onComplete }: BenefitsShowcaseProps) {
 
     window.addEventListener('keypress', handleKeyPress);
     return () => window.removeEventListener('keypress', handleKeyPress);
-  }, [currentIndex, handleNext]);
+  }, [handleNext]);
 
   return (
     <AnimatePresence>

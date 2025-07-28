@@ -1,6 +1,7 @@
 import { api } from '@/lib/api/client';
 import type { File as FileType, UploadProgress } from '@/types';
 import { calculateFileHash } from '@/lib/utils/file-validation';
+import { createResumableUpload, checkResumableSession } from '@/lib/utils/tus-upload';
 
 export interface UploadOptions {
   courseId?: string;
@@ -194,6 +195,92 @@ class FilesService {
     size: number;
   }> {
     return api.get(`/files/${fileId}/download`);
+  }
+
+  /**
+   * Upload file with resumable support using TUS protocol
+   */
+  async uploadResumable(
+    file: File,
+    options: UploadOptions & {
+      onPause?: () => void;
+      onResume?: () => void;
+    } = {}
+  ): Promise<{
+    upload: ReturnType<typeof createResumableUpload>;
+    hasExistingSession: boolean;
+    existingProgress?: number;
+  }> {
+    const { courseId, onProgress, onFileProgress } = options;
+    
+    // Check for existing session
+    const sessionCheck = await checkResumableSession(file);
+    
+    // Create resumable upload
+    const upload = createResumableUpload({
+      file,
+      courseId,
+      onProgress: (bytesUploaded, bytesTotal) => {
+        const progress = (bytesUploaded / bytesTotal) * 100;
+        if (onProgress) {
+          onProgress(progress);
+        }
+        if (onFileProgress) {
+          onFileProgress(file.name, {
+            fileId: file.name,
+            fileName: file.name,
+            fileSize: file.size,
+            progress,
+            status: 'uploading',
+            uploadSpeed: 0, // Could calculate based on time
+          });
+        }
+      },
+      onSuccess: async (uploadUrl) => {
+        // Register file in our database after successful upload
+        const formData = new FormData();
+        formData.append('uploadUrl', uploadUrl);
+        formData.append('fileName', file.name);
+        formData.append('fileSize', file.size.toString());
+        formData.append('fileType', file.type);
+        if (courseId) {
+          formData.append('courseId', courseId);
+        }
+        
+        await fetch('/api/files/register-upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (onFileProgress) {
+          onFileProgress(file.name, {
+            fileId: file.name,
+            fileName: file.name,
+            fileSize: file.size,
+            progress: 100,
+            status: 'completed',
+          });
+        }
+      },
+      onError: (error) => {
+        if (onFileProgress) {
+          onFileProgress(file.name, {
+            fileId: file.name,
+            fileName: file.name,
+            fileSize: file.size,
+            progress: 0,
+            status: 'failed',
+            error: error.message,
+          });
+        }
+      },
+    });
+    
+    return {
+      upload,
+      hasExistingSession: sessionCheck.hasSession,
+      existingProgress: sessionCheck.progress,
+    };
   }
 
   /**
