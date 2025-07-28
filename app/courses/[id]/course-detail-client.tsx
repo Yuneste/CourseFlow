@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { Course, CourseFolder, File } from '@/types';
 import { 
   Folder, 
@@ -16,7 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FileUpload } from '@/components/features/files/FileUpload';
-import { FileCard } from '@/components/features/files/FileCard';
+import { FileCardDraggable } from '@/components/features/files/FileCardDraggable';
 import { useRouter } from 'next/navigation';
 import { filesService } from '@/lib/services/files.service';
 
@@ -64,7 +65,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   const folderTree = buildFolderTree();
   const currentFiles = selectedFolder 
     ? files.filter(f => f.folder_id === selectedFolder.id)
-    : files.filter(f => !f.folder_id);
+    : files; // Show all files when "All Files" is selected
 
   const toggleFolder = (folderId: string) => {
     const newExpanded = new Set(expandedFolders);
@@ -136,11 +137,16 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           {!hasChildren && <div className="w-4" />}
           
           {node.isExpanded ? (
-            <FolderOpen className="h-4 w-4 text-blue-600" />
+            <FolderOpen className={`h-4 w-4 ${node.folder.is_special ? 'text-purple-600' : 'text-blue-600'}`} />
           ) : (
-            <Folder className="h-4 w-4 text-blue-600" />
+            <Folder className={`h-4 w-4 ${node.folder.is_special ? 'text-purple-600' : 'text-blue-600'}`} />
           )}
-          <span className="text-sm font-medium">{node.folder.name}</span>
+          <span className="text-sm font-medium">
+            {node.folder.name}
+            {node.folder.is_special && (
+              <span className="text-xs text-purple-600 ml-1">(AI-powered • Coming soon)</span>
+            )}
+          </span>
           <span className="text-xs text-gray-500 ml-auto">
             {node.files.length > 0 && `(${node.files.length})`}
           </span>
@@ -202,7 +208,11 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
             <Card className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold">Folders</h2>
-                <Button size="sm" variant="ghost">
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  onClick={() => toast.info('Folder creation will be available in a future update')}
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>

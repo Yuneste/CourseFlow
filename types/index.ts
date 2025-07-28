@@ -21,6 +21,8 @@ export interface CourseFolder {
   path: string;
   parent_id?: string;
   course_id: string;
+  display_order: number;
+  is_special: boolean;
   created_at: Date;
 }
 

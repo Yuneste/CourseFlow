@@ -28,7 +28,7 @@ export default async function CoursePage({ params }: { params: { id: string } })
     .from('course_folders')
     .select('*')
     .eq('course_id', params.id)
-    .order('name');
+    .order('display_order');
 
   // Fetch files for this course
   const { data: files = [] } = await supabase

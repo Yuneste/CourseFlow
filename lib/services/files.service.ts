@@ -207,8 +207,8 @@ class FilesService {
             });
           }
         }
-        
       } catch (error) {
+        // Handle upload error
         results.errors.push({
           filename: file.name,
           error: error instanceof Error ? error.message : 'Upload failed',
@@ -244,6 +244,13 @@ class FilesService {
   async getFiles(courseId?: string): Promise<FileType[]> {
     const query = courseId ? `?course_id=${courseId}` : '';
     return api.get<FileType[]>(`/files${query}`);
+  }
+
+  /**
+   * Update a file
+   */
+  async updateFile(id: string, updates: Partial<FileType>): Promise<FileType> {
+    return api.patch<FileType>(`/files/${id}`, updates);
   }
 
   /**

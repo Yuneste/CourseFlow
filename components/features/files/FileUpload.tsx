@@ -162,12 +162,12 @@ export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadP
       setUploadErrors([error instanceof Error ? error.message : 'Upload failed']);
     } finally {
       setIsUploading(false);
-      // Clear completed uploads after a delay
+      // Clear completed uploads after a delay with fade out
       setTimeout(() => {
         uploadQueue
           .filter(u => u.status === 'completed')
           .forEach(u => removeFromUploadQueue(u.fileId));
-      }, 3000);
+      }, 2000);
     }
   };
 
@@ -331,28 +331,33 @@ export function FileUpload({ courseId, folderId, onUploadComplete }: FileUploadP
       {uploadQueue.length > 0 && (
         <div className="space-y-2">
           {uploadQueue.map((upload) => (
-            <div key={upload.fileId} className="bg-gray-50 dark:bg-gray-900 rounded-md p-3">
+            <div 
+              key={upload.fileId} 
+              className={`rounded-md p-3 transition-all duration-500 ${
+                upload.status === 'completed' ? 'opacity-0' : 'opacity-100'
+              } bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700`}
+            >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-medium truncate flex-1">
+                <span className="text-sm font-medium truncate flex-1 text-gray-900 dark:text-gray-100">
                   {upload.fileName}
                 </span>
-                <span className="text-xs text-muted-foreground ml-2">
-                  {upload.status === 'completed' ? '✓' : 
-                   upload.status === 'failed' ? '✗' : 
+                <span className="text-xs text-gray-600 dark:text-gray-400 ml-2">
+                  {upload.status === 'completed' ? '✓ Complete' : 
+                   upload.status === 'failed' ? '✗ Failed' : 
                    `${Math.round(upload.progress)}%`}
                 </span>
               </div>
               <Progress 
                 value={upload.progress} 
-                className="h-1" 
+                className="h-1 bg-gray-200 dark:bg-gray-700" 
                 indicatorClassName={
                   upload.status === 'completed' ? 'bg-green-500' :
                   upload.status === 'failed' ? 'bg-red-500' :
-                  ''
+                  'bg-blue-500'
                 }
               />
               {upload.error && (
-                <p className="text-xs text-destructive mt-1">{upload.error}</p>
+                <p className="text-xs text-red-600 dark:text-red-400 mt-1">{upload.error}</p>
               )}
             </div>
           ))}

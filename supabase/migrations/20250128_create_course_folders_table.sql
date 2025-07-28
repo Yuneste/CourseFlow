@@ -5,6 +5,8 @@ CREATE TABLE course_folders (
   name TEXT NOT NULL,
   path TEXT NOT NULL,
   parent_id UUID REFERENCES course_folders(id) ON DELETE CASCADE,
+  display_order INTEGER DEFAULT 0,
+  is_special BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   
   -- Ensure unique folder names within the same parent
@@ -65,14 +67,14 @@ BEGIN
   -- Get course name
   SELECT name INTO course_name FROM courses WHERE id = course_id;
   
-  -- Create default folders
-  INSERT INTO course_folders (course_id, name, path) VALUES
-    (course_id, 'Lectures', course_name || '/Lectures'),
-    (course_id, 'Assignments', course_name || '/Assignments'),
-    (course_id, 'Documents', course_name || '/Documents'),
-    (course_id, 'Notes', course_name || '/Notes'),
-    (course_id, 'Exams', course_name || '/Exams'),
-    (course_id, 'Resources', course_name || '/Resources');
+  -- Create default folders with proper order
+  INSERT INTO course_folders (course_id, name, path, display_order, is_special) VALUES
+    (course_id, 'Lectures', course_name || '/Lectures', 1, false),
+    (course_id, 'Assignments', course_name || '/Assignments', 2, false),
+    (course_id, 'Notes', course_name || '/Notes', 3, false),
+    (course_id, 'Exams', course_name || '/Exams', 4, false),
+    (course_id, 'Documents', course_name || '/Documents', 5, false),
+    (course_id, 'Resources', course_name || '/Resources', 6, true);
 END;
 $$ LANGUAGE plpgsql;
 
