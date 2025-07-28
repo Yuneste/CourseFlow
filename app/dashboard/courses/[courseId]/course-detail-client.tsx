@@ -14,7 +14,6 @@ import { useAppStore } from '@/stores/useAppStore';
 import { getCategoryLabel } from '@/lib/utils/file-categorization';
 import type { Course, File } from '@/types';
 import type { FileCategory } from '@/lib/utils/file-categorization';
-import { AIAssistantFAB } from '@/components/features/ai-assistant/AIAssistantFAB';
 
 interface CourseDetailClientProps {
   course: Course;
@@ -204,9 +203,6 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
         />
       )}
     </div>
-
-    {/* AI Assistant FAB */}
-    <AIAssistantFAB courseId={course.id} />
     </>
   );
 }
