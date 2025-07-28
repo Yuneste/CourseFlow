@@ -54,7 +54,7 @@ export function CourseCard({
         }}
       />
       
-      <Card className="border-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
+      <Card className="border-0 bg-transparent">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
