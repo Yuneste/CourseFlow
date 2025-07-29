@@ -11,6 +11,27 @@ import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
+const getCountryName = (code: string) => {
+  const countries: Record<string, string> = {
+    US: 'United States',
+    CA: 'Canada',
+    UK: 'United Kingdom',
+    DE: 'Germany',
+    NL: 'Netherlands',
+  }
+  return countries[code] || code
+}
+
+const getAcademicSystemName = (system: string) => {
+  const systems: Record<string, string> = {
+    gpa: 'GPA System',
+    ects: 'ECTS System',
+    uk_honours: 'UK Honours',
+    percentage: 'Percentage',
+  }
+  return systems[system] || system
+}
+
 export default function ProfileSettingsPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -20,6 +41,8 @@ export default function ProfileSettingsPage() {
     email: '',
     study_program: '',
     degree_type: '',
+    country: '',
+    academic_system: '',
   })
 
   useEffect(() => {
@@ -43,6 +66,8 @@ export default function ProfileSettingsPage() {
           email: user.email || '',
           study_program: profileData.study_program || '',
           degree_type: profileData.degree_type || '',
+          country: profileData.country || '',
+          academic_system: profileData.academic_system || '',
         })
       }
     }
@@ -159,6 +184,17 @@ export default function ProfileSettingsPage() {
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="country">Country & Academic System</Label>
+              <Input
+                id="country"
+                value={`${getCountryName(profile.country)} - ${getAcademicSystemName(profile.academic_system)}`}
+                disabled
+                className="bg-muted"
+              />
+              <p className="text-sm text-muted-foreground">Country and academic system are set during initial setup</p>
             </div>
 
             <div className="pt-4">

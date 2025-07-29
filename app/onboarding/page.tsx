@@ -77,12 +77,23 @@ export default function OnboardingPage() {
     const system = getAcademicSystemWithTerms(country);
     setAcademicSystem(system);
     
-    // Save country immediately to profile
+    // Determine academic system based on country
+    let academicSystemType: 'gpa' | 'ects' | 'uk_honours' | 'percentage' = 'gpa';
+    if (country === 'DE' || country === 'NL') {
+      academicSystemType = 'ects';
+    } else if (country === 'UK') {
+      academicSystemType = 'uk_honours';
+    }
+    
+    // Save country and academic system immediately to profile
     try {
       const response = await fetch('/api/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ country }),
+        body: JSON.stringify({ 
+          country,
+          academic_system: academicSystemType
+        }),
       });
       
       if (!response.ok) {

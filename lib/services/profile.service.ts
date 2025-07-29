@@ -15,6 +15,7 @@ export interface ProfileUpdateData {
   start_year?: number;
   expected_graduation_year?: number;
   country?: string;
+  academic_system?: 'gpa' | 'ects' | 'uk_honours' | 'percentage';
   full_name?: string;
   onboarding_completed?: boolean;
 }

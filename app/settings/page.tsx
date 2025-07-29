@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { User, Globe, Shield, ChevronLeft } from 'lucide-react'
+import { User, Shield, ChevronLeft } from 'lucide-react'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -44,19 +44,6 @@ export default async function SettingsPage() {
           </Card>
         </Link>
 
-        <Link href="/settings/country">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer hover:border-primary bg-card border-border">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-foreground">
-                <Globe className="h-5 w-5 text-primary" />
-                Country & Region
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Change your location and academic system
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </Link>
 
         <Link href="/settings/privacy">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer hover:border-primary bg-card border-border">
