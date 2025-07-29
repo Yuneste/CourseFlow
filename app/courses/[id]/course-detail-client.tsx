@@ -303,8 +303,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   };
 
   return (
-    <UnifiedBackground>
-
+    <>
       {/* Header */}
       <div className="relative z-30 bg-card/95 backdrop-blur-md border-b border-border sticky top-0 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8 py-4">
@@ -350,7 +349,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
         </div>
       </div>
 
-      <UnifiedSection className="py-6">
+      <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar - Folder Structure */}
           <div className="lg:col-span-1">
@@ -588,7 +587,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
             )}
           </div>
         </div>
-      </UnifiedSection>
-    </UnifiedBackground>
+      </div>
+    </>
   );
 }
