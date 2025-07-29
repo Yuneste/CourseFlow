@@ -88,14 +88,14 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       await Promise.all(
         files.map(async (file) => {
           try {
-            const result = await filesService.checkDuplicate(file);
+            const result = await filesService.checkDuplicate(file, courseId);
             if (result.isDuplicate && result.existingFile) {
               duplicates.set(file.name, result.existingFile);
             }
           } catch (error) {
             logger.error('Error checking duplicate', error, { 
               action: 'checkDuplicate',
-              metadata: { fileName: file.name }
+              metadata: { fileName: file.name, courseId }
             });
           }
         })
@@ -106,7 +106,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       logger.error('Duplicate check failed', error);
       return { duplicates, error: 'Failed to check for duplicates' };
     }
-  }, []);
+  }, [courseId]);
 
   // Handle file selection
   const handleFileSelect = useCallback(async (files: File[]) => {
@@ -142,14 +142,14 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     const filesToUpload = selectedFiles.filter(file => !duplicateFiles.has(file.name));
     
     if (filesToUpload.length === 0) {
-      setUploadErrors(['All selected files are duplicates and have been skipped']);
+      setUploadErrors(['All selected files are duplicates in this course and have been skipped']);
       return;
     }
 
     // Show warning if some files were skipped
     if (filesToUpload.length < selectedFiles.length) {
       const skippedCount = selectedFiles.length - filesToUpload.length;
-      setUploadErrors([`${skippedCount} duplicate file(s) skipped`]);
+      setUploadErrors([`${skippedCount} duplicate file(s) in this course skipped`]);
     }
 
     setIsUploading(true);
@@ -182,7 +182,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         // If some files were skipped due to duplicates, prepend that message
         if (filesToUpload.length < selectedFiles.length) {
           const skippedCount = selectedFiles.length - filesToUpload.length;
-          errorMessages.unshift(`${skippedCount} duplicate file(s) were skipped`);
+          errorMessages.unshift(`${skippedCount} duplicate file(s) in this course were skipped`);
         }
         setUploadErrors(errorMessages);
       }
@@ -214,6 +214,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     }
   }, [
     selectedFiles, 
+    duplicateFiles,
     courseId, 
     folderId, 
     onUploadStart, 

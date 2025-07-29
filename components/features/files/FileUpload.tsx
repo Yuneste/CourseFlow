@@ -211,7 +211,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
                   {isDuplicate && existingFile && (
                     <div className="ml-4 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs text-yellow-800 dark:text-yellow-200">
                       <AlertCircle className="inline h-3 w-3 mr-1" />
-                      Duplicate: Already exists (uploaded {new Date(existingFile.created_at).toLocaleDateString()}) - Will be skipped
+                      Duplicate: Already exists in this course (uploaded {new Date(existingFile.created_at).toLocaleDateString()}) - Will be skipped
                     </div>
                   )}
                 </div>
@@ -233,9 +233,9 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
             {(() => {
               if (isUploading) return 'Uploading...';
               const nonDuplicateCount = selectedFiles.filter(file => !duplicateFiles.has(file.name)).length;
-              if (nonDuplicateCount === 0) return 'All files are duplicates';
+              if (nonDuplicateCount === 0) return 'All files are duplicates in this course';
               if (nonDuplicateCount < selectedFiles.length) {
-                return `Upload ${nonDuplicateCount} file(s) (${selectedFiles.length - nonDuplicateCount} duplicate(s) will be skipped)`;
+                return `Upload ${nonDuplicateCount} file(s) (${selectedFiles.length - nonDuplicateCount} duplicate(s) in this course will be skipped)`;
               }
               return `Upload ${selectedFiles.length} file(s)`;
             })()}

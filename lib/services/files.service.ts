@@ -233,9 +233,13 @@ class FilesService {
   /**
    * Check if a file is a duplicate before uploading
    */
-  async checkDuplicate(file: File): Promise<DuplicateCheckResult> {
+  async checkDuplicate(file: File, courseId?: string): Promise<DuplicateCheckResult> {
     const hash = await calculateFileHash(file);
-    return api.get<DuplicateCheckResult>(`/files/check-duplicate?hash=${hash}`);
+    const params = new URLSearchParams({ hash });
+    if (courseId) {
+      params.append('courseId', courseId);
+    }
+    return api.get<DuplicateCheckResult>(`/files/check-duplicate?${params.toString()}`);
   }
 
   /**
