@@ -44,7 +44,7 @@ const StatsCard = ({ title, value, icon: Icon, delay, color }: any) => (
         </div>
         <div>
           <p className="text-xs text-[#C7C7AD]">{title}</p>
-          <h3 className="text-xl font-bold text-[#1a1a1a]">
+          <h3 className="text-lg font-bold text-[#1a1a1a] truncate">
             {value}
           </h3>
         </div>
@@ -277,7 +277,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
-        className="mt-12 text-center"
+        className="mt-12 flex justify-center"
       >
         <Card className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border-[#C7C7AD]/30">
           <Sparkles className="h-4 w-4 text-[#1a1a1a]" />

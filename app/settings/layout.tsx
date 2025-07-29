@@ -15,7 +15,7 @@ export default async function SettingsLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50">
+    <div className="min-h-screen bg-[#ECF0C0]">
       <div className="container mx-auto py-6">
         {children}
       </div>

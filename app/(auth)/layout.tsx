@@ -7,12 +7,12 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]">
+    <div className="min-h-screen flex flex-col bg-[#ECF0C0]">
       {/* Header */}
       <div className="p-4">
         <Link href="/" className="flex items-center gap-2 w-fit">
-          <GraduationCap className="h-8 w-8 text-[#FA8072]" />
-          <span className="text-2xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+          <GraduationCap className="h-8 w-8 text-[#1a1a1a]" />
+          <span className="text-2xl font-bold text-[#1a1a1a]">
             CourseFlow
           </span>
         </Link>

@@ -231,9 +231,9 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
         <div
           className={cn(
             "flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-all duration-200",
-            "hover:bg-gray-100 dark:hover:bg-gray-800",
-            isSelected && "bg-primary/10",
-            isDragOver && "bg-blue-100 dark:bg-blue-900/30 scale-105"
+            "hover:bg-[#F0C4C0]/10",
+            isSelected && "bg-[#F0C4C0]/20",
+            isDragOver && "bg-[#C0ECF0]/30 scale-105"
           )}
           style={{ paddingLeft: `${level * 16 + 8}px` }}
           onClick={() => {
@@ -279,23 +279,23 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           {node.isExpanded ? (
             <FolderOpen className={cn(
               "h-4 w-4 transition-all duration-200",
-              node.folder.is_special ? 'text-purple-600' : 'text-blue-600',
+              node.folder.is_special ? 'text-[#C4C0F0]' : 'text-[#1a1a1a]',
               isDragOver && "scale-110"
             )} />
           ) : (
             <Folder className={cn(
               "h-4 w-4 transition-all duration-200",
-              node.folder.is_special ? 'text-purple-600' : 'text-blue-600',
+              node.folder.is_special ? 'text-[#C4C0F0]' : 'text-[#1a1a1a]',
               isDragOver && "scale-110"
             )} />
           )}
-          <span className="text-sm font-medium flex-1">
+          <span className="text-sm font-medium flex-1 text-[#1a1a1a]">
             {node.folder.name}
             {node.folder.is_special && (
-              <span className="text-xs text-purple-600 ml-1">(AI-powered • Coming soon)</span>
+              <span className="text-xs text-[#C4C0F0] ml-1">(AI-powered • Coming soon)</span>
             )}
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-[#C7C7AD]">
             {node.files.length > 0 && `(${node.files.length})`}
           </span>
         </div>
@@ -310,17 +310,10 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   };
 
   return (
-    <div className="min-h-screen bg-gradient-primary relative overflow-hidden">
-      {/* Beautiful animated background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]"></div>
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFE4E1] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-[#FFDAB9] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-10 left-1/2 w-72 h-72 bg-[#FFB6B0] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
+    <div className="min-h-screen bg-[#ECF0C0] relative overflow-hidden">
 
       {/* Header */}
-      <div className="relative z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b sticky top-0 shadow-sm">
+      <div className="relative z-30 bg-white/95 backdrop-blur-md border-b border-[#C7C7AD]/20 sticky top-0 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -328,20 +321,21 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                 variant="ghost"
                 size="sm"
                 onClick={() => router.push('/dashboard')}
+                className="hover:bg-[#F0C4C0]/10 text-[#1a1a1a]"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
               <div className="flex items-center gap-4 animate-in fade-in duration-500">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-[#FFE4E1] dark:bg-[#FA8072]/20 rounded-2xl blur-xl" />
+                  <div className="absolute inset-0 bg-[#F0C4C0]/30 rounded-2xl blur-xl" />
                   <span className="text-5xl relative z-10">
                     {course.emoji}
                   </span>
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold gradient-text">{course.name}</h1>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <h1 className="text-3xl font-bold text-[#1a1a1a]">{course.name}</h1>
+                  <p className="text-sm text-[#C7C7AD]">
                     {course.code && `${course.code} • `}
                     {course.professor && `Prof. ${course.professor} • `}
                     {course.term}

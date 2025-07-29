@@ -34,21 +34,21 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md bg-white/95 border-[#C7C7AD]/20">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-900">Check your email</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Check your email</CardTitle>
+          <CardDescription className="text-[#C7C7AD]">
             We&apos;ve sent a password reset link to {email}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[#C7C7AD]">
             Click the link in your email to reset your password. 
             If you don&apos;t see the email, check your spam folder.
           </p>
         </CardContent>
         <CardFooter>
-          <Link href="/login" className="text-sm text-primary hover:underline">
+          <Link href="/login" className="text-sm text-[#1a1a1a] hover:underline font-medium">
             Back to sign in
           </Link>
         </CardFooter>
@@ -57,17 +57,17 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md bg-white/95 border-[#C7C7AD]/20">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-gray-900">Reset password</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Reset password</CardTitle>
+        <CardDescription className="text-[#C7C7AD]">
           Enter your email address and we&apos;ll send you a reset link
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleResetPassword} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-[#1a1a1a]">Email</Label>
             <Input
               id="email"
               type="email"
@@ -85,15 +85,15 @@ export default function ResetPasswordPage() {
             </div>
           )}
           
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]" disabled={loading}>
             {loading ? 'Sending reset link...' : 'Send reset link'}
           </Button>
         </form>
       </CardContent>
       <CardFooter>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-[#C7C7AD]">
           Remember your password?{' '}
-          <Link href="/login" className="text-primary hover:underline">
+          <Link href="/login" className="text-[#1a1a1a] hover:underline font-medium">
             Sign in
           </Link>
         </div>
