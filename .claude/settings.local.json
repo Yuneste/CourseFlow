@@ -1,37 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(md-tree:*)",
-      "Bash(mkdir:*)",
-      "Bash(git checkout:*)",
-      "Bash(npx create-next-app:*)",
-      "Bash(npm install:*)",
-      "Bash(npx shadcn-ui@latest init:*)",
-      "Bash(npx shadcn@latest init:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(git merge:*)",
-      "Bash(rm:*)",
-      "Bash(npm test:*)",
-      "Bash(test:*)",
       "Bash(ls:*)",
-      "Bash(npx shadcn-ui:*)",
-      "Bash(npx shadcn@latest add progress --yes)",
-      "Bash(npm run build:*)",
-      "Bash(touch:*)",
-      "Bash(npm run dev:*)",
-      "Bash(npm run lint)",
-      "Bash(npm i:*)",
-      "Bash(npm uninstall:*)",
-      "Bash(npm run typecheck:*)",
-      "Bash(npx tsc:*)",
-      "Bash(npx supabase:*)",
-      "Bash(mv:*)",
-      "Bash(curl:*)",
-      "Bash(python:*)",
-      "Bash(del create_icons.py)",
-      "Bash(npx shadcn@latest add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
