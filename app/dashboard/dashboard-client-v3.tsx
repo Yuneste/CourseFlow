@@ -37,14 +37,14 @@ const StatsCard = ({ title, value, icon: Icon, delay, color }: any) => (
     transition={{ delay, duration: 0.5 }}
     className="relative"
   >
-    <Card className="p-4 border-0 !bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-shadow">
+    <Card className="p-4 border-0 !bg-white/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow">
       <div className="flex items-center gap-3">
         <div className={`p-2 rounded-lg ${color}`}>
           <Icon className="h-5 w-5 text-[#1a1a1a]" />
         </div>
         <div>
           <p className="text-xs text-[#C7C7AD]">{title}</p>
-          <h3 className="text-lg font-bold text-[#1a1a1a] truncate">
+          <h3 className="text-sm font-bold text-[#1a1a1a] break-words">
             {value}
           </h3>
         </div>
@@ -78,8 +78,8 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
           "relative overflow-hidden cursor-pointer h-full",
           "transition-all duration-300 border-[#C7C7AD]/20",
           available 
-            ? "hover:shadow-xl hover:border-[#C7C7AD] bg-white/90 backdrop-blur-sm" 
-            : "opacity-60 cursor-not-allowed bg-white/50 backdrop-blur-sm"
+            ? "hover:shadow-2xl hover:border-[#C7C7AD] bg-white/95 backdrop-blur-sm shadow-lg" 
+            : "opacity-60 cursor-not-allowed bg-white/50 backdrop-blur-sm shadow-md"
         )}
         onClick={() => available && router.push(href)}
       >
@@ -220,7 +220,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto"
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 max-w-3xl mx-auto"
       >
         <StatsCard
           title="Active"
@@ -242,13 +242,6 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           icon={Calendar}
           color="bg-[#C0ECF0]"
           delay={0.4}
-        />
-        <StatsCard
-          title="GPA"
-          value="--"
-          icon={Award}
-          color="bg-[#C4C0F0]"
-          delay={0.5}
         />
       </motion.div>
 
@@ -277,13 +270,15 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
-        className="mt-12 flex justify-center"
+        className="mt-12 text-center"
       >
-        <Card className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border-[#C7C7AD]/30">
-          <Sparkles className="h-4 w-4 text-[#1a1a1a]" />
-          <span className="text-sm text-[#C7C7AD]">
-            <span className="font-medium text-[#1a1a1a]">Pro tip:</span> Start by adding your courses to unlock all features
-          </span>
+        <Card className="inline-block px-6 py-3 bg-white/95 backdrop-blur-sm border-[#C7C7AD]/30 shadow-lg">
+          <div className="flex items-center justify-center gap-2">
+            <Sparkles className="h-4 w-4 text-[#1a1a1a]" />
+            <span className="text-sm text-[#C7C7AD]">
+              <span className="font-medium text-[#1a1a1a]">Pro tip:</span> Start by adding your courses to unlock all features
+            </span>
+          </div>
         </Card>
       </motion.div>
     </div>
