@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, FolderOpen, Grid3x3, List, Settings, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { FileUpload } from '@/components/features/files/FileUpload';
+import { FileUpload } from '@/components/features/files/FileUpload-v2';
 import { FileCategoryView } from '@/components/features/files/FileCategoryView';
 import { FileList } from '@/components/features/files/FileList';
 import { StorageUsage } from '@/components/features/files/StorageUsage';
@@ -54,6 +54,15 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
       document.body.removeChild(link);
     } catch (error) {
       console.error('Error downloading file:', error);
+    }
+  };
+
+  const handleFilePreview = async (file: File) => {
+    try {
+      const downloadData = await filesService.getDownloadUrl(file.id);
+      window.open(downloadData.url, '_blank');
+    } catch (error) {
+      console.error('Error previewing file:', error);
     }
   };
 
@@ -200,6 +209,7 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
           courseId={course.id}
           onFileDelete={handleFileDelete}
           onFileDownload={handleFileDownload}
+          onFilePreview={handleFilePreview}
         />
       )}
     </div>

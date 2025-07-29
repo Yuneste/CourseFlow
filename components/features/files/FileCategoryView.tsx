@@ -24,9 +24,10 @@ interface FileCategoryViewProps {
   courseId?: string;
   onFileDelete?: (fileId: string) => void;
   onFileDownload?: (file: FileType) => void;
+  onFilePreview?: (file: FileType) => void;
 }
 
-export function FileCategoryView({ courseId, onFileDelete, onFileDownload }: FileCategoryViewProps) {
+export function FileCategoryView({ courseId, onFileDelete, onFileDownload, onFilePreview }: FileCategoryViewProps) {
   const { files, getFilesByCourse } = useAppStore();
   const [expandedCategories, setExpandedCategories] = useState<Set<FileCategory>>(
     new Set(['lecture', 'assignment', 'notes', 'exam', 'other'] as FileCategory[])
@@ -134,7 +135,7 @@ export function FileCategoryView({ courseId, onFileDelete, onFileDownload }: Fil
                 <div className={`p-1.5 rounded-lg ${getCategoryColor(category)}`}>
                   <Icon className="h-4 w-4" />
                 </div>
-                <h3 className="font-medium">{getCategoryLabel(category)}</h3>
+                <h3 className="font-medium text-gray-900 dark:text-gray-100">{getCategoryLabel(category)}</h3>
                 <Badge variant="secondary">{categoryFiles.length}</Badge>
               </div>
 
@@ -146,6 +147,7 @@ export function FileCategoryView({ courseId, onFileDelete, onFileDownload }: Fil
                       file={file}
                       onDelete={onFileDelete}
                       onDownload={onFileDownload}
+                      onPreview={onFilePreview}
                     />
                   ))}
                 </div>

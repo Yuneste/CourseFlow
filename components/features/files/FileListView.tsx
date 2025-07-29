@@ -9,9 +9,10 @@ interface FileListViewProps {
   courseId?: string;
   onFileDelete?: (fileId: string) => void;
   onFileDownload?: (file: FileType) => void;
+  onFilePreview?: (file: FileType) => void;
 }
 
-export function FileListView({ courseId, onFileDelete, onFileDownload }: FileListViewProps) {
+export function FileListView({ courseId, onFileDelete, onFileDownload, onFilePreview }: FileListViewProps) {
   const { files, getFilesByCourse } = useAppStore();
 
   // Get files for the course or all files
@@ -27,6 +28,7 @@ export function FileListView({ courseId, onFileDelete, onFileDownload }: FileLis
               file={file}
               onDelete={onFileDelete}
               onDownload={onFileDownload}
+              onPreview={onFilePreview}
             />
           ))}
         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { FileX } from 'lucide-react';
+import { FileX, Eye } from 'lucide-react';
 import { FileCard } from './FileCard';
 import { useAppStore } from '@/stores/useAppStore';
 import { filesService } from '@/lib/services/files.service';
@@ -90,6 +90,16 @@ export function FileList({ courseId }: FileListProps) {
     }
   };
 
+  const handlePreview = async (file: File) => {
+    try {
+      // Get signed URL for preview
+      const downloadData = await filesService.getDownloadUrl(file.id);
+      window.open(downloadData.url, '_blank');
+    } catch (error) {
+      console.error('Error previewing file:', error);
+    }
+  };
+
   // Filter files by course if courseId is provided
   const displayFiles = courseId ? getFilesByCourse(courseId) : files;
 
@@ -138,6 +148,7 @@ export function FileList({ courseId }: FileListProps) {
           file={file}
           onDelete={handleDelete}
           onDownload={handleDownload}
+          onPreview={handlePreview}
         />
       ))}
     </div>
