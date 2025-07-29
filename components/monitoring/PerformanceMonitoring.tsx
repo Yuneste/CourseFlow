@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 // Performance metrics hook
-export function usePerformanceMetrics() {
+export function usePerformanceMetrics(options: { enabled?: boolean } = {}) {
+  const { enabled = false } = options // Disabled by default to avoid performance impact
   const [metrics, setMetrics] = useState({
     fps: 0,
     memory: 0,
@@ -13,7 +14,9 @@ export function usePerformanceMetrics() {
   })
 
   useEffect(() => {
-    // FPS monitoring
+    if (!enabled) return
+
+    // FPS monitoring - only when enabled to avoid performance impact
     let lastTime = performance.now()
     let frames = 0
     let rafId: number
@@ -34,11 +37,14 @@ export function usePerformanceMetrics() {
       rafId = requestAnimationFrame(measureFPS)
     }
 
-    measureFPS()
+    // Only start FPS monitoring if explicitly enabled
+    if (enabled) {
+      measureFPS()
+    }
 
     // Memory monitoring (if available)
     const measureMemory = () => {
-      if ('memory' in performance) {
+      if ('memory' in performance && navigator.userAgent.includes('Chrome')) {
         const memory = (performance as any).memory
         setMetrics(prev => ({
           ...prev,
@@ -47,19 +53,21 @@ export function usePerformanceMetrics() {
       }
     }
 
-    const memoryInterval = setInterval(measureMemory, 1000)
+    const memoryInterval = enabled ? setInterval(measureMemory, 5000) : null // Less frequent updates
 
-    // Page load time
-    if (window.performance.timing) {
-      const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart
-      setMetrics(prev => ({ ...prev, loadTime }))
+    // Use Navigation Timing API v2 if available
+    if ('PerformanceNavigationTiming' in window) {
+      const perfData = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
+      if (perfData) {
+        setMetrics(prev => ({ ...prev, loadTime: Math.round(perfData.loadEventEnd - perfData.fetchStart) }))
+      }
     }
 
     return () => {
-      cancelAnimationFrame(rafId)
-      clearInterval(memoryInterval)
+      if (rafId) cancelAnimationFrame(rafId)
+      if (memoryInterval) clearInterval(memoryInterval)
     }
-  }, [])
+  }, [enabled])
 
   return metrics
 }

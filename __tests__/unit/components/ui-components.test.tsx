@@ -1,10 +1,12 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 
 describe('UI Components', () => {
   describe('Button Component', () => {
@@ -152,6 +154,62 @@ describe('UI Components', () => {
       // Component would check media query and hide mobile menu
       const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
       expect(isDesktop).toBe(true);
+    });
+  });
+
+  describe('ThemeToggle Component', () => {
+    beforeEach(() => {
+      // Mock matchMedia
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation(query => ({
+          matches: false,
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+    });
+
+    it('renders theme toggle button', () => {
+      render(
+        <ThemeProvider>
+          <ThemeToggle />
+        </ThemeProvider>
+      );
+      
+      const button = screen.getByRole('button', { name: /theme/i });
+      expect(button).toBeInTheDocument();
+    });
+
+    it('opens dropdown menu on click', async () => {
+      render(
+        <ThemeProvider>
+          <ThemeToggle />
+        </ThemeProvider>
+      );
+      
+      const button = screen.getByRole('button', { name: /theme/i });
+      await userEvent.click(button);
+      
+      expect(screen.getByText('Light')).toBeInTheDocument();
+      expect(screen.getByText('Dark')).toBeInTheDocument();
+      expect(screen.getByText('System')).toBeInTheDocument();
+    });
+
+    it('has proper accessibility attributes', () => {
+      render(
+        <ThemeProvider>
+          <ThemeToggle />
+        </ThemeProvider>
+      );
+      
+      const button = screen.getByRole('button', { name: /theme/i });
+      expect(button).toHaveAttribute('aria-haspopup', 'menu');
     });
   });
 

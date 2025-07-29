@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback, ReactNode } from 'react';
+import { useRef, useState, useEffect, useCallback, ReactNode, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 
 interface VirtualListProps<T> {
@@ -29,7 +29,7 @@ export function VirtualList<T>({
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout>();
 
-  // Calculate item positions
+  // Calculate item positions with memoization
   const getItemHeight = useCallback(
     (index: number) => {
       return typeof itemHeight === 'function' ? itemHeight(index) : itemHeight;
@@ -37,24 +37,26 @@ export function VirtualList<T>({
     [itemHeight]
   );
 
+  // Memoize item offsets to avoid recalculation
+  const itemOffsets = useMemo(() => {
+    const offsets: number[] = [];
+    let offset = 0;
+    for (let i = 0; i < items.length; i++) {
+      offsets[i] = offset;
+      offset += getItemHeight(i);
+    }
+    return offsets;
+  }, [items.length, getItemHeight]);
+
   const getItemOffset = useCallback(
-    (index: number) => {
-      let offset = 0;
-      for (let i = 0; i < index; i++) {
-        offset += getItemHeight(i);
-      }
-      return offset;
-    },
-    [getItemHeight]
+    (index: number) => itemOffsets[index] || 0,
+    [itemOffsets]
   );
 
-  const getTotalHeight = useCallback(() => {
-    let total = 0;
-    for (let i = 0; i < items.length; i++) {
-      total += getItemHeight(i);
-    }
-    return total;
-  }, [items.length, getItemHeight]);
+  const getTotalHeight = useMemo(() => {
+    if (items.length === 0) return 0;
+    return itemOffsets[items.length - 1] + getItemHeight(items.length - 1);
+  }, [items.length, itemOffsets, getItemHeight]);
 
   // Calculate visible range
   const getVisibleRange = useCallback(() => {

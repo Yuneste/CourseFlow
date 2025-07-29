@@ -76,10 +76,11 @@ export function SessionTimeout({
     const timeSinceLastActivity = now - lastActivityRef.current;
     
     // Only reset if there's been significant time since last activity
-    if (timeSinceLastActivity > 1000) {
+    // and warning is not showing (to avoid resetting during countdown)
+    if (timeSinceLastActivity > 1000 && !showWarning) {
       resetTimers();
     }
-  }, [resetTimers]);
+  }, [resetTimers, showWarning]);
 
   const handleExtend = useCallback(() => {
     resetTimers();
@@ -89,11 +90,22 @@ export function SessionTimeout({
   useEffect(() => {
     if (!enabled) return;
 
-    // Activity events to track
-    const events = ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+    // Throttle the activity handler to improve performance
+    let activityThrottleTimeout: NodeJS.Timeout;
+    const throttledHandleActivity = () => {
+      if (!activityThrottleTimeout) {
+        activityThrottleTimeout = setTimeout(() => {
+          handleActivity();
+          activityThrottleTimeout = undefined as any;
+        }, 1000); // Throttle to once per second
+      }
+    };
+
+    // Activity events to track (reduced for performance)
+    const events = ['mousedown', 'keydown', 'click'];
 
     events.forEach(event => {
-      window.addEventListener(event, handleActivity);
+      window.addEventListener(event, throttledHandleActivity, { passive: true });
     });
 
     // Initial timer setup
@@ -101,9 +113,10 @@ export function SessionTimeout({
 
     return () => {
       events.forEach(event => {
-        window.removeEventListener(event, handleActivity);
+        window.removeEventListener(event, throttledHandleActivity);
       });
       
+      if (activityThrottleTimeout) clearTimeout(activityThrottleTimeout);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (warningRef.current) clearTimeout(warningRef.current);
       if (countdownRef.current) clearInterval(countdownRef.current);
