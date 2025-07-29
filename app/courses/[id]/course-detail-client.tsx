@@ -627,7 +627,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
             
             {/* Bulk actions bar */}
             {(selectedFiles.size > 0 || currentFiles.length > 0) && (
-              <Card className="p-3 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 animate-in slide-in-from-top-2 duration-300">
+              <Card className="p-3 bg-muted/50 border-border animate-in slide-in-from-top-2 duration-300">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">
                     {selectedFiles.size > 0 
