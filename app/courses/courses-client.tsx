@@ -171,13 +171,13 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                 onDrop={(e) => handleDrop(e, index)}
               >
               <Card className={cn(
-                "h-full hover:shadow-xl transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move shadow-[0_4px_12px_rgba(255,255,255,0.1)]",
+                "h-[250px] hover:shadow-xl transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move shadow-[0_4px_12px_rgba(255,255,255,0.1)] flex flex-col",
                 draggedCourse?.id === course.id && "opacity-50"
               )}>
                 <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity">
                   <GripVertical className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <Link href={`/courses/${course.id}`} className="block p-6 group">
+                <Link href={`/courses/${course.id}`} className="flex flex-col p-6 group h-full">
                   <div className="flex justify-between items-start mb-4">
                     <div className="p-3 rounded-lg bg-primary/10">
                       <BookOpen className="h-6 w-6 text-primary" />
@@ -190,17 +190,22 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                   <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
                     {course.name}
                   </h3>
-                  {course.code && (
-                    <p className="text-sm text-muted-foreground font-medium mb-2">{course.code}</p>
-                  )}
                   
-                  {course.professor && (
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Professor: {course.professor}
-                    </p>
-                  )}
+                  <div className="h-5 mb-2">
+                    {course.code && (
+                      <p className="text-sm text-muted-foreground font-medium">{course.code}</p>
+                    )}
+                  </div>
                   
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <div className="h-6 mb-3">
+                    {course.professor && (
+                      <p className="text-sm text-muted-foreground">
+                        Professor: {course.professor}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-sm text-muted-foreground mt-auto">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
                       <span>{course.term || 'Current Term'}</span>

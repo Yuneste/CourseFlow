@@ -59,13 +59,13 @@ export function CourseCard({
         "border border-gray-100 dark:border-gray-700",
         "shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer",
         "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/50 before:to-transparent before:opacity-0 before:transition-opacity hover:before:opacity-100",
-        "min-h-[200px] sm:min-h-[220px]"
+        "h-[220px] flex flex-col"
       )}>
         {/* Color accent bar */}
         <div className={cn("absolute inset-x-0 top-0 h-1", colors.bg)} />
         
         {/* Main content */}
-        <div className="p-6">
+        <div className="p-6 flex flex-col h-full">
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -83,12 +83,16 @@ export function CourseCard({
                 <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100 line-clamp-1 mb-1">
                   {course.name}
                 </h3>
-                {course.code && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                    <Hash className="w-3 h-3" />
-                    {course.code}
-                  </p>
-                )}
+                <div className="h-5">
+                  {course.code ? (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                      <Hash className="w-3 h-3" />
+                      {course.code}
+                    </p>
+                  ) : (
+                    <div className="h-5" />
+                  )}
+                </div>
               </div>
             </div>
 
@@ -134,22 +138,24 @@ export function CourseCard({
             )}
           </div>
 
-          {/* Professor and term */}
-          <div className="flex flex-wrap items-center gap-3 mb-4 text-sm text-gray-600 dark:text-gray-400">
-            {course.professor && (
+          {/* Professor and term - fixed height section */}
+          <div className="h-8 mb-4 flex items-center">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+              {course.professor && (
+                <div className="flex items-center gap-1.5">
+                  <User className="h-3.5 w-3.5" />
+                  <span>{course.professor}</span>
+                </div>
+              )}
               <div className="flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5" />
-                <span>{course.professor}</span>
+                <Calendar className="h-3.5 w-3.5" />
+                <span>{course.term}</span>
               </div>
-            )}
-            <div className="flex items-center gap-1.5">
-              <Calendar className="h-3.5 w-3.5" />
-              <span>{course.term}</span>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="flex items-center justify-between">
+          {/* Stats - push to bottom */}
+          <div className="flex items-center justify-between mt-auto">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5 text-sm">
                 <FolderOpen className="h-4 w-4 text-gray-400" />
