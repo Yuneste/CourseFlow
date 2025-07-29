@@ -115,7 +115,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         </div>
 
         <Link href="/courses/new">
-          <Button className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90">
             <Plus className="h-4 w-4 mr-2" />
             Add Course
           </Button>
@@ -171,7 +171,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                 onDrop={(e) => handleDrop(e, index)}
               >
               <Card className={cn(
-                "h-full hover:shadow-xl transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move",
+                "h-full hover:shadow-xl transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move shadow-[0_4px_12px_rgba(255,255,255,0.1)]",
                 draggedCourse?.id === course.id && "opacity-50"
               )}>
                 <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity">

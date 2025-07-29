@@ -70,10 +70,10 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-card/95 backdrop-blur-sm border-border shadow-xl">
+    <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 shadow-xl">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-foreground">Welcome back</CardTitle>
-        <CardDescription className="text-muted-foreground">
+        <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Welcome back</CardTitle>
+        <CardDescription className="text-[#1a1a1a]/70">
           Sign in to continue to CourseFlow
         </CardDescription>
       </CardHeader>
@@ -82,7 +82,7 @@ export default function LoginPage() {
           variant="outline"
           onClick={() => handleOAuthLogin('google')}
           disabled={loading}
-          className="w-full"
+          className="w-full border-[#C7C7AD]/40 hover:bg-[#F0C4C0]/20 hover:border-[#F0C4C0] transition-all bg-white/80"
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -107,10 +107,10 @@ export default function LoginPage() {
         
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
+            <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
+            <span className="bg-white/90 px-2 text-[#1a1a1a]/60">
               Or continue with
             </span>
           </div>
@@ -118,7 +118,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleEmailLogin} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-[#1a1a1a]">Email</Label>
             <Input
               id="email"
               type="email"
@@ -130,7 +130,7 @@ export default function LoginPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-[#1a1a1a]">Password</Label>
             <Input
               id="password"
               type="password"
@@ -147,7 +147,7 @@ export default function LoginPage() {
             </div>
           )}
           
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]" disabled={loading}>
             {loading ? (
               <>
                 <LoadingSpinner size="sm" className="mr-2" />
@@ -160,13 +160,13 @@ export default function LoginPage() {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-[#C7C7AD]">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-primary hover:underline font-medium">
+          <Link href="/register" className="text-[#1a1a1a] hover:underline font-medium">
             Sign up
           </Link>
         </div>
-        <Link href="/reset-password" className="text-sm text-primary hover:underline">
+        <Link href="/reset-password" className="text-sm text-[#1a1a1a] hover:underline">
           Forgot your password?
         </Link>
       </CardFooter>
