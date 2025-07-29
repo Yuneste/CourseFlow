@@ -93,7 +93,7 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
       <Card 
         className={cn(
           "relative overflow-hidden cursor-pointer h-full p-6 transition-all duration-300",
-          "border-border bg-card shadow-sm",
+          "border-border bg-card shadow-md",
           available 
             ? "hover:shadow-xl hover:border-primary/20" 
             : "opacity-60 cursor-not-allowed"

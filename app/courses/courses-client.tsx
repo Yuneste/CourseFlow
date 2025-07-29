@@ -130,20 +130,20 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
           transition={{ delay: 0.2 }}
           className="text-center py-12"
         >
-          <BookOpen className="h-16 w-16 text-[#C7C7AD] mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-[#1a1a1a] mb-2">
+          <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">
             {searchQuery
               ? 'No courses found' 
               : 'No courses yet'}
           </h3>
-          <p className="text-[#1a1a1a]/70 mb-4">
+          <p className="text-muted-foreground mb-4">
             {searchQuery
               ? 'Try adjusting your search'
               : 'Get started by adding your first course'}
           </p>
           {!searchQuery && (
             <Link href="/courses/new">
-              <Button className="bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]">
+              <Button>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Your First Course
               </Button>
@@ -171,36 +171,36 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                 onDrop={(e) => handleDrop(e, index)}
               >
               <Card className={cn(
-                "h-full hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 cursor-move",
+                "h-full hover:shadow-xl transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move",
                 draggedCourse?.id === course.id && "opacity-50"
               )}>
                 <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity">
                   <GripVertical className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <Link href={`/courses/${course.id}`} className="block p-6">
+                <Link href={`/courses/${course.id}`} className="block p-6 group">
                   <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 rounded-lg bg-[#F0C4C0]/20">
-                      <BookOpen className="h-6 w-6 text-[#1a1a1a]" />
+                    <div className="p-3 rounded-lg bg-primary/10">
+                      <BookOpen className="h-6 w-6 text-primary" />
                     </div>
-                    <span className="text-xs px-2 py-1 rounded-full bg-[#ECF0C0] text-[#1a1a1a]">
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent text-accent-foreground">
                       {course.term}
                     </span>
                   </div>
                   
-                  <h3 className="text-lg font-semibold text-[#1a1a1a] mb-1 group-hover:text-[#FA8072] transition-colors">
+                  <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
                     {course.name}
                   </h3>
                   {course.code && (
-                    <p className="text-sm text-[#1a1a1a]/60 font-medium mb-2">{course.code}</p>
+                    <p className="text-sm text-muted-foreground font-medium mb-2">{course.code}</p>
                   )}
                   
                   {course.professor && (
-                    <p className="text-sm text-[#1a1a1a]/70 mb-3">
+                    <p className="text-sm text-muted-foreground mb-3">
                       Professor: {course.professor}
                     </p>
                   )}
                   
-                  <div className="flex items-center justify-between text-sm text-[#1a1a1a]/60">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
                       <span>{course.term || 'Current Term'}</span>

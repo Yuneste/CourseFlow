@@ -247,7 +247,7 @@ export default function OnboardingPage() {
         </div>
 
         <div className="mb-8">
-          <Progress value={progress} className="h-3 bg-[#C7C7AD]/20" />
+          <Progress value={progress} className="h-3" />
         </div>
 
       {renderStep()}
@@ -400,7 +400,7 @@ function StepAddCourses({
               {courses.map((course) => (
                 <div
                   key={course.id}
-                  className="flex items-center gap-3 p-3 rounded-lg border border-[#C7C7AD]/20 bg-white/90 group hover:bg-accent transition-colors"
+                  className="flex items-center gap-3 p-3 rounded-lg border border-border bg-primary/5 group hover:bg-primary/10 transition-colors"
                 >
                   <span className="text-2xl">{course.emoji}</span>
                   <div className="flex-1">
@@ -482,7 +482,7 @@ function StepAddCourses({
                   <ChevronLeft className="h-4 w-4 mr-2" />
                   Previous
                 </Button>
-                <Button onClick={onNext} className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-foreground">
+                <Button onClick={onNext} className="flex-1">
                   Continue
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -534,7 +534,7 @@ function StepAddCourses({
                   type="text"
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g., PSY 101"
                   maxLength={20}
                 />
@@ -546,7 +546,7 @@ function StepAddCourses({
                   type="text"
                   value={formData.professor}
                   onChange={(e) => setFormData({ ...formData, professor: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g., Dr. Smith"
                   maxLength={100}
                 />
@@ -562,7 +562,7 @@ function StepAddCourses({
                   onChange={(e) =>
                     setFormData({ ...formData, credits: e.target.value ? parseInt(e.target.value) : undefined })
                   }
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g., 3"
                   min="0"
                   max="10"
@@ -579,7 +579,7 @@ function StepAddCourses({
                   onChange={(e) =>
                     setFormData({ ...formData, ects_credits: e.target.value ? parseInt(e.target.value) : undefined })
                   }
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="e.g., 6"
                   min="0"
                   max="30"
@@ -598,7 +598,7 @@ function StepAddCourses({
                       onClick={() => setFormData({ ...formData, color })}
                       className={cn(
                         'w-8 h-8 rounded-lg border-2',
-                        formData.color === color ? 'border-gray-900' : 'border-transparent'
+                        formData.color === color ? 'border-primary' : 'border-transparent'
                       )}
                       style={{ backgroundColor: color }}
                     />
@@ -617,8 +617,8 @@ function StepAddCourses({
                       className={cn(
                         'w-8 h-8 rounded-lg border-2 text-lg',
                         formData.emoji === emoji
-                          ? 'border-gray-900 bg-gray-100'
-                          : 'border-transparent hover:bg-gray-50'
+                          ? 'border-primary bg-primary/10'
+                          : 'border-transparent hover:bg-muted'
                       )}
                     >
                       {emoji}
@@ -823,7 +823,7 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext, onPrevious 
             </Button>
             <Button 
               type="submit" 
-              className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-foreground"
+              className="flex-1"
               disabled={!studyProgram.study_program || !studyProgram.degree_type}
             >
               Continue
@@ -875,7 +875,7 @@ function StepComplete({
             <ChevronLeft className="h-5 w-5 mr-2" />
             Previous
           </Button>
-          <Button onClick={onShowBenefits} size="lg" className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-foreground">
+          <Button onClick={onShowBenefits} size="lg" className="flex-1">
             Discover CourseFlow
             <ChevronRight className="h-5 w-5 ml-2" />
           </Button>

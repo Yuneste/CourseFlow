@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { FileOrganizationDemo, CollaborationDemo, ResourceRecommendationDemo } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
 import { UnifiedBackground, UnifiedCard } from '@/components/ui/unified-background';
+import { EducationalPattern } from '@/components/ui/educational-pattern';
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -93,6 +94,9 @@ export default function LandingPage() {
 
   return (
     <UnifiedBackground>
+      {/* Educational Pattern Background */}
+      <EducationalPattern />
+      
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-card/80 backdrop-blur-md z-50 border-b border-border">
         <div className="container mx-auto px-4">

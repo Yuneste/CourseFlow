@@ -71,16 +71,16 @@ export default function CountrySettingsPage() {
             Back to Settings
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold text-foreground">
           Country & Region
         </h1>
-        <p className="text-gray-600 mt-1">Select your country to customize your academic calendar</p>
+        <p className="text-muted-foreground mt-1">Select your country to customize your academic calendar</p>
       </div>
 
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5 text-[#FA8072]" />
+            <Globe className="h-5 w-5 text-primary" />
             Select Your Country
           </CardTitle>
           <CardDescription>
@@ -93,11 +93,7 @@ export default function CountrySettingsPage() {
               <Button
                 key={code}
                 variant={currentCountry === code ? 'default' : 'outline'}
-                className={`justify-start h-auto py-4 ${
-                  currentCountry === code 
-                    ? 'bg-[#FA8072] hover:bg-[#FF6B6B] text-white' 
-                    : 'hover:bg-[#FFE4E1] hover:border-[#FA8072]'
-                }`}
+                className="justify-start h-auto py-4"
                 onClick={() => handleCountrySelect(code)}
                 disabled={isLoading}
               >
