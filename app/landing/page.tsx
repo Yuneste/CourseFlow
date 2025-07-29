@@ -93,7 +93,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <UnifiedBackground>
+    <div className="min-h-screen bg-background">
       {/* Educational Pattern Background */}
       <EducationalPattern />
       
@@ -256,7 +256,7 @@ export default function LandingPage() {
                   </ul>
                 </div>
                 <div className="flex-1 max-w-2xl w-full">
-                  <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 md:p-8 overflow-hidden">
+                  <div className="bg-card rounded-xl shadow-xl p-4 sm:p-6 md:p-8 overflow-hidden border border-border">
                     <feature.Demo />
                   </div>
                 </div>
@@ -429,6 +429,6 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-      </UnifiedBackground>
+    </div>
   );
 }

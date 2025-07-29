@@ -272,23 +272,23 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           {node.isExpanded ? (
             <FolderOpen className={cn(
               "h-4 w-4 transition-all duration-200",
-              node.folder.is_special ? 'text-[#C4C0F0]' : 'text-[#1a1a1a]',
+              node.folder.is_special ? 'text-primary' : 'text-foreground',
               isDragOver && "scale-110"
             )} />
           ) : (
             <Folder className={cn(
               "h-4 w-4 transition-all duration-200",
-              node.folder.is_special ? 'text-[#C4C0F0]' : 'text-[#1a1a1a]',
+              node.folder.is_special ? 'text-primary' : 'text-foreground',
               isDragOver && "scale-110"
             )} />
           )}
-          <span className="text-sm font-medium flex-1 text-[#1a1a1a]">
+          <span className="text-sm font-medium flex-1 text-foreground">
             {node.folder.name}
             {node.folder.is_special && (
-              <span className="text-xs text-[#C4C0F0] ml-1">(AI-powered • Coming soon)</span>
+              <span className="text-xs text-muted-foreground ml-1">(AI-powered • Coming soon)</span>
             )}
           </span>
-          <span className="text-xs text-[#C7C7AD]">
+          <span className="text-xs text-muted-foreground">
             {node.files.length > 0 && `(${node.files.length})`}
           </span>
         </div>
