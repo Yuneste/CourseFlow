@@ -97,8 +97,15 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
       }
     }
 
+    const handleOpenSearch = () => onOpenChange(true)
+
     document.addEventListener('keydown', down)
-    return () => document.removeEventListener('keydown', down)
+    window.addEventListener('openSearch', handleOpenSearch)
+    
+    return () => {
+      document.removeEventListener('keydown', down)
+      window.removeEventListener('openSearch', handleOpenSearch)
+    }
   }, [onOpenChange])
 
   return (

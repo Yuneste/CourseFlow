@@ -5,12 +5,12 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from 'sonner'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { SkipLinks } from '@/components/accessibility/SkipLinks'
+import { generateMetadata } from '@/components/seo/metadata'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'CourseFlow - Academic File Organization',
-  description: 'Organize your academic files with AI-powered categorization',
+  ...generateMetadata(),
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -23,7 +23,10 @@ export const metadata: Metadata = {
 }
 
 export const viewport = {
-  themeColor: '#FA8072',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ECF0C0' },
+    { media: '(prefers-color-scheme: dark)', color: '#1a1a1a' },
+  ],
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
