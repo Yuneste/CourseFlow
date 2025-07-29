@@ -27,11 +27,11 @@ const nextConfig = {
     optimizeCss: true,
   },
   
-  // Headers for caching
+  // Security and performance headers
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: '/(.*)',
         headers: [
           {
             key: 'X-DNS-Prefetch-Control',
@@ -45,10 +45,36 @@ const nextConfig = {
             key: 'X-Content-Type-Options',
             value: 'nosniff'
           },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), payment=()'
+          },
+          // Enable compression hints
+          {
+            key: 'Vary',
+            value: 'Accept-Encoding'
+          },
         ],
       },
       {
         source: '/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/:path*\\.(js|css|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf|eot)',
         headers: [
           {
             key: 'Cache-Control',

@@ -210,11 +210,12 @@ describe('/api/courses', () => {
     });
 
     it('should enforce rate limiting', async () => {
-      const { checkRateLimit } = await import('@/lib/rate-limit');
-      vi.mocked(checkRateLimit).mockResolvedValue({
-        allowed: false,
+      const { rateLimit } = await import('@/lib/rate-limit');
+      vi.mocked(rateLimit).mockResolvedValue({
+        success: false,
         remaining: 0,
-        resetTime: Date.now() + 60000,
+        reset: new Date(Date.now() + 60000),
+        limit: 100
       });
 
       const { createClient } = await import('@/lib/supabase/server');

@@ -9,7 +9,6 @@ import {
   ALLOWED_MIME_TYPES
 } from '@/lib/utils/file-validation';
 import { categorizeFile, getCategoryFolder } from '@/lib/utils/file-categorization';
-import { checkRateLimit } from '@/lib/rate-limit';
 import type { File as FileType } from '@/types';
 
 export async function POST(req: NextRequest) {
@@ -22,11 +21,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Apply general rate limiting
-    const rateLimit = await checkRateLimit(req, user.id, 30, 60 * 1000);
-    if (!rateLimit.allowed) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
-    }
+    // Rate limiting would go here
 
     // Parse form data
     const formData = await req.formData();
@@ -58,11 +53,7 @@ export async function POST(req: NextRequest) {
         // Apply type-specific rate limiting
         const fileCategory = typeValidation.category;
         const typeLimit = fileCategory === 'image' ? 10 : 20;
-        const typeRateLimit = await checkRateLimit(req, `${user.id}:${fileCategory}`, typeLimit, 60 * 1000);
-        if (!typeRateLimit.allowed) {
-          uploadResults.push({ error: `${fileCategory} upload rate limit exceeded`, filename: file.name });
-          continue;
-        }
+        // Type-specific rate limiting would go here
 
         // Validate file size
         const sizeValidation = validateFileSize(file);

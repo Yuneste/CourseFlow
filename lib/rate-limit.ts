@@ -1,64 +1,108 @@
-import { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server'
+import { env } from './env'
 
-interface RateLimitEntry {
-  count: number;
-  resetTime: number;
+interface RateLimitResult {
+  success: boolean
+  limit: number
+  remaining: number
+  reset: Date
 }
 
-// In-memory store for rate limiting (in production, use Redis or similar)
-const rateLimitStore = new Map<string, RateLimitEntry>();
+// In-memory store for rate limiting (consider Redis for production)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
 
-// Clean up expired entries every 5 minutes
+// Clean up expired entries periodically
 setInterval(() => {
-  const now = Date.now();
-  rateLimitStore.forEach((entry, key) => {
-    if (entry.resetTime < now) {
-      rateLimitStore.delete(key);
+  const now = Date.now()
+  Array.from(rateLimitStore.entries()).forEach(([key, value]) => {
+    if (value.resetTime < now) {
+      rateLimitStore.delete(key)
     }
-  });
-}, 5 * 60 * 1000);
+  })
+}, 60000) // Clean up every minute
 
-export async function checkRateLimit(
+export async function rateLimit(
   request: NextRequest,
-  userId: string,
-  limit: number = 10,
-  windowMs: number = 60 * 1000 // 1 minute default
-): Promise<{ allowed: boolean; remaining: number; resetTime: number }> {
-  const key = `${userId}:${request.nextUrl.pathname}`;
-  const now = Date.now();
+  options?: {
+    limit?: number
+    windowMs?: number
+    keyGenerator?: (req: NextRequest) => string
+  }
+): Promise<RateLimitResult> {
+  const limit = options?.limit || env.rateLimitRequests
+  const windowMs = options?.windowMs || env.rateLimitWindowMs
   
-  let entry = rateLimitStore.get(key);
+  // Generate a unique key for this client
+  const key = options?.keyGenerator
+    ? options.keyGenerator(request)
+    : getDefaultKey(request)
+  
+  const now = Date.now()
+  const resetTime = now + windowMs
+  
+  // Get or create rate limit entry
+  let entry = rateLimitStore.get(key)
   
   if (!entry || entry.resetTime < now) {
-    // Create new entry
-    entry = {
-      count: 1,
-      resetTime: now + windowMs
-    };
-    rateLimitStore.set(key, entry);
+    // Create new entry or reset expired one
+    entry = { count: 1, resetTime }
+    rateLimitStore.set(key, entry)
   } else {
-    // Increment existing entry
-    entry.count++;
+    // Increment count
+    entry.count++
   }
   
-  const allowed = entry.count <= limit;
-  const remaining = Math.max(0, limit - entry.count);
+  const remaining = Math.max(0, limit - entry.count)
+  const success = entry.count <= limit
   
   return {
-    allowed,
+    success,
+    limit,
     remaining,
-    resetTime: entry.resetTime
-  };
+    reset: new Date(entry.resetTime),
+  }
 }
 
-export function getRateLimitHeaders(
-  limit: number,
-  remaining: number,
-  resetTime: number
-): Record<string, string> {
-  return {
-    'X-RateLimit-Limit': limit.toString(),
-    'X-RateLimit-Remaining': remaining.toString(),
-    'X-RateLimit-Reset': new Date(resetTime).toISOString(),
-  };
+function getDefaultKey(request: NextRequest): string {
+  // Try to get client IP
+  const forwarded = request.headers.get('x-forwarded-for')
+  const ip = forwarded ? forwarded.split(',')[0] : 'unknown'
+  
+  // Include user ID if authenticated
+  const userId = request.headers.get('x-user-id') || 'anonymous'
+  
+  // Include API route
+  const pathname = request.nextUrl.pathname
+  
+  return `${ip}:${userId}:${pathname}`
+}
+
+// Middleware helper to apply rate limiting
+export function withRateLimit(
+  handler: (request: NextRequest) => Promise<Response>,
+  options?: Parameters<typeof rateLimit>[1]
+) {
+  return async (request: NextRequest): Promise<Response> => {
+    const result = await rateLimit(request, options)
+    
+    if (!result.success) {
+      return new Response('Too Many Requests', {
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': result.limit.toString(),
+          'X-RateLimit-Remaining': result.remaining.toString(),
+          'X-RateLimit-Reset': result.reset.toISOString(),
+          'Retry-After': Math.ceil((result.reset.getTime() - Date.now()) / 1000).toString(),
+        },
+      })
+    }
+    
+    // Add rate limit headers to successful responses
+    const response = await handler(request)
+    response.headers.set('X-RateLimit-Limit', result.limit.toString())
+    response.headers.set('X-RateLimit-Remaining', result.remaining.toString())
+    response.headers.set('X-RateLimit-Reset', result.reset.toISOString())
+    
+    return response
+  }
 }
