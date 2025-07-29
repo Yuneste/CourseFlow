@@ -149,11 +149,14 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
         initial={false}
         animate={{
           width: isCollapsed ? 80 : 280,
-          x: isOpen ? 0 : -280,
         }}
         className={cn(
           "fixed top-0 left-0 z-40 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800",
-          "transition-all duration-300 ease-in-out shadow-xl lg:shadow-sm",
+          "transition-all duration-300 ease-in-out",
+          "shadow-xl lg:shadow-sm",
+          // Mobile positioning
+          isOpen ? "translate-x-0" : "-translate-x-full",
+          // Desktop positioning - always visible
           "lg:translate-x-0"
         )}
       >

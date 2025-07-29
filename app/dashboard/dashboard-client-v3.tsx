@@ -69,13 +69,17 @@ const StatsCard = ({ title, value, icon: Icon, delay }: any) => (
 
 // Animated welcome message
 const WelcomeMessage = ({ userName }: { userName: string }) => {
-  const greetings = [
-    "Ready to ace your courses?",
-    "Let's make today productive!",
-    "Your academic journey continues!",
-    "Time to shine academically!"
-  ];
-  const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+  const [greeting, setGreeting] = useState("Ready to ace your courses?");
+  
+  useEffect(() => {
+    const greetings = [
+      "Ready to ace your courses?",
+      "Let's make today productive!",
+      "Your academic journey continues!",
+      "Time to shine academically!"
+    ];
+    setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
+  }, []);
 
   return (
     <motion.div
@@ -88,7 +92,7 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
         <br />
         <span className="gradient-text">{userName}!</span>
       </h1>
-      <p className="text-xl text-gray-600">{randomGreeting}</p>
+      <p className="text-xl text-gray-600">{greeting}</p>
     </motion.div>
   );
 };

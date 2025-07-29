@@ -56,7 +56,7 @@ export function CourseCard({
     >
       <div className={cn(
         "relative overflow-hidden rounded-xl bg-white dark:bg-gray-800",
-        "border border-gray-200 dark:border-gray-700",
+        "border border-gray-100 dark:border-gray-700",
         "shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer",
         "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/50 before:to-transparent before:opacity-0 before:transition-opacity hover:before:opacity-100"
       )}>
