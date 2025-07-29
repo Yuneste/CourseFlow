@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Menu, 
   X, 
@@ -18,9 +19,13 @@ import {
   Upload,
   FolderOpen,
   Award,
-  BarChart3
+  BarChart3,
+  Search,
+  Bell,
+  HelpCircle
 } from 'lucide-react';
 import { User as UserType } from '@/types';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarProps {
   user: UserType;
@@ -46,7 +51,6 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('sidebar-collapsed', isCollapsed.toString());
-      // Emit custom event for other components
       window.dispatchEvent(new Event('storage'));
     }
   }, [isCollapsed]);
@@ -56,34 +60,55 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
       title: 'Dashboard',
       href: '/dashboard',
       icon: Home,
+      description: 'Overview & recent activity'
     },
     {
       title: 'My Courses',
       href: '/dashboard',
       icon: BookOpen,
+      description: 'View all courses'
     },
     {
       title: 'Upload Files',
       href: '/dashboard?tab=upload',
       icon: Upload,
+      description: 'Add new materials'
     },
     {
-      title: 'Statistics',
-      href: '/dashboard/stats',
+      title: 'Files',
+      href: '/dashboard?tab=files',
+      icon: FolderOpen,
+      description: 'Browse all files'
+    },
+    {
+      title: 'Analytics',
+      href: '/dashboard/analytics',
       icon: BarChart3,
+      description: 'Study insights'
     },
     {
       title: 'Achievements',
       href: '/dashboard/achievements',
       icon: Award,
+      description: 'Track progress'
     },
   ];
 
   const bottomItems = [
     {
-      title: 'Profile',
-      href: '/settings/profile',
-      icon: User,
+      title: 'Search',
+      href: '/dashboard/search',
+      icon: Search,
+    },
+    {
+      title: 'Notifications',
+      href: '/dashboard/notifications',
+      icon: Bell,
+    },
+    {
+      title: 'Help',
+      href: '/help',
+      icon: HelpCircle,
     },
     {
       title: 'Settings',
@@ -100,46 +125,62 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 left-4 z-50 lg:hidden"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white/80 backdrop-blur-sm shadow-sm"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </Button>
 
       {/* Mobile Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Sidebar */}
-      <aside
+      <motion.aside
+        initial={false}
+        animate={{
+          width: isCollapsed ? 80 : 280,
+          x: isOpen ? 0 : -280,
+        }}
         className={cn(
-          "fixed top-0 left-0 z-40 h-full bg-white border-r border-gray-200 transition-all duration-300 shadow-xl",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          isCollapsed ? "w-16" : "w-64"
+          "fixed top-0 left-0 z-40 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800",
+          "transition-all duration-300 ease-in-out shadow-xl lg:shadow-sm",
+          "lg:translate-x-0"
         )}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-800">
             <div className="flex items-center justify-between">
               <Link 
                 href="/dashboard" 
                 className={cn(
-                  "flex items-center gap-2 font-bold text-xl",
+                  "flex items-center gap-3 font-bold text-xl",
                   isCollapsed && "justify-center"
                 )}
               >
-                <span className="text-2xl">📚</span>
-                {!isCollapsed && <span className="text-gray-900">CourseFlow</span>}
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                {!isCollapsed && (
+                  <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    CourseFlow
+                  </span>
+                )}
               </Link>
               <Button
                 variant="ghost"
                 size="icon"
-                className="hidden lg:flex"
+                className="hidden lg:flex hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={() => setIsCollapsed(!isCollapsed)}
               >
                 <ChevronLeft className={cn(
@@ -151,22 +192,22 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
           </div>
 
           {/* User Section */}
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-800">
             <div className={cn(
               "flex items-center gap-3",
               isCollapsed && "justify-center"
             )}>
-              <Avatar className="h-10 w-10">
-                <AvatarFallback>
+              <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900">
+                <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
                   {user?.full_name?.[0] || user?.email?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
               {!isCollapsed && (
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate text-gray-900">
-                    {user?.full_name || 'User'}
+                  <p className="text-sm font-medium truncate text-gray-900 dark:text-gray-100">
+                    {user?.full_name || 'Student'}
                   </p>
-                  <p className="text-xs text-gray-600 truncate">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {user?.email}
                   </p>
                 </div>
@@ -175,52 +216,75 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                    "hover:bg-[#FFF5F5] hover:scale-105 text-gray-700",
-                    isActive(item.href) && "bg-[#FFE4E1] text-[#FA8072] font-medium shadow-sm",
-                    isCollapsed && "justify-center"
-                  )}
-                  title={isCollapsed ? item.title : undefined}
-                >
-                  <Icon className={cn(
-                    "h-5 w-5 flex-shrink-0",
-                    isActive(item.href) ? "text-[#FA8072]" : "text-gray-600"
-                  )} />
-                  {!isCollapsed && <span className={isActive(item.href) ? "text-[#FA8072]" : ""}>{item.title}</span>}
-                </Link>
-              );
-            })}
-          </nav>
+          <ScrollArea className="flex-1 px-3 py-4">
+            <nav className="space-y-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
+                      "hover:bg-gray-100 dark:hover:bg-gray-800 group",
+                      active && "bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400",
+                      isCollapsed && "justify-center"
+                    )}
+                    title={isCollapsed ? item.title : undefined}
+                  >
+                    <Icon className={cn(
+                      "h-5 w-5 flex-shrink-0 transition-colors",
+                      active ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                    )} />
+                    {!isCollapsed && (
+                      <div className="flex-1 min-w-0">
+                        <p className={cn(
+                          "text-sm font-medium",
+                          active ? "text-indigo-600 dark:text-indigo-400" : "text-gray-700 dark:text-gray-300"
+                        )}>
+                          {item.title}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {item.description}
+                        </p>
+                      </div>
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+          </ScrollArea>
 
-          {/* Bottom Items */}
-          <div className="p-4 border-t border-gray-200 space-y-1">
+          {/* Bottom Section */}
+          <div className="p-3 border-t border-gray-200 dark:border-gray-800 space-y-1">
             {bottomItems.map((item) => {
               const Icon = item.icon;
+              const active = isActive(item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
-                    "hover:bg-[#FFF5F5] hover:scale-105 text-gray-700",
-                    isActive(item.href) && "bg-[#FFE4E1] text-[#FA8072] font-medium shadow-sm",
+                    "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
+                    "hover:bg-gray-100 dark:hover:bg-gray-800",
+                    active && "bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400",
                     isCollapsed && "justify-center"
                   )}
                   title={isCollapsed ? item.title : undefined}
                 >
                   <Icon className={cn(
                     "h-5 w-5 flex-shrink-0",
-                    isActive(item.href) ? "text-[#FA8072]" : "text-gray-600"
+                    active ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400"
                   )} />
-                  {!isCollapsed && <span className={isActive(item.href) ? "text-[#FA8072]" : ""}>{item.title}</span>}
+                  {!isCollapsed && (
+                    <span className={cn(
+                      "text-sm",
+                      active ? "text-indigo-600 dark:text-indigo-400 font-medium" : "text-gray-700 dark:text-gray-300"
+                    )}>
+                      {item.title}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -228,17 +292,17 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start gap-3 text-gray-700 hover:text-gray-900",
+                "w-full justify-start gap-3 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950",
                 isCollapsed && "justify-center px-0"
               )}
               onClick={onSignOut}
             >
-              <LogOut className="h-5 w-5 flex-shrink-0 text-gray-600" />
+              <LogOut className="h-5 w-5 flex-shrink-0" />
               {!isCollapsed && <span>Sign Out</span>}
             </Button>
           </div>
         </div>
-      </aside>
+      </motion.aside>
     </>
   );
 }

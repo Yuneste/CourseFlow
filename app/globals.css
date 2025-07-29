@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Light mode - Beautiful salmon/coral theme */
+    /* Light mode - Beautiful salmon/coral theme (keeping original for landing) */
     --background: 0 0% 100%;
     --foreground: 0 0% 13%; /* Dark gray for better contrast */
     --card: 0 0% 100%;
@@ -48,6 +48,50 @@
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 8 94% 72%;
+  }
+  
+  /* Academic theme for dashboard/app pages */
+  .academic-theme {
+    /* Light mode - Modern academic theme */
+    --background: 0 0% 98%; /* Soft gray background #FAFAFA */
+    --foreground: 222 47% 11%; /* Dark blue text */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 243 80% 62%; /* Indigo #4F46E5 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%; /* Light gray */
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 262 83% 58%; /* Purple #8B5CF6 */
+    --accent-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 243 80% 62%;
+    --radius: 0.5rem;
+  }
+  
+  .dark .academic-theme {
+    /* Dark mode - Modern dark academic */
+    --background: 222 47% 11%; /* Dark blue-gray */
+    --foreground: 210 40% 96%;
+    --card: 222 47% 15%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 47% 15%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 234 89% 74%; /* Bright indigo #6366F1 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 263 70% 65%; /* Light purple #A78BFA */
+    --accent-foreground: 0 0% 100%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 234 89% 74%;
   }
 }
 
@@ -165,6 +209,13 @@
   background-size: 1000px 100%;
 }
 
+/* Modern typography */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Better focus styles */
 :focus-visible {
   outline: 2px solid hsl(var(--primary));
@@ -174,27 +225,28 @@
 
 /* Smooth transitions for all interactive elements */
 button, a, input, select, textarea {
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Better scrollbar */
+/* Modern scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-  border-radius: 4px;
+  background: hsl(var(--secondary));
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 4px;
+  background: hsl(var(--muted-foreground) / 0.5);
+  border-radius: 5px;
+  border: 2px solid hsl(var(--secondary));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
+  background: hsl(var(--muted-foreground) / 0.7);
 }
 
 /* Loading dots animation */
@@ -223,6 +275,54 @@ button, a, input, select, textarea {
   @apply bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent;
 }
 
+/* Modern gradient text for academic theme */
+.gradient-text-academic {
+  @apply bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
+}
+
+/* Modern card styles */
+.card-modern {
+  @apply bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300;
+}
+
+.dark .card-modern {
+  @apply bg-gray-800 border-gray-700;
+}
+
+/* Glassmorphism effect */
+.glass {
+  @apply bg-white/80 backdrop-blur-xl backdrop-saturate-150 border border-white/20;
+}
+
+.dark .glass {
+  @apply bg-gray-900/80 border-gray-800/50;
+}
+
+/* Modern button styles */
+.btn-modern {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 transform active:scale-95;
+}
+
+.btn-primary-modern {
+  @apply btn-modern bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg hover:shadow-xl;
+}
+
+.btn-secondary-modern {
+  @apply btn-modern bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300;
+}
+
+.dark .btn-secondary-modern {
+  @apply bg-gray-800 text-gray-100 hover:bg-gray-700 border-gray-700;
+}
+
+/* Course card color system */
+.course-color-1 { @apply bg-gradient-to-br from-blue-500 to-blue-600; }
+.course-color-2 { @apply bg-gradient-to-br from-purple-500 to-purple-600; }
+.course-color-3 { @apply bg-gradient-to-br from-green-500 to-green-600; }
+.course-color-4 { @apply bg-gradient-to-br from-yellow-500 to-yellow-600; }
+.course-color-5 { @apply bg-gradient-to-br from-red-500 to-red-600; }
+.course-color-6 { @apply bg-gradient-to-br from-indigo-500 to-indigo-600; }
+
 /* Card hover effects */
 .card-hover {
   @apply transition-all duration-200 hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1;
@@ -237,7 +337,7 @@ button, a, input, select, textarea {
   @apply bg-gradient-to-r from-[#FA8072] to-[#FF6B6B];
 }
 
-/* Button styles matching landing page */
+/* Landing page button styles (keep original) */
 .btn-primary {
   @apply bg-[#FA8072] text-white hover:bg-[#FF6B6B] shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200;
 }
@@ -246,14 +346,42 @@ button, a, input, select, textarea {
   @apply bg-white text-[#FA8072] border-2 border-[#FA8072] hover:bg-[#FFF5F5] transition-all duration-200;
 }
 
-/* Fix dark mode contrast */
-.dark .text-muted-foreground {
-  @apply text-gray-400;
+/* Modern animations */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.dark .bg-card {
-  @apply bg-gray-900/50 backdrop-blur-sm;
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s ease-out forwards;
+}
+
+/* Stagger animations */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
 
 /* Floating animation for cards */
 @keyframes float-card {

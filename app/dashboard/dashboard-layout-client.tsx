@@ -34,12 +34,12 @@ export function DashboardLayoutClient({ user, children }: DashboardLayoutClientP
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background academic-theme">
       <Sidebar user={user} onSignOut={handleSignOut} />
       
       {/* Main content area with margin for sidebar */}
       <main className={cn(
-        "transition-all duration-300 bg-gray-50",
+        "transition-all duration-300",
         isCollapsed ? "lg:ml-16" : "lg:ml-64"
       )}>
         {children}
