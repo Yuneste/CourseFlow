@@ -49,7 +49,7 @@ export function PasswordStrengthMeter({
     setStrength(calculatedStrength);
     
     onStrengthChange?.(calculatedStrength);
-  }, [password]);
+  }, [password, requirements.length, onStrengthChange]);
 
   const getStrengthLabel = () => {
     if (strength === 0) return 'Too weak';

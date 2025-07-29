@@ -215,10 +215,10 @@ export function OfflineBanner({
         <AlertCircle className="h-5 w-5 text-yellow-400 mt-0.5" />
         <div className="ml-3 flex-1">
           <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-            You're currently offline
+            You&apos;re currently offline
           </p>
           <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-            Some features may be limited. Your changes will be synced when you're back online.
+            Some features may be limited. Your changes will be synced when you&apos;re back online.
           </p>
           {onRetry && (
             <button

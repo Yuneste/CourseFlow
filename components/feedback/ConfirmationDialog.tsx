@@ -159,44 +159,42 @@ export function useConfirmation(options: UseConfirmationOptions) {
   };
 }
 
-// Quick confirmation functions
-export const confirmAction = {
-  delete: (onConfirm: () => void | Promise<void>) => {
-    return useConfirmation({
-      title: 'Delete Item',
-      description: 'Are you sure you want to delete this item? This action cannot be undone.',
-      confirmText: 'Delete',
-      variant: 'destructive',
-      onConfirm
-    });
-  },
+// Quick confirmation hooks
+export function useDeleteConfirmation(onConfirm: () => void | Promise<void>) {
+  return useConfirmation({
+    title: 'Delete Item',
+    description: 'Are you sure you want to delete this item? This action cannot be undone.',
+    confirmText: 'Delete',
+    variant: 'destructive',
+    onConfirm
+  });
+}
 
-  save: (onConfirm: () => void | Promise<void>) => {
-    return useConfirmation({
-      title: 'Save Changes',
-      description: 'Do you want to save your changes?',
-      confirmText: 'Save',
-      variant: 'success',
-      onConfirm
-    });
-  },
+export function useSaveConfirmation(onConfirm: () => void | Promise<void>) {
+  return useConfirmation({
+    title: 'Save Changes',
+    description: 'Do you want to save your changes?',
+    confirmText: 'Save',
+    variant: 'success',
+    onConfirm
+  });
+}
 
-  discard: (onConfirm: () => void | Promise<void>) => {
-    return useConfirmation({
-      title: 'Discard Changes',
-      description: 'Are you sure you want to discard your changes? Any unsaved data will be lost.',
-      confirmText: 'Discard',
-      variant: 'warning',
-      onConfirm
-    });
-  },
+export function useDiscardConfirmation(onConfirm: () => void | Promise<void>) {
+  return useConfirmation({
+    title: 'Discard Changes',
+    description: 'Are you sure you want to discard your changes? Any unsaved data will be lost.',
+    confirmText: 'Discard',
+    variant: 'warning',
+    onConfirm
+  });
+}
 
-  logout: (onConfirm: () => void | Promise<void>) => {
-    return useConfirmation({
-      title: 'Sign Out',
-      description: 'Are you sure you want to sign out?',
-      confirmText: 'Sign Out',
-      onConfirm
-    });
-  }
-};
+export function useLogoutConfirmation(onConfirm: () => void | Promise<void>) {
+  return useConfirmation({
+    title: 'Sign Out',
+    description: 'Are you sure you want to sign out?',
+    confirmText: 'Sign Out',
+    onConfirm
+  });
+}
