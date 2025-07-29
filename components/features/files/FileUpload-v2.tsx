@@ -244,7 +244,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
       selectedFiles.forEach(file => {
         updateUploadProgress(file.name, {
           progress: 0,
-          status: 'error',
+          status: 'failed',
           error: error instanceof Error ? error.message : 'Upload failed'
         });
       });
@@ -491,7 +491,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
                     {item.status === 'completed' && (
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
                     )}
-                    {item.status === 'error' && (
+                    {item.status === 'failed' && (
                       <AlertCircle className="h-4 w-4 text-red-600" />
                     )}
                     {item.status === 'uploading' && `${item.progress}%`}
@@ -503,7 +503,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
                   className={cn(
                     "h-1.5",
                     item.status === 'completed' && "bg-green-100",
-                    item.status === 'error' && "bg-red-100"
+                    item.status === 'failed' && "bg-red-100"
                   )}
                 />
                 
