@@ -82,7 +82,7 @@ class CoursesService {
         this.validateCourseData(data as CourseFormData);
       }
 
-      const course = await api.patch<Course>(`/courses/${courseId}`, data);
+      const course = await api.put<Course>(`/courses/${courseId}`, data);
       logger.info('Course updated successfully', {
         action: 'updateCourse',
         metadata: { courseId, updates: Object.keys(data) }

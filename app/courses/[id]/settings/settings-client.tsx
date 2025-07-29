@@ -1,25 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { ArrowLeft, Trash2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Settings, Lock, Share2, Download, BarChart3, FileStack } from 'lucide-react';
 import Link from 'next/link';
 import { UnifiedCard } from '@/components/ui/unified-background';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { toast } from 'sonner';
-import { coursesService } from '@/lib/services/courses.service';
-import { useRouter } from 'next/navigation';
 import { Course } from '@/types';
 
 interface CourseSettingsClientProps {
@@ -27,21 +11,6 @@ interface CourseSettingsClientProps {
 }
 
 export function CourseSettingsClient({ course }: CourseSettingsClientProps) {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
-
-  const handleDeleteCourse = async () => {
-    setIsDeleting(true);
-    try {
-      await coursesService.deleteCourse(course.id);
-      toast.success('Course deleted successfully');
-      router.push('/dashboard');
-    } catch (error) {
-      toast.error('Failed to delete course');
-      setIsDeleting(false);
-    }
-  };
-
   return (
     <>
       <div className="mb-6">
@@ -55,72 +24,85 @@ export function CourseSettingsClient({ course }: CourseSettingsClientProps) {
 
       <div className="space-y-6">
         <UnifiedCard className="p-8">
-          <h1 className="text-2xl font-bold mb-4">Course Settings</h1>
-          <p className="text-muted-foreground mb-6">
-            Manage your course settings and preferences.
+          <div className="flex items-center gap-3 mb-4">
+            <Settings className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-bold">Course Settings</h1>
+          </div>
+          <p className="text-muted-foreground">
+            Advanced settings and features for {course.name} are coming soon!
           </p>
         </UnifiedCard>
 
-        {/* Danger Zone */}
-        <UnifiedCard className="p-8 border-destructive/20">
-          <h2 className="text-xl font-semibold mb-4 text-destructive">Danger Zone</h2>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 border rounded-lg border-destructive/20">
-              <div>
-                <h3 className="font-medium">Delete Course</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Permanently delete this course and all associated files. This action cannot be undone.
-                </p>
-              </div>
-              
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="destructive" 
-                    size="sm"
-                    disabled={isDeleting}
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete Course
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5 text-destructive" />
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete the course{' '}
-                      &quot;<strong>{course.name}</strong>&quot; and all of its files, folders, and data.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleDeleteCourse}
-                      className="bg-destructive hover:bg-destructive/90"
-                    >
-                      {isDeleting ? 'Deleting...' : 'Yes, delete course'}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          </div>
-        </UnifiedCard>
-
         {/* Coming Soon Features */}
-        <UnifiedCard className="p-8">
-          <h2 className="text-xl font-semibold mb-4">Coming Soon</h2>
-          <ul className="space-y-2 text-muted-foreground">
-            <li>• Edit course details (name, code, professor)</li>
-            <li>• Manage course permissions and sharing</li>
-            <li>• Export course data and files</li>
-            <li>• Course analytics and insights</li>
-            <li>• Custom course templates</li>
-          </ul>
+        <div className="grid gap-4 md:grid-cols-2">
+          <UnifiedCard className="p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Lock className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-semibold">Permissions & Privacy</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Control who can view and edit your course materials.
+            </p>
+          </UnifiedCard>
+
+          <UnifiedCard className="p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Share2 className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-semibold">Sharing & Collaboration</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Share your course with classmates and study together.
+            </p>
+          </UnifiedCard>
+
+          <UnifiedCard className="p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Download className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-semibold">Export & Backup</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Export all course data and create backups.
+            </p>
+          </UnifiedCard>
+
+          <UnifiedCard className="p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <BarChart3 className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-semibold">Analytics & Insights</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Track your study progress and learning patterns.
+            </p>
+          </UnifiedCard>
+
+          <UnifiedCard className="p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <FileStack className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-semibold">Course Templates</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Save and reuse course structures as templates.
+            </p>
+          </UnifiedCard>
+        </div>
+
+        <UnifiedCard className="p-8 text-center">
+          <p className="text-lg text-muted-foreground mb-2">
+            These features are currently in development.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Stay tuned for updates!
+          </p>
         </UnifiedCard>
       </div>
     </>

@@ -16,12 +16,15 @@ import {
   Download,
   Trash2,
   GripVertical,
-  Check
+  Check,
+  Edit,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileCardDraggable } from '@/components/features/files/FileCardDraggable';
+import { CourseEditDialog } from '@/components/features/courses/CourseEditDialog';
 import { useRouter } from 'next/navigation';
 import { filesService } from '@/lib/services/files.service';
 import { coursesService } from '@/lib/services/courses.service';
@@ -40,6 +43,16 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface CourseDetailClientProps {
   course: Course;
@@ -72,6 +85,9 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   const [folderOrder, setFolderOrder] = useState<CourseFolder[]>([]);
   const [deletingFolder, setDeletingFolder] = useState<CourseFolder | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteCourseDialog, setShowDeleteCourseDialog] = useState(false);
+  const [isDeletingCourse, setIsDeletingCourse] = useState(false);
 
 
   // Initialize folder order on mount or when folders change
@@ -269,6 +285,18 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete folder';
       toast.error(errorMessage);
+    }
+  };
+
+  const handleDeleteCourse = async () => {
+    setIsDeletingCourse(true);
+    try {
+      await coursesService.deleteCourse(course.id);
+      toast.success('Course deleted successfully');
+      router.push('/courses');
+    } catch (error) {
+      toast.error('Failed to delete course');
+      setIsDeletingCourse(false);
     }
   };
 
@@ -553,24 +581,48 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
               <h2 className="text-lg font-semibold">
                 {selectedFolder ? selectedFolder.name : 'All Files'}
               </h2>
-              <Button
-                onClick={() => setShowUpload(!showUpload)}
-                size="sm"
-                variant={showUpload ? "default" : "outline"}
-                className="transition-all duration-200 hover:scale-105"
-              >
-                {showUpload ? (
-                  <>
-                    <ChevronDown className="h-4 w-4 mr-2" />
-                    Close Upload
-                  </>
-                ) : (
-                  <>
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload Files
-                  </>
-                )}
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => setShowUpload(!showUpload)}
+                  size="sm"
+                  variant={showUpload ? "default" : "outline"}
+                  className="transition-all duration-200 hover:scale-105"
+                >
+                  {showUpload ? (
+                    <>
+                      <ChevronDown className="h-4 w-4 mr-2" />
+                      Close Upload
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Files
+                    </>
+                  )}
+                </Button>
+                
+                <div className="flex items-center gap-1 ml-4">
+                  <Button
+                    onClick={() => setShowEditDialog(true)}
+                    size="sm"
+                    variant="outline"
+                    className="transition-all duration-200 hover:scale-105"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                  
+                  <Button
+                    onClick={() => setShowDeleteCourseDialog(true)}
+                    size="sm"
+                    variant="outline"
+                    className="text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-105"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </Button>
+                </div>
+              </div>
             </div>
             
             {/* Bulk actions bar */}
@@ -762,6 +814,40 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Course Dialog */}
+      <CourseEditDialog
+        course={course}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onSuccess={() => router.refresh()}
+      />
+
+      {/* Delete Course Confirmation Dialog */}
+      <AlertDialog open={showDeleteCourseDialog} onOpenChange={setShowDeleteCourseDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Are you absolutely sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the course{' '}
+              &quot;<strong>{course.name}</strong>&quot; and all of its files, folders, and data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteCourse}
+              className="bg-destructive hover:bg-destructive/90"
+              disabled={isDeletingCourse}
+            >
+              {isDeletingCourse ? 'Deleting...' : 'Yes, delete course'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
