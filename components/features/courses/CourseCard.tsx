@@ -58,7 +58,8 @@ export function CourseCard({
         "relative overflow-hidden rounded-xl bg-[#FEFEFE] dark:bg-gray-800",
         "border border-gray-100 dark:border-gray-700",
         "shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer",
-        "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/50 before:to-transparent before:opacity-0 before:transition-opacity hover:before:opacity-100"
+        "before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/50 before:to-transparent before:opacity-0 before:transition-opacity hover:before:opacity-100",
+        "min-h-[200px] sm:min-h-[220px]"
       )}>
         {/* Color accent bar */}
         <div className={cn("absolute inset-x-0 top-0 h-1", colors.bg)} />

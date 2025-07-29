@@ -216,7 +216,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
 
         {/* Stats Grid - Compact */}
         <div className="space-y-4">
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
             <StatsCard
               title="Active Courses"
               value={activeCourses}
