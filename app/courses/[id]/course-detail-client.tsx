@@ -452,11 +452,11 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push('/courses')}
                 className="hover:bg-primary/10"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
+                Back to Courses
               </Button>
               <div className="flex items-center gap-4 animate-in fade-in duration-500">
                 <div className="relative">

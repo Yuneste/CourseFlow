@@ -71,16 +71,26 @@ export function CourseFormClient({ userProfile }: CourseFormClientProps) {
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
-      const course = await coursesService.createCourse({
+      const courseData: any = {
         name: values.name,
-        code: values.code,
-        professor: values.professor,
+        code: values.code || undefined,
+        professor: values.professor || undefined,
         term: values.term,
         academic_period_type: academicSystem.periodType as 'semester' | 'term' | 'trimester',
-        credits: values.credits,
         emoji: values.emoji || '📚',
-        color: '#' + Math.floor(Math.random()*16777215).toString(16), // Random color
-      });
+        color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'), // Random color
+      };
+      
+      // Handle credits based on user's academic system
+      if (values.credits !== undefined) {
+        if (userProfile.academic_system === 'ects') {
+          courseData.ects_credits = values.credits;
+        } else {
+          courseData.credits = values.credits;
+        }
+      }
+      
+      const course = await coursesService.createCourse(courseData);
       
       toast.success('Course created successfully!');
       router.push(`/courses/${course.id}`);
@@ -93,12 +103,14 @@ export function CourseFormClient({ userProfile }: CourseFormClientProps) {
   return (
     <>
       <div className="mb-6">
-        <Link href="/courses">
-          <Button variant="ghost" size="sm">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Courses
-          </Button>
-        </Link>
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => router.push('/courses')}
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Courses
+        </Button>
       </div>
 
       <Card className="max-w-2xl mx-auto p-8">
@@ -182,7 +194,7 @@ export function CourseFormClient({ userProfile }: CourseFormClientProps) {
                 name="credits"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Credits</FormLabel>
+                    <FormLabel>{userProfile.academic_system === 'ects' ? 'ECTS Credits' : 'Credits'}</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
@@ -192,7 +204,7 @@ export function CourseFormClient({ userProfile }: CourseFormClientProps) {
                       />
                     </FormControl>
                     <FormDescription>
-                      Number of credit hours
+                      {userProfile.academic_system === 'ects' ? 'ECTS credit points' : 'Number of credit hours'}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
