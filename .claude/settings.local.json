@@ -19,7 +19,8 @@
       "Bash(npm update:*)",
       "Bash(npx cross-env:*)",
       "Bash(curl:*)",
-      "Bash(docker:*)"
+      "Bash(docker:*)",
+      "Bash(rg:*)"
     ],
     "deny": []
   }

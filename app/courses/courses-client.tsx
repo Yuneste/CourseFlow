@@ -39,8 +39,8 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-4xl font-bold text-[#1a1a1a] mb-2">My Courses</h1>
-        <p className="text-[#1a1a1a]/70 font-medium">Manage and track all your courses in one place</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">My Courses</h1>
+        <p className="text-muted-foreground font-medium">Manage and track all your courses in one place</p>
       </motion.div>
 
       {/* Actions Bar */}
@@ -51,13 +51,13 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         className="flex flex-col sm:flex-row gap-4 mb-8"
       >
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#1a1a1a]/50" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search courses..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-white/90 border-[#C7C7AD]/30"
+            className="pl-10"
           />
         </div>
         
@@ -66,7 +66,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         </div>
 
         <Link href="/courses/new">
-          <Button className="bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a] w-full sm:w-auto">
+          <Button className="w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
             Add Course
           </Button>

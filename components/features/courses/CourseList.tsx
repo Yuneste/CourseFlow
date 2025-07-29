@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Course } from '@/types';
-import { CourseCard } from './CourseCard';
+import { CourseCard } from './CourseCard-redesigned';
 import { CourseForm } from './CourseForm';
 import { CourseListSkeleton } from './CourseListSkeleton';
 import { Button } from '@/components/ui/button';
