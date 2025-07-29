@@ -153,7 +153,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
       setCheckingDuplicates(true);
       try {
         const duplicateCheckResults = await Promise.all(
-          validFiles.map(file => filesService.checkDuplicate(file, courseId))
+          validFiles.map(file => filesService.checkDuplicate(file))
         );
         
         const duplicatesMap = new Map<string, any>();
@@ -192,67 +192,71 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
     // Add files to upload queue
     selectedFiles.forEach(file => {
       addToUploadQueue({
-        id: file.name,
-        filename: file.name,
+        fileId: file.name,
+        fileName: file.name,
         progress: 0,
-        status: 'pending',
-        error: null
+        status: 'pending'
       });
     });
 
-    let successCount = 0;
-    let errorCount = 0;
+    try {
+      // Use uploadWithQueue for individual file progress tracking
+      const result = await filesService.uploadWithQueue(selectedFiles, {
+        courseId,
+        folderId,
+        onFileProgress: (fileId, progress) => {
+          updateUploadProgress(fileId, {
+            progress: progress.progress,
+            status: progress.status,
+            error: progress.error
+          });
+        }
+      });
 
-    for (const file of selectedFiles) {
-      try {
-        updateUploadProgress(file.name, 0, 'uploading');
-        
-        const uploadedFile = await filesService.uploadFile(
-          file,
-          courseId,
-          folderId,
-          (progress) => {
-            updateUploadProgress(file.name, progress, 'uploading');
-          }
-        );
+      // Add uploaded files to store
+      result.files.forEach(file => {
+        addFile(file);
+      });
 
-        updateUploadProgress(file.name, 100, 'completed');
-        addFile(uploadedFile);
-        successCount++;
-        
-        toast.success(`${file.name} uploaded successfully`);
-      } catch (error) {
-        console.error(`Error uploading ${file.name}:`, error);
-        updateUploadProgress(
-          file.name, 
-          0, 
-          'error', 
-          error instanceof Error ? error.message : 'Upload failed'
-        );
-        errorCount++;
-        
-        toast.error(`Failed to upload ${file.name}`);
+      // Show success/error summary
+      const successCount = result.files.length;
+      const errorCount = result.errors.length;
+
+      if (successCount > 0 && errorCount === 0) {
+        toast.success(`All ${successCount} files uploaded successfully!`);
+      } else if (successCount > 0 && errorCount > 0) {
+        toast.warning(`${successCount} files uploaded, ${errorCount} failed`);
+        result.errors.forEach(err => {
+          toast.error(`${err.filename}: ${err.error}`);
+        });
+      } else if (errorCount > 0) {
+        toast.error('All uploads failed');
       }
-    }
 
-    setIsUploading(false);
-    setSelectedFiles([]);
-    setDuplicateFiles(new Map());
-    
-    // Clear upload queue after a delay
-    setTimeout(() => {
-      clearUploadQueue();
-    }, 3000);
-
-    if (successCount > 0) {
-      onUploadComplete?.();
-    }
-
-    // Show summary
-    if (successCount > 0 && errorCount === 0) {
-      toast.success(`All ${successCount} files uploaded successfully!`);
-    } else if (successCount > 0 && errorCount > 0) {
-      toast.warning(`${successCount} files uploaded, ${errorCount} failed`);
+      if (successCount > 0) {
+        onUploadComplete?.();
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Upload failed');
+      
+      // Mark all as failed
+      selectedFiles.forEach(file => {
+        updateUploadProgress(file.name, {
+          progress: 0,
+          status: 'error',
+          error: error instanceof Error ? error.message : 'Upload failed'
+        });
+      });
+    } finally {
+      setIsUploading(false);
+      setSelectedFiles([]);
+      setDuplicateFiles(new Map());
+      
+      // Clear upload queue after a delay
+      setTimeout(() => {
+        clearUploadQueue();
+      }, 3000);
     }
   };
 
@@ -476,12 +480,12 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
             
             {uploadQueue.map((item) => (
               <div
-                key={item.id}
+                key={item.fileId}
                 className="p-3 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900"
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                    {item.filename}
+                    {item.fileName}
                   </span>
                   <span className="text-xs text-gray-500">
                     {item.status === 'completed' && (
