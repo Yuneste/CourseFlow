@@ -220,7 +220,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
 
           {/* Navigation */}
           <ScrollArea className="flex-1 px-3 py-4">
-            <nav className="space-y-1">
+            <nav id="main-navigation" className="space-y-1" aria-label="Main navigation">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);

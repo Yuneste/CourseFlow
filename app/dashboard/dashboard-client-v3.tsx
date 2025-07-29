@@ -211,7 +211,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         )}
       </AnimatePresence>
 
-      <div className="container mx-auto px-4 py-8 space-y-8">
+      <div id="main-content" className="container mx-auto px-4 py-8 space-y-8">
         <WelcomeMessage userName={userProfile.full_name || 'Student'} />
 
         {/* Stats Grid - Compact */}
