@@ -390,14 +390,10 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
                   <h3 className="text-xl font-semibold text-foreground mb-2">
                     Welcome to CourseFlow!
                   </h3>
-                  <p className="text-muted-foreground mb-4 max-w-md">
+                  <p className="text-muted-foreground max-w-md">
                     Start your academic journey by adding your first course. 
                     Upload materials, organize files, and track your progress.
                   </p>
-                  <Button className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    Add Your First Course
-                  </Button>
                 </div>
               </div>
             </Card>
