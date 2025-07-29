@@ -55,7 +55,7 @@ export function useKeyboardShortcut(
 
     const targetElement = target instanceof HTMLElement || target === window
       ? target
-      : target.current
+      : (target as React.RefObject<HTMLElement>).current
 
     if (targetElement) {
       targetElement.addEventListener('keydown', handleKeyDown as any)
@@ -121,7 +121,7 @@ export function useKeyboardShortcuts(
 
     const targetElement = target instanceof HTMLElement || target === window
       ? target
-      : target.current
+      : (target as React.RefObject<HTMLElement>).current
 
     if (targetElement) {
       targetElement.addEventListener('keydown', handleKeyDown as any)
