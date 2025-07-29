@@ -115,7 +115,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         </div>
 
         <Link href="/courses/new">
-          <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90">
+          <Button className="w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
             Add Course
           </Button>
