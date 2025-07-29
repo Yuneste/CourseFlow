@@ -71,16 +71,16 @@ export { SkipLinks } from './accessibility/SkipLinks';
 // export { VirtualList } from './performance/VirtualList';
 
 // Security Components
-export { PasswordStrength } from './security/PasswordStrength';
+export { PasswordStrengthMeter } from './security/PasswordStrength';
 export { SecurityStatus } from './security/SecurityStatus';
 export { SessionTimeout } from './security/SessionTimeout';
 
 // SEO Components
-export { MetaTags } from './seo/MetaTags';
-export { OpenGraph } from './seo/OpenGraph';
-export { SEOHead } from './seo/SEOHead';
-export { Sitemap } from './seo/Sitemap';
-export { StructuredData } from './seo/StructuredData';
+// export { MetaTags } from './seo/MetaTags';
+// export { OpenGraph } from './seo/OpenGraph';
+// export { SEOHead } from './seo/SEOHead';
+// export { Sitemap } from './seo/Sitemap';
+// export { StructuredData } from './seo/StructuredData';
 
 // Provider Components
 export { ThemeProvider } from './providers/ThemeProvider';
@@ -131,9 +131,9 @@ export { useToast } from './ui/use-toast';
 export { UnifiedBackground, UnifiedSection } from './ui/unified-background';
 export { LoadingSpinner } from './ui/loading-spinner';
 export { LoadingState } from './ui/LoadingState';
-export { PageSkeleton } from './ui/page-skeleton';
-export { OptimizedImage } from './ui/optimized-image';
-export { ThemeToggle } from './ui/theme-toggle';
+export { DashboardSkeleton, CourseDetailSkeleton } from './ui/page-skeleton';
+// export { OptimizedImage } from './ui/optimized-image';
+// export { ThemeToggle } from './ui/theme-toggle';
 
 // Responsive Components
 export { ResponsiveContainer } from './ui/responsive-container';
