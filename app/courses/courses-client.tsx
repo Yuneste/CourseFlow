@@ -16,6 +16,7 @@ import {
   ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background'
 
 interface CoursesClientProps {
   courses: Course[]
@@ -33,8 +34,9 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
   })
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <motion.div
+    <UnifiedBackground>
+      <UnifiedSection>
+        <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
@@ -147,6 +149,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
           ))}
         </div>
       )}
-    </div>
+      </UnifiedSection>
+    </UnifiedBackground>
   )
 }

@@ -1,8 +1,10 @@
 import { Skeleton } from '@/components/ui/skeleton'
+import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background'
 
 export default function CoursesLoading() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <UnifiedBackground>
+      <UnifiedSection>
       {/* Header Skeleton */}
       <div className="mb-8">
         <Skeleton className="h-10 w-48 mb-2" />
@@ -23,7 +25,7 @@ export default function CoursesLoading() {
       {/* Courses Grid Skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="p-6 bg-white/90 backdrop-blur-sm border border-[#C7C7AD]/30 rounded-lg">
+          <div key={i} className="p-6 bg-card/90 backdrop-blur-sm border border-border rounded-lg">
             <div className="flex justify-between items-start mb-4">
               <Skeleton className="h-12 w-12 rounded-lg" />
               <Skeleton className="h-6 w-20 rounded-full" />
@@ -38,6 +40,7 @@ export default function CoursesLoading() {
           </div>
         ))}
       </div>
-    </div>
+      </UnifiedSection>
+    </UnifiedBackground>
   )
 }

@@ -34,6 +34,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
 
 interface CourseDetailClientProps {
   course: Course;
@@ -231,9 +232,9 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
         <div
           className={cn(
             "flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-all duration-200",
-            "hover:bg-[#F0C4C0]/10",
-            isSelected && "bg-[#F0C4C0]/20",
-            isDragOver && "bg-[#C0ECF0]/30 scale-105"
+            "hover:bg-primary/10",
+            isSelected && "bg-primary/20",
+            isDragOver && "bg-accent/30 scale-105"
           )}
           style={{ paddingLeft: `${level * 16 + 8}px` }}
           onClick={() => {
@@ -310,10 +311,10 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   };
 
   return (
-    <div className="min-h-screen bg-[#ECF0C0] relative overflow-hidden">
+    <UnifiedBackground>
 
       {/* Header */}
-      <div className="relative z-30 bg-white/95 backdrop-blur-md border-b border-[#C7C7AD]/20 sticky top-0 shadow-sm">
+      <div className="relative z-30 bg-card/95 backdrop-blur-md border-b border-border sticky top-0 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -321,21 +322,21 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                 variant="ghost"
                 size="sm"
                 onClick={() => router.push('/dashboard')}
-                className="hover:bg-[#F0C4C0]/10 text-[#1a1a1a]"
+                className="hover:bg-primary/10"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
               <div className="flex items-center gap-4 animate-in fade-in duration-500">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-[#F0C4C0]/30 rounded-2xl blur-xl" />
+                  <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl" />
                   <span className="text-5xl relative z-10">
                     {course.emoji}
                   </span>
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-[#1a1a1a]">{course.name}</h1>
-                  <p className="text-sm text-[#C7C7AD]">
+                  <h1 className="text-3xl font-bold text-foreground">{course.name}</h1>
+                  <p className="text-sm text-muted-foreground">
                     {course.code && `${course.code} • `}
                     {course.professor && `Prof. ${course.professor} • `}
                     {course.term}
@@ -357,7 +358,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <UnifiedSection className="py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar - Folder Structure */}
           <div className="lg:col-span-1">
@@ -595,7 +596,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
             )}
           </div>
         </div>
-      </div>
-    </div>
+      </UnifiedSection>
+    </UnifiedBackground>
   );
 }

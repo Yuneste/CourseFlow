@@ -21,6 +21,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { FileOrganizationDemo, CollaborationDemo, ResourceRecommendationDemo } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
+import { UnifiedBackground, UnifiedCard } from '@/components/ui/unified-background';
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -91,27 +92,27 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF5F5] via-white to-[#FFF8F5]">
+    <UnifiedBackground>
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+      <nav className="fixed top-0 w-full bg-card/80 backdrop-blur-md z-50 border-b border-border">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
-              <GraduationCap className="h-8 w-8 text-[#FA8072]" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+              <GraduationCap className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                 CourseFlow
               </span>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-gray-600 hover:text-[#FA8072] transition-colors">Features</a>
-              <a href="#testimonials" className="text-gray-600 hover:text-[#FA8072] transition-colors">Testimonials</a>
-              <a href="#pricing" className="text-gray-600 hover:text-[#FA8072] transition-colors">Pricing</a>
+              <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Features</a>
+              <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-colors">Testimonials</a>
+              <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
               <Button variant="outline" className="mr-2" asChild>
                 <Link href="/login">Log In</Link>
               </Button>
-              <Button className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white" asChild>
+              <Button asChild>
                 <Link href="/register">Get Started</Link>
               </Button>
             </div>
@@ -131,16 +132,16 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden bg-white border-t border-gray-100"
+            className="md:hidden bg-card border-t border-border"
           >
             <div className="container mx-auto px-4 py-4 space-y-4">
-              <a href="#features" className="block text-gray-600 hover:text-[#FA8072]">Features</a>
-              <a href="#testimonials" className="block text-gray-600 hover:text-[#FA8072]">Testimonials</a>
-              <a href="#pricing" className="block text-gray-600 hover:text-[#FA8072]">Pricing</a>
+              <a href="#features" className="block text-muted-foreground hover:text-primary">Features</a>
+              <a href="#testimonials" className="block text-muted-foreground hover:text-primary">Testimonials</a>
+              <a href="#pricing" className="block text-muted-foreground hover:text-primary">Pricing</a>
               <Button variant="outline" className="w-full" asChild>
                 <Link href="/login" className="block">Log In</Link>
               </Button>
-              <Button className="w-full bg-[#FA8072] hover:bg-[#FF6B6B] text-white" asChild>
+              <Button className="w-full" asChild>
                 <Link href="/register" className="block">Get Started</Link>
               </Button>
             </div>
@@ -424,6 +425,6 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-    </div>
+      </UnifiedBackground>
   );
 }

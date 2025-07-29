@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
 
 interface DashboardClientProps {
   initialCourses: Course[];
@@ -321,8 +322,8 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+    <UnifiedBackground>
+      <UnifiedSection>
         {/* Header */}
         <WelcomeHeader userName={userProfile.full_name || 'Student'} />
 
@@ -418,7 +419,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
             </Card>
           </motion.div>
         )}
-      </div>
-    </div>
+      </UnifiedSection>
+    </UnifiedBackground>
   );
 }

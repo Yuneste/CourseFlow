@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
 
 export const metadata: Metadata = {
   title: 'Welcome to CourseFlow',
@@ -34,10 +35,10 @@ export default async function OnboardingLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#ECF0C0]">
-      <div className="container mx-auto px-4 py-8">
+    <UnifiedBackground>
+      <UnifiedSection>
         {children}
-      </div>
-    </div>
+      </UnifiedSection>
+    </UnifiedBackground>
   );
 }

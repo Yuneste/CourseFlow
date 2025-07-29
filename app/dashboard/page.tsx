@@ -31,11 +31,9 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <DashboardClient 
-        initialCourses={courses || []} 
-        userProfile={profile}
-      />
-    </div>
+    <DashboardClient 
+      initialCourses={courses || []} 
+      userProfile={profile}
+    />
   )
 }

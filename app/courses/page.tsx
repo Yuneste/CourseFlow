@@ -26,11 +26,9 @@ export default async function CoursesPage() {
     .single()
 
   return (
-    <div className="min-h-screen bg-background">
-      <CoursesClient 
-        courses={courses || []} 
-        userProfile={profile}
-      />
-    </div>
+    <CoursesClient 
+      courses={courses || []} 
+      userProfile={profile}
+    />
   )
 }

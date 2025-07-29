@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background'
 
 export default async function SettingsLayout({
   children,
@@ -15,10 +16,10 @@ export default async function SettingsLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-6">
+    <UnifiedBackground>
+      <UnifiedSection>
         {children}
-      </div>
-    </div>
+      </UnifiedSection>
+    </UnifiedBackground>
   )
 }
