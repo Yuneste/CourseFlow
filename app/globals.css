@@ -346,6 +346,12 @@ button, a, input, select, textarea {
   @apply bg-white text-[#FA8072] border-2 border-[#FA8072] hover:bg-[#FFF5F5] transition-all duration-200;
 }
 
+/* Text outline effect */
+.text-outline {
+  -webkit-text-stroke: 1px #1a1a1a;
+  text-stroke: 1px #1a1a1a;
+}
+
 /* Modern animations */
 @keyframes slide-up {
   from {

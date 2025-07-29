@@ -113,6 +113,9 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
 const WelcomeMessage = ({ userName }: { userName: string }) => {
   const [greeting, setGreeting] = useState("");
   
+  // Extract first name
+  const firstName = userName.split(' ')[0];
+  
   useEffect(() => {
     const greetings = [
       "Ready to ace your courses?",
@@ -130,7 +133,16 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
       className="mb-8 text-center"
     >
       <h1 className="text-4xl md:text-5xl font-bold mb-3 text-[#1a1a1a]">
-        Welcome back, <span className="bg-gradient-to-r from-[#F0C4C0] to-[#C4C0F0] bg-clip-text text-transparent">{userName}!</span>
+        Welcome back, 
+        <span 
+          className="text-[#FA8072] relative"
+          style={{
+            textShadow: '2px 2px 0px #1a1a1a, -2px -2px 0px #1a1a1a, 2px -2px 0px #1a1a1a, -2px 2px 0px #1a1a1a',
+            WebkitTextStroke: '1px #1a1a1a'
+          }}
+        >
+          {firstName}!
+        </span>
       </h1>
       <p className="text-lg text-[#C7C7AD]">{greeting}</p>
     </motion.div>
