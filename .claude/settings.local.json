@@ -8,7 +8,9 @@
       "Bash(mkdir:*)",
       "Bash(npm run dev:*)",
       "Bash(npm run build:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(touch:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }

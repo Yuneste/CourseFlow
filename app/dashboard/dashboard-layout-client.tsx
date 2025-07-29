@@ -6,6 +6,7 @@ import { Toaster } from 'sonner';
 import { User } from '@/types';
 import { signOut } from '@/app/actions/auth';
 import { cn } from '@/lib/utils';
+import { SearchModal } from '@/components/search/search-modal';
 
 interface DashboardLayoutClientProps {
   user: User;
@@ -19,6 +20,7 @@ export function DashboardLayoutClient({ user, children }: DashboardLayoutClientP
     }
     return false;
   });
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -46,6 +48,7 @@ export function DashboardLayoutClient({ user, children }: DashboardLayoutClientP
       </main>
       
       <Toaster />
+      <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />
     </div>
   );
 }

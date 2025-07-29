@@ -84,11 +84,6 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
 
   const bottomItems = [
     {
-      title: 'Search',
-      href: '/dashboard/search',
-      icon: Search,
-    },
-    {
       title: 'Notifications',
       href: '/dashboard/notifications',
       icon: Bell,
@@ -249,6 +244,28 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
 
           {/* Bottom Section */}
           <div className="p-3 border-t border-gray-200 dark:border-gray-800 space-y-1">
+            {/* Search Button */}
+            <button
+              onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
+                "hover:bg-gray-100 dark:hover:bg-gray-800",
+                isCollapsed && "justify-center"
+              )}
+              title={isCollapsed ? "Search" : undefined}
+            >
+              <Search className="h-5 w-5 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+              {!isCollapsed && (
+                <>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                    Search
+                  </span>
+                  <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                    <span className="text-xs">⌘</span>K
+                  </kbd>
+                </>
+              )}
+            </button>
             {bottomItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);

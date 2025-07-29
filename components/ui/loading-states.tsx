@@ -40,7 +40,10 @@ export function LoadingOverlay({
             exit={{ scale: 0.8, opacity: 0 }}
             className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6"
           >
-            <LoadingSpinner size="lg" text={text} />
+            <div className="flex flex-col items-center">
+              <LoadingSpinner size="lg" />
+              <p className="mt-4 text-sm text-muted-foreground">{text}</p>
+            </div>
           </motion.div>
         </motion.div>
       )}
@@ -68,7 +71,12 @@ export function AsyncWrapper({
   className
 }: AsyncWrapperProps) {
   if (isLoading) {
-    return skeleton || <LoadingSpinner size="lg" text={loadingText} className={className} />;
+    return skeleton || (
+      <div className={cn("flex flex-col items-center justify-center", className)}>
+        <LoadingSpinner size="lg" />
+        {loadingText && <p className="mt-4 text-sm text-muted-foreground">{loadingText}</p>}
+      </div>
+    );
   }
 
   if (error) {

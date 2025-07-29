@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { signOut } from '@/app/actions/auth'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -161,7 +162,10 @@ export function NavigationBar({ user, className }: NavigationBarProps) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600 focus:text-red-600">
+                <DropdownMenuItem 
+                  className="text-red-600 focus:text-red-600 cursor-pointer"
+                  onClick={() => signOut()}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
@@ -236,7 +240,10 @@ export function NavigationBar({ user, className }: NavigationBarProps) {
                         <span>Help</span>
                       </Link>
                       <button
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={() => {
+                          setIsMobileMenuOpen(false)
+                          signOut()
+                        }}
                         className="flex w-full items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 hover:text-red-700 dark:hover:bg-red-900/20"
                       >
                         <LogOut className="h-4 w-4" />

@@ -40,11 +40,11 @@ const StatsCard = ({ title, value, icon: Icon, delay, color }: any) => (
     <Card className="p-4 border-0 !bg-white/95 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow">
       <div className="flex items-center gap-3">
         <div className={`p-2 rounded-lg ${color}`}>
-          <Icon className="h-5 w-5 text-[#1a1a1a]" />
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#1a1a1a]" />
         </div>
-        <div>
+        <div className="min-w-0">
           <p className="text-xs text-[#1a1a1a]/60 font-medium">{title}</p>
-          <h3 className="text-sm font-bold text-[#1a1a1a] break-words">
+          <h3 className="text-sm font-bold text-[#1a1a1a] truncate">
             {value}
           </h3>
         </div>
@@ -93,13 +93,13 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
       >
         <div className="p-6">
           <div className={cn(
-            "w-14 h-14 rounded-lg flex items-center justify-center mb-4",
+            "w-12 h-12 sm:w-14 sm:h-14 rounded-lg flex items-center justify-center mb-3 sm:mb-4",
             color
           )}>
-            <Icon className="h-7 w-7 text-[#1a1a1a]" />
+            <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-[#1a1a1a]" />
           </div>
-          <h3 className="text-xl font-semibold mb-2 text-[#1a1a1a]">{title}</h3>
-          <p className="text-[#1a1a1a]/70 mb-4">{description}</p>
+          <h3 className="text-lg sm:text-xl font-semibold mb-2 text-[#1a1a1a]">{title}</h3>
+          <p className="text-sm sm:text-base text-[#1a1a1a]/70 mb-4">{description}</p>
           <div className="flex items-center text-[#1a1a1a] font-medium">
             <span>{available ? 'Access Now' : 'Coming Soon'}</span>
             <ChevronRight className="h-5 w-5 ml-1" />
@@ -138,12 +138,12 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mb-8 text-center"
+      className="mb-8 text-center px-4"
     >
-      <h1 className="text-4xl md:text-5xl font-bold mb-3 text-[#1a1a1a]">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 text-[#1a1a1a]">
         Welcome back, 
         <span 
-          className="text-[#FA8072] relative"
+          className="text-[#FA8072] relative block sm:inline"
           style={{
             textShadow: '2px 2px 0px #1a1a1a, -2px -2px 0px #1a1a1a, 2px -2px 0px #1a1a1a, -2px 2px 0px #1a1a1a',
             WebkitTextStroke: '1px #1a1a1a'
@@ -152,7 +152,7 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
           {firstName}!
         </span>
       </h1>
-      <p className="text-lg text-[#1a1a1a]/70 font-medium">{greeting}</p>
+      <p className="text-base sm:text-lg text-[#1a1a1a]/70 font-medium">{greeting}</p>
     </motion.div>
   );
 };
@@ -232,7 +232,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   ];
 
   return (
-    <div id="main-content" className="container mx-auto px-4 py-8">
+    <div id="main-content" className="container mx-auto px-4 py-6 sm:py-8">
       <WelcomeMessage userName={userProfile.full_name || 'Student'} />
 
       {/* Quick Stats */}
@@ -271,7 +271,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-[#1a1a1a]">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center text-[#1a1a1a] px-4">
           What would you like to do today?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">

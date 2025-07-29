@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { toast } from 'sonner'
+import { validateEmail, validatePassword } from '@/lib/utils/validation'
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -25,26 +28,35 @@ export default function RegisterPage() {
     setLoading(true)
     setError(null)
 
+    // Validate email
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address')
+      toast.error('Invalid email address')
+      setLoading(false)
+      return
+    }
+
+    // Validate password
+    const passwordValidation = validatePassword(password)
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.errors[0])
+      toast.error('Password requirements not met', {
+        description: passwordValidation.errors.join(', ')
+      })
+      setLoading(false)
+      return
+    }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match')
+      toast.error('Passwords do not match')
       setLoading(false)
       return
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters')
-      setLoading(false)
-      return
-    }
-
-    // Additional password strength validation
-    const hasUpperCase = /[A-Z]/.test(password)
-    const hasLowerCase = /[a-z]/.test(password)
-    const hasNumbers = /\d/.test(password)
-    const hasNonalphas = /\W/.test(password)
-    
-    if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
-      setError('Password must contain at least one uppercase letter, one lowercase letter, and one number')
+    if (!fullName.trim()) {
+      setError('Please enter your full name')
+      toast.error('Full name is required')
       setLoading(false)
       return
     }
@@ -62,8 +74,14 @@ export default function RegisterPage() {
 
     if (error) {
       setError(error.message)
+      toast.error('Failed to create account', {
+        description: error.message
+      })
       setLoading(false)
     } else {
+      toast.success('Account created!', {
+        description: 'Please check your email to verify your account'
+      })
       setSuccess(true)
     }
   }
@@ -194,6 +212,9 @@ export default function RegisterPage() {
               required
               disabled={loading}
             />
+            <p className="text-xs text-[#1a1a1a]/60 mt-1">
+              At least 8 characters with uppercase, lowercase, and numbers
+            </p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword" className="text-[#1a1a1a]">Confirm Password</Label>
@@ -214,7 +235,14 @@ export default function RegisterPage() {
           )}
           
           <Button type="submit" className="w-full bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]" disabled={loading}>
-            {loading ? 'Creating account...' : 'Create account'}
+            {loading ? (
+              <>
+                <LoadingSpinner size="sm" className="mr-2" />
+                Creating account...
+              </>
+            ) : (
+              'Create account'
+            )}
           </Button>
         </form>
       </CardContent>

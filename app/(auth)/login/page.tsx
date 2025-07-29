@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { toast } from 'sonner'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -29,8 +31,14 @@ export default function LoginPage() {
 
     if (error) {
       setError(error.message)
+      toast.error('Failed to sign in', {
+        description: error.message
+      })
       setLoading(false)
     } else {
+      toast.success('Welcome back!', {
+        description: 'Redirecting to dashboard...'
+      })
       router.push('/dashboard')
     }
   }
@@ -52,7 +60,12 @@ export default function LoginPage() {
 
     if (error) {
       setError(error.message)
+      toast.error('Failed to sign in with Google', {
+        description: error.message
+      })
       setLoading(false)
+    } else {
+      toast.success('Signing in with Google...')
     }
   }
 
@@ -135,7 +148,14 @@ export default function LoginPage() {
           )}
           
           <Button type="submit" className="w-full bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? (
+              <>
+                <LoadingSpinner size="sm" className="mr-2" />
+                Signing in...
+              </>
+            ) : (
+              'Sign in'
+            )}
           </Button>
         </form>
       </CardContent>
