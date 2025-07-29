@@ -554,12 +554,22 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                 {selectedFolder ? selectedFolder.name : 'All Files'}
               </h2>
               <Button
-                onClick={() => setShowUpload(true)}
+                onClick={() => setShowUpload(!showUpload)}
                 size="sm"
+                variant={showUpload ? "default" : "outline"}
                 className="transition-all duration-200 hover:scale-105"
               >
-                <Upload className="h-4 w-4 mr-2" />
-                Upload Files
+                {showUpload ? (
+                  <>
+                    <ChevronDown className="h-4 w-4 mr-2" />
+                    Close Upload
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Files
+                  </>
+                )}
               </Button>
             </div>
             
@@ -649,19 +659,41 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
 
             {/* Upload Section */}
             {showUpload && (
-              <Card className="p-6 animate-in slide-in-from-top duration-300">
-                <h3 className="text-sm font-medium mb-4">Upload Files</h3>
-                <FileUpload
-                  courseId={course.id}
-                  folderId={selectedFolder?.id}
-                  onUploadComplete={() => {
-                    setUploadingFiles(false);
-                    router.refresh();
-                  }}
-                  onUploadStart={() => {
-                    setUploadingFiles(true);
-                  }}
-                />
+              <Card className="overflow-hidden animate-in slide-in-from-top duration-300">
+                <div className="p-4 bg-muted/50 border-b flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Upload className="h-4 w-4 text-muted-foreground" />
+                    <h3 className="text-sm font-medium">Upload Files</h3>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => !uploadingFiles && setShowUpload(false)}
+                    disabled={uploadingFiles}
+                    className="h-8 w-8 p-0"
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="p-6">
+                  <FileUpload
+                    courseId={course.id}
+                    folderId={selectedFolder?.id}
+                    onUploadComplete={() => {
+                      setUploadingFiles(false);
+                      router.refresh();
+                      // Auto-close after successful upload if no other uploads are pending
+                      setTimeout(() => {
+                        if (!uploadingFiles) {
+                          setShowUpload(false);
+                        }
+                      }, 1500);
+                    }}
+                    onUploadStart={() => {
+                      setUploadingFiles(true);
+                    }}
+                  />
+                </div>
               </Card>
             )}
 
