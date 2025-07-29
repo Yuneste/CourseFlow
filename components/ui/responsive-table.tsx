@@ -3,17 +3,37 @@
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
 import { Card } from './card';
+import { ScrollArea, ScrollBar } from './scroll-area';
 
 interface ResponsiveTableProps {
   children: ReactNode;
   className?: string;
+  stickyHeader?: boolean;
+  striped?: boolean;
+  bordered?: boolean;
+  compact?: boolean;
 }
 
-export function ResponsiveTable({ children, className }: ResponsiveTableProps) {
+export function ResponsiveTable({ 
+  children, 
+  className,
+  stickyHeader = false,
+  striped = false,
+  bordered = true,
+  compact = false 
+}: ResponsiveTableProps) {
   return (
-    <div className={cn('w-full overflow-auto', className)}>
-      <table className="w-full">{children}</table>
-    </div>
+    <ScrollArea className={cn('w-full', bordered && 'rounded-md border', className)}>
+      <table className={cn(
+        'w-full',
+        striped && '[&_tbody_tr:nth-child(even)]:bg-muted/40',
+        compact ? 'text-sm' : 'text-base',
+        stickyHeader && '[&_thead]:sticky [&_thead]:top-0 [&_thead]:z-10 [&_thead]:bg-background'
+      )}>
+        {children}
+      </table>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   );
 }
 
