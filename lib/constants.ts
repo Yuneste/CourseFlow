@@ -38,6 +38,7 @@ export const SUCCESS_MESSAGES = {
   COURSE_DELETED: 'Course deleted successfully.',
   FILE_UPLOADED: 'File uploaded successfully.',
   FILE_DELETED: 'File deleted successfully.',
+  FOLDER_CREATED: 'Folder created successfully.',
   SETTINGS_SAVED: 'Settings saved successfully.',
 } as const;
 
