@@ -28,7 +28,6 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
-import { UI } from '@/lib/constants';
 
 interface DashboardClientProps {
   initialCourses: Course[];
