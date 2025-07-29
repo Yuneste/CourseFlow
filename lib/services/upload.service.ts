@@ -105,9 +105,8 @@ export class UploadService {
   /**
    * Check for duplicate files based on file hash
    * 
-   * Performs two-level duplicate checking:
-   * 1. General duplicates across all user files
-   * 2. Course-specific duplicates if courseId is provided
+   * Performs course-specific duplicate checking when courseId is provided,
+   * otherwise checks across all user files
    * 
    * @param supabase - Authenticated Supabase client
    * @param userId - User ID to check duplicates for
@@ -126,34 +125,25 @@ export class UploadService {
     fileHash: string,
     courseId?: string | null
   ): Promise<{ isDuplicate: boolean; existingFileName?: string }> {
-    // Check general duplicates
-    const { data: existingFile } = await supabase
+    // Build query based on whether courseId is provided
+    let query = supabase
       .from('files')
       .select('id, display_name')
       .eq('user_id', userId)
-      .eq('file_hash', fileHash)
-      .single();
+      .eq('file_hash', fileHash);
+
+    // If courseId is provided, only check within that course
+    if (courseId) {
+      query = query.eq('course_id', courseId);
+    }
+
+    const { data: existingFile } = await query.single();
 
     if (existingFile) {
       return { 
         isDuplicate: true, 
         existingFileName: existingFile.display_name 
       };
-    }
-
-    // Check course-specific duplicates
-    if (courseId) {
-      const { data: courseFile } = await supabase
-        .from('files')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('course_id', courseId)
-        .eq('file_hash', fileHash)
-        .single();
-
-      if (courseFile) {
-        return { isDuplicate: true };
-      }
     }
 
     return { isDuplicate: false };
@@ -312,9 +302,9 @@ export class UploadService {
       // Check for duplicates
       const duplicateCheck = await this.checkDuplicate(supabase, userId, fileHash, courseId);
       if (duplicateCheck.isDuplicate) {
-        const error = duplicateCheck.existingFileName
-          ? `Duplicate file already exists: ${duplicateCheck.existingFileName}`
-          : ERROR_MESSAGES.DUPLICATE_FILE;
+        const error = courseId
+          ? `File "${duplicateCheck.existingFileName || file.name}" already exists in this course`
+          : `File "${duplicateCheck.existingFileName || file.name}" already exists`;
         return { error, filename: file.name };
       }
 
