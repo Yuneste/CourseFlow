@@ -185,12 +185,11 @@ export default function LandingPage() {
                 <Sparkles className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" onClick={() => {
+            <Button size="lg" className="border-2 border-[#FA8072] bg-[#FA8072]/10 hover:bg-[#FA8072]/20 text-[#FA8072] hover:text-[#FF6B6B] hover:border-[#FF6B6B] transition-all px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" onClick={() => {
               const element = document.getElementById('features');
               element?.scrollIntoView({ behavior: 'smooth' });
             }}>
               See Features
-              <ChevronRight className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
             </Button>
           </motion.div>
 
