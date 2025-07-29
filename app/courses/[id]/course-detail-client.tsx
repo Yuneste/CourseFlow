@@ -216,7 +216,8 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
 
   const renderFolderNode = (node: FolderNode, level: number = 0) => {
     const isSelected = selectedFolder?.id === node.folder.id;
-    const hasChildren = node.children.length > 0 || node.files.length > 0;
+    const hasChildren = node.children.length > 0;
+    const hasContent = node.children.length > 0 || node.files.length > 0;
     const isDragOver = dragOverFolder === node.folder.id;
     
     return (
@@ -231,7 +232,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           style={{ paddingLeft: `${level * 16 + 8}px` }}
           onClick={() => {
             setSelectedFolder(node.folder);
-            if (hasChildren) {
+            if (hasContent) {
               toggleFolder(node.folder.id);
             }
           }}
