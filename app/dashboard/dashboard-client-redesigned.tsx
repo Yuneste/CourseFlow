@@ -205,13 +205,6 @@ const WelcomeHeader = ({ userName }: { userName: string }) => {
             <Bell className="h-4 w-4" />
             <span className="sr-only sm:not-sr-only">Notifications</span>
           </Button>
-          <Button 
-            size="sm"
-            className="gap-2 bg-primary hover:bg-primary/90"
-          >
-            <Plus className="h-4 w-4" />
-            <span className="sr-only sm:not-sr-only">New Course</span>
-          </Button>
         </div>
       </div>
     </motion.div>
