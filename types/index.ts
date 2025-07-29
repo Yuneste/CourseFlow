@@ -44,6 +44,18 @@ export interface Course {
   updated_at: Date;
 }
 
+export interface CourseFormData {
+  name: string;
+  code?: string;
+  professor?: string;
+  term: string;
+  academic_period_type: 'semester' | 'term' | 'trimester';
+  credits?: number;
+  ects_credits?: number;
+  color: string;
+  emoji?: string;
+}
+
 export interface File {
   id: string;
   user_id: string;
