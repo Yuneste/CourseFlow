@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { logger } from '@/lib/services/logger.service';
 import { UploadService } from '@/lib/services/upload.service';
 import { ERROR_MESSAGES } from '@/lib/constants';
+import { rateLimit } from '@/lib/rate-limit';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 // Authentication handler
@@ -41,14 +42,39 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: ERROR_MESSAGES.UNAUTHORIZED }, { status: 401 });
     }
 
+    // Parse form data to check file types for rate limiting
+    const formData = await req.formData();
+    const files = formData.getAll('files') as File[];
+    
+    // Determine rate limit based on file types
+    const hasImages = files.some(f => f.type.startsWith('image/'));
+    const rateConfig = hasImages 
+      ? { limit: 10, windowMs: 60 * 1000 } // 10 images per minute
+      : { limit: 20, windowMs: 60 * 1000 }; // 20 documents per minute
+    
+    // Apply rate limiting
+    const rateLimitResult = await rateLimit(req, rateConfig);
+    
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many uploads. Please try again later.' },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.reset.toISOString(),
+          }
+        }
+      );
+    }
+
     logger.info('File upload request', {
       action: 'fileUpload',
       metadata: { userId: user.id }
     });
 
-    // Parse form data
-    const formData = await req.formData();
-    const files = formData.getAll('files') as File[];
+    // Get course and folder IDs from already parsed form data
     const courseId = formData.get('course_id') as string | null;
     const folderId = formData.get('folder_id') as string | null;
 

@@ -17,7 +17,10 @@
     "db:rollback": "node scripts/migrate-database.js rollback",
     "db:status": "node scripts/migrate-database.js status",
     "health:check": "curl -f http://localhost:3000/api/health || exit 1",
-    "prestart": "npm run db:migrate"
+    "prestart": "npm run db:migrate",
+    "clean": "node scripts/clean.js",
+    "clean:all": "node scripts/clean.js && rm -rf node_modules",
+    "prebuild": "npm run clean"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.0",

@@ -24,7 +24,8 @@
       "mcp__ide__getDiagnostics",
       "Bash(npm test:*)",
       "Bash(dir C:UsersLionGcursorCourseFlowcomponentsErrorBoundary.tsx)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

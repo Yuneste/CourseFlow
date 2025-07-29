@@ -142,12 +142,14 @@ export default function OnboardingPage() {
         // Try to navigate anyway
       }
       
-      // Force a hard navigation to clear any cached state
-      window.location.href = '/dashboard';
+      // Navigate to dashboard
+      router.push('/dashboard');
+      router.refresh(); // Force refresh to clear any cached state
     } catch (error) {
       console.error('Error completing onboarding:', error);
-      // Force navigation even on error
-      window.location.href = '/dashboard';
+      // Navigate even on error
+      router.push('/dashboard');
+      router.refresh();
     }
   };
 

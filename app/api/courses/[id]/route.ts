@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { rateLimit } from '@/lib/rate-limit';
 
 // GET /api/courses/[id] - Get a specific course
 export async function GET(
@@ -59,7 +60,25 @@ export async function PUT(
       );
     }
 
-    // Rate limiting would go here
+    // Rate limiting - 30 requests per minute
+    const rateLimitResult = await rateLimit(request, {
+      limit: 30,
+      windowMs: 60 * 1000, // 1 minute
+    });
+    
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.reset.toISOString(),
+          }
+        }
+      );
+    }
 
     // Parse request body
     const body = await request.json();
