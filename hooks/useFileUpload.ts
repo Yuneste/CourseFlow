@@ -138,16 +138,29 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   const uploadFiles = useCallback(async () => {
     if (selectedFiles.length === 0) return;
 
+    // Filter out duplicate files
+    const filesToUpload = selectedFiles.filter(file => !duplicateFiles.has(file.name));
+    
+    if (filesToUpload.length === 0) {
+      setUploadErrors(['All selected files are duplicates and have been skipped']);
+      return;
+    }
+
+    // Show warning if some files were skipped
+    if (filesToUpload.length < selectedFiles.length) {
+      const skippedCount = selectedFiles.length - filesToUpload.length;
+      setUploadErrors([`${skippedCount} duplicate file(s) skipped`]);
+    }
+
     setIsUploading(true);
-    setUploadErrors([]);
     onUploadStart?.();
 
     try {
       // Clear previous upload queue
       clearUploadQueue();
 
-      // Upload files with progress tracking
-      const result = await filesService.uploadWithQueue(selectedFiles, {
+      // Upload only non-duplicate files with progress tracking
+      const result = await filesService.uploadWithQueue(filesToUpload, {
         courseId,
         folderId,
         onFileProgress: (fileId, progress) => {
@@ -166,16 +179,27 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         const errorMessages = result.errors.map(err => 
           `${err.filename}: ${err.error}`
         );
+        // If some files were skipped due to duplicates, prepend that message
+        if (filesToUpload.length < selectedFiles.length) {
+          const skippedCount = selectedFiles.length - filesToUpload.length;
+          errorMessages.unshift(`${skippedCount} duplicate file(s) were skipped`);
+        }
         setUploadErrors(errorMessages);
       }
 
-      // Clear selected files if all successful
-      if (!result.errors || result.errors.length === 0) {
+      // Clear selected files and show success
+      if (result.files.length > 0) {
         setSelectedFiles([]);
         onUploadComplete?.();
         logger.info('Files uploaded successfully', {
           action: 'uploadFiles',
-          metadata: { fileCount: result.files.length }
+          metadata: { fileCount: result.files.length, skippedDuplicates: selectedFiles.length - filesToUpload.length }
+        });
+      } else if (result.errors && result.errors.length === filesToUpload.length) {
+        // All non-duplicate files failed to upload
+        logger.error('All files failed to upload', {
+          action: 'uploadFiles',
+          metadata: { attemptedCount: filesToUpload.length, errors: result.errors }
         });
       }
 

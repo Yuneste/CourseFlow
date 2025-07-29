@@ -191,10 +191,10 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
               const existingFile = duplicateFiles.get(file.name);
               
               return (
-                <div key={index} className="space-y-1">
+                <div key={index} className={cn("space-y-1", isDuplicate && "opacity-50")}>
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex-1 truncate">
-                      <span className="font-medium">{file.name}</span>
+                      <span className={cn("font-medium", isDuplicate && "line-through")}>{file.name}</span>
                       <span className="text-muted-foreground ml-2">
                         ({formatFileSize(file.size)})
                       </span>
@@ -211,7 +211,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
                   {isDuplicate && existingFile && (
                     <div className="ml-4 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs text-yellow-800 dark:text-yellow-200">
                       <AlertCircle className="inline h-3 w-3 mr-1" />
-                      Duplicate: This file already exists (uploaded {new Date(existingFile.created_at).toLocaleDateString()})
+                      Duplicate: Already exists (uploaded {new Date(existingFile.created_at).toLocaleDateString()}) - Will be skipped
                     </div>
                   )}
                 </div>
@@ -228,9 +228,17 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
           <Button
             className="w-full mt-4"
             onClick={uploadFiles}
-            disabled={isUploading || selectedFiles.length === 0 || checkingDuplicates}
+            disabled={isUploading || selectedFiles.length === 0 || checkingDuplicates || selectedFiles.filter(file => !duplicateFiles.has(file.name)).length === 0}
           >
-            {isUploading ? 'Uploading...' : `Upload ${selectedFiles.length} file(s)`}
+            {(() => {
+              if (isUploading) return 'Uploading...';
+              const nonDuplicateCount = selectedFiles.filter(file => !duplicateFiles.has(file.name)).length;
+              if (nonDuplicateCount === 0) return 'All files are duplicates';
+              if (nonDuplicateCount < selectedFiles.length) {
+                return `Upload ${nonDuplicateCount} file(s) (${selectedFiles.length - nonDuplicateCount} duplicate(s) will be skipped)`;
+              }
+              return `Upload ${selectedFiles.length} file(s)`;
+            })()}
           </Button>
         </Card>
       )}
