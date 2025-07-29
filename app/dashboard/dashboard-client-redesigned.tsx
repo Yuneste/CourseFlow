@@ -248,10 +248,9 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   }, [userProfile, setUser]);
 
   useEffect(() => {
-    if (courses.length === 0 && initialCourses.length > 0) {
-      setCourses(initialCourses);
-    }
-  }, [initialCourses, courses, setCourses]);
+    // Always sync with the latest courses from the server
+    setCourses(initialCourses);
+  }, [initialCourses, setCourses]);
 
   const country = userProfile?.country || 'US';
   const systemInfo = getAcademicSystemWithTerms(country);
@@ -329,7 +328,6 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
               icon={BookOpen}
               color="bg-primary/10"
               delay={0.4}
-              trend={activeCourses > 0 ? activeCourses : undefined}
             />
             <StatsCard
               title="Files Uploaded"
