@@ -200,6 +200,25 @@ class CoursesService {
   }
 
   /**
+   * Delete a folder
+   */
+  async deleteFolder(folderId: string): Promise<void> {
+    try {
+      await api.delete(`/courses/folders/${folderId}`);
+      logger.info('Folder deleted successfully', {
+        action: 'deleteFolder',
+        metadata: { folderId }
+      });
+    } catch (error) {
+      logger.error('Failed to delete folder', error, {
+        action: 'deleteFolder',
+        metadata: { folderId }
+      });
+      throw error;
+    }
+  }
+
+  /**
    * Check if user has reached course limits
    */
   async checkCourseLimits(userId: string, term?: string): Promise<{ canCreate: boolean; reason?: string }> {

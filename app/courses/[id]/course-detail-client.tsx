@@ -32,6 +32,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -68,6 +70,8 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   const [reorderMode, setReorderMode] = useState(false);
   const [draggedFolder, setDraggedFolder] = useState<CourseFolder | null>(null);
   const [folderOrder, setFolderOrder] = useState<CourseFolder[]>([]);
+  const [deletingFolder, setDeletingFolder] = useState<CourseFolder | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 
   // Initialize folder order on mount or when folders change
@@ -239,7 +243,6 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           .map((f, index) => ({ id: f.id, display_order: index }));
         
         await coursesService.reorderFolders(rootFoldersToUpdate);
-        toast.success('Folders reordered successfully');
       } catch (error) {
         toast.error('Failed to reorder folders');
         // Revert on error
@@ -252,6 +255,21 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
 
   const handleFolderDragEnd = () => {
     setDraggedFolder(null);
+  };
+
+  const handleDeleteFolder = async () => {
+    if (!deletingFolder) return;
+
+    try {
+      await coursesService.deleteFolder(deletingFolder.id);
+      setDeleteDialogOpen(false);
+      setDeletingFolder(null);
+      router.refresh();
+      toast.success('Folder deleted successfully');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete folder';
+      toast.error(errorMessage);
+    }
   };
 
   const handleCreateFolder = async () => {
@@ -288,7 +306,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
       <div key={node.folder.id} className="animate-in slide-in-from-left duration-300">
         <div
           className={cn(
-            "flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-all duration-200",
+            "group flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-all duration-200",
             "hover:bg-primary/10",
             isSelected && "bg-primary/20",
             isDragOver && "bg-accent/30 scale-105",
@@ -372,6 +390,19 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           <span className="text-xs text-muted-foreground">
             {node.files.length > 0 && `(${node.files.length})`}
           </span>
+          {!node.folder.is_special && !reorderMode && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setDeletingFolder(node.folder);
+                setDeleteDialogOpen(true);
+              }}
+              className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-destructive/10 rounded"
+              title="Delete folder"
+            >
+              <Trash2 className="h-3 w-3 text-destructive" />
+            </button>
+          )}
         </div>
         
         {node.isExpanded && (
@@ -669,6 +700,36 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           </div>
         </div>
       </div>
+
+      {/* Delete Folder Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Folder</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete the folder &quot;{deletingFolder?.name}&quot;? 
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                setDeletingFolder(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteFolder}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
