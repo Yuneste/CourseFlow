@@ -277,22 +277,24 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         </div>
       </motion.div>
 
-      {/* Pro Tip */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1 }}
-        className="mt-12 text-center"
-      >
-        <Card className="inline-block px-6 py-3 bg-white/95 backdrop-blur-sm border-[#C7C7AD]/30 shadow-lg">
-          <div className="flex items-center justify-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#1a1a1a]" />
-            <span className="text-sm text-[#C7C7AD]">
-              <span className="font-medium text-[#1a1a1a]">Pro tip:</span> Start by adding your courses to unlock all features
-            </span>
-          </div>
-        </Card>
-      </motion.div>
+      {/* Pro Tip - Only show when no courses */}
+      {activeCourses === 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1 }}
+          className="mt-12 text-center"
+        >
+          <Card className="inline-block px-6 py-3 bg-[#F0C4C0]/20 backdrop-blur-sm border-[#F0C4C0]/30 shadow-lg">
+            <div className="flex items-center justify-center gap-2">
+              <Sparkles className="h-4 w-4 text-[#FA8072]" />
+              <span className="text-sm text-[#1a1a1a] font-medium">
+                Pro tip: Start by adding your courses to unlock all features
+              </span>
+            </div>
+          </Card>
+        </motion.div>
+      )}
     </div>
   );
 }
