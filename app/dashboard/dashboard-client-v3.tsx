@@ -51,14 +51,14 @@ const StatsCard = ({ title, value, icon: Icon, delay }: any) => (
     transition={{ delay, duration: 0.5 }}
     className="relative"
   >
-    <Card className="p-4 border-0 bg-white shadow-md hover:shadow-lg transition-shadow">
+    <Card className="p-4 border-0 !bg-white dark:!bg-white shadow-md hover:shadow-lg transition-shadow">
       <div className="flex items-center gap-3">
         <div className="p-2 bg-[#FFE4E1] rounded-lg">
           <Icon className="h-5 w-5 text-[#FA8072]" />
         </div>
         <div>
-          <p className="text-xs text-gray-600">{title}</p>
-          <h3 className="text-xl font-bold text-gray-900">
+          <p className="text-xs text-gray-600 dark:text-gray-600">{title}</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-900">
             {value}
           </h3>
         </div>
