@@ -77,5 +77,79 @@ export interface UploadProgress {
   error?: string;
   uploadSpeed?: number; // bytes per second
   pausedAt?: Date;
-  resumeData?: any; // Data needed to resume upload
+  resumeData?: {
+    uploadId: string;
+    key: string;
+    parts: Array<{
+      ETag: string;
+      PartNumber: number;
+    }>;
+  };
+}
+
+// Dashboard component props
+export interface StatsCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ComponentType<{ className?: string }>;
+  delay?: number;
+  trend?: number;
+  color: string;
+}
+
+export interface FeatureCardProps {
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+  color: string;
+  delay: number;
+  available?: boolean;
+  badge?: string;
+}
+
+// API Response types
+export interface ApiResponse<T> {
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+export interface FileUploadResponse {
+  file: File;
+  duplicateCheck?: {
+    isDuplicate: boolean;
+    existingFile?: File;
+  };
+}
+
+export interface CourseWithStats extends Course {
+  fileCount?: number;
+  totalSize?: number;
+  lastActivity?: Date;
+}
+
+// Form types
+export interface CourseFormData {
+  name: string;
+  code?: string;
+  professor?: string;
+  term: string;
+  academic_period_type: 'semester' | 'term' | 'trimester';
+  credits?: number;
+  ects_credits?: number;
+  color: string;
+  emoji?: string;
+}
+
+export interface ProfileFormData {
+  full_name: string;
+  university?: string;
+  study_program?: string;
+  degree_type?: User['degree_type'];
+  start_year?: number;
+  expected_graduation_year?: number;
+  country?: string;
+  timezone?: string;
+  academic_system?: User['academic_system'];
 }

@@ -1,20 +1,16 @@
 'use client';
 
-import { useState, useRef, useEffect, DragEvent, ChangeEvent } from 'react';
+import { useRef, useState, useEffect, DragEvent, ChangeEvent } from 'react';
 import { Upload, Folder, X, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { filesService } from '@/lib/services/files.service';
+import { formatFileSize } from '@/lib/utils/file-validation';
+import { useFileUpload } from '@/hooks/useFileUpload';
 import { useAppStore } from '@/stores/useAppStore';
-import { 
-  validateFileType, 
-  validateFileSize, 
-  validateFileBatch,
-  formatFileSize 
-} from '@/lib/utils/file-validation';
-import type { UploadProgress as UploadProgressType, File as FileType } from '@/types';
+import { DELAYS, FILE_UPLOAD } from '@/lib/constants';
+import type { File as FileType } from '@/types';
 
 interface FileUploadProps {
   courseId?: string;
@@ -25,22 +21,28 @@ interface FileUploadProps {
 
 export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [uploadErrors, setUploadErrors] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
-  const [checkingDuplicates, setCheckingDuplicates] = useState(false);
-  const [duplicateFiles, setDuplicateFiles] = useState<Map<string, any>>(new Map());
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
 
-  const { 
-    addFile, 
-    uploadQueue, 
-    addToUploadQueue, 
-    updateUploadProgress, 
-    removeFromUploadQueue,
-    clearUploadQueue 
-  } = useAppStore();
+  const {
+    selectedFiles,
+    uploadErrors,
+    isUploading,
+    checkingDuplicates,
+    duplicateFiles,
+    uploadQueue,
+    handleFileSelect,
+    uploadFiles,
+    removeSelectedFile,
+    setUploadErrors,
+  } = useFileUpload({
+    courseId,
+    folderId,
+    onUploadComplete,
+    onUploadStart,
+  });
+
+  const { removeFromUploadQueue } = useAppStore();
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -57,121 +59,16 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
     setIsDragging(false);
 
     const files = Array.from(e.dataTransfer.files);
-    handleFiles(files);
+    handleFileSelect(files);
   };
 
-  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      handleFiles(files);
+      handleFileSelect(files);
     }
   };
 
-  const handleFiles = async (files: File[]) => {
-    const errors: string[] = [];
-    const validFiles: File[] = [];
-
-    // Validate batch
-    const batchValidation = validateFileBatch(files);
-    if (!batchValidation.valid) {
-      setUploadErrors([batchValidation.error!]);
-      return;
-    }
-
-    // Validate individual files
-    files.forEach(file => {
-      const typeValidation = validateFileType(file);
-      if (!typeValidation.valid) {
-        errors.push(`${file.name}: ${typeValidation.error}`);
-        return;
-      }
-
-      const sizeValidation = validateFileSize(file);
-      if (!sizeValidation.valid) {
-        errors.push(`${file.name}: ${sizeValidation.error}`);
-        return;
-      }
-
-      validFiles.push(file);
-    });
-
-    setUploadErrors(errors);
-    
-    // Check for duplicates
-    if (validFiles.length > 0) {
-      setCheckingDuplicates(true);
-      const duplicatesMap = new Map<string, any>();
-      
-      for (const file of validFiles) {
-        try {
-          const result = await filesService.checkDuplicate(file);
-          if (result.isDuplicate && result.existingFile) {
-            duplicatesMap.set(file.name, result.existingFile);
-          }
-        } catch (error) {
-          console.error('Error checking duplicate:', error);
-        }
-      }
-      
-      setDuplicateFiles(duplicatesMap);
-      setCheckingDuplicates(false);
-    }
-    
-    setSelectedFiles(validFiles);
-  };
-
-  const handleUpload = async () => {
-    if (selectedFiles.length === 0) return;
-
-    setIsUploading(true);
-    setUploadErrors([]);
-    onUploadStart?.();
-
-    try {
-      // Clear previous upload queue
-      clearUploadQueue();
-
-      // Upload files with progress tracking
-      const result = await filesService.uploadWithQueue(selectedFiles, {
-        courseId,
-        folderId,
-        onFileProgress: (fileId, progress) => {
-          if (progress.status === 'uploading') {
-            addToUploadQueue(progress);
-          }
-          updateUploadProgress(fileId, progress);
-        },
-      });
-
-      // Add successful uploads to store
-      result.files.forEach(file => addFile(file));
-
-      // Show errors if any
-      if (result.errors && result.errors.length > 0) {
-        const errorMessages = result.errors.map(err => 
-          `${err.filename}: ${err.error}`
-        );
-        setUploadErrors(errorMessages);
-      }
-
-      // Clear selected files if all successful
-      if (!result.errors || result.errors.length === 0) {
-        setSelectedFiles([]);
-        onUploadComplete?.();
-      }
-
-    } catch (error) {
-      console.error('Upload error:', error);
-      setUploadErrors([error instanceof Error ? error.message : 'Upload failed']);
-    } finally {
-      setIsUploading(false);
-      // Completed uploads will be removed individually by useEffect
-    }
-  };
-
-  const removeSelectedFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
-  };
 
   // Auto-remove completed uploads after fade-out
   useEffect(() => {
@@ -180,7 +77,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
     if (completedUploads.length > 0) {
       const timer = setTimeout(() => {
         completedUploads.forEach(u => removeFromUploadQueue(u.fileId));
-      }, 2000); // 2 seconds to match the fade-out duration
+      }, DELAYS.UPLOAD_COMPLETE_FADE);
       
       return () => clearTimeout(timer);
     }
@@ -206,13 +103,13 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
       }
 
       if (files.length > 0) {
-        handleFiles(files);
+        handleFileSelect(files);
       }
     };
 
     document.addEventListener('paste', handlePaste);
     return () => document.removeEventListener('paste', handlePaste);
-  }, []);
+  }, [handleFileSelect]);
 
   return (
     <div className="space-y-4">
@@ -260,7 +157,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
             ref={fileInputRef}
             type="file"
             multiple
-            onChange={handleFileSelect}
+            onChange={handleFileInputChange}
             className="hidden"
             accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.xls,.xlsx,.csv,.jpg,.jpeg,.png,.gif,.webp"
           />
@@ -271,12 +168,12 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
             // @ts-ignore - webkitdirectory is not in the types
             webkitdirectory=""
             multiple
-            onChange={handleFileSelect}
+            onChange={handleFileInputChange}
             className="hidden"
           />
 
           <p className="text-xs text-muted-foreground mt-4">
-            Maximum file size: 50MB | Supported formats: PDF, Word, PowerPoint, Images, Text, Spreadsheets
+            Maximum file size: {formatFileSize(FILE_UPLOAD.MAX_SIZE)} | Supported formats: PDF, Word, PowerPoint, Images, Text, Spreadsheets
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             💡 Tip: You can also paste screenshots directly from clipboard (Ctrl+V)
@@ -330,7 +227,7 @@ export function FileUpload({ courseId, folderId, onUploadComplete, onUploadStart
           
           <Button
             className="w-full mt-4"
-            onClick={handleUpload}
+            onClick={uploadFiles}
             disabled={isUploading || selectedFiles.length === 0 || checkingDuplicates}
           >
             {isUploading ? 'Uploading...' : `Upload ${selectedFiles.length} file(s)`}

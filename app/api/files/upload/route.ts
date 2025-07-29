@@ -9,19 +9,347 @@ import {
   ALLOWED_MIME_TYPES
 } from '@/lib/utils/file-validation';
 import { categorizeFile, getCategoryFolder } from '@/lib/utils/file-categorization';
+import { logger } from '@/lib/logger';
+import { FILE_UPLOAD, ERROR_MESSAGES, SUCCESS_MESSAGES } from '@/lib/constants';
 import type { File as FileType } from '@/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+// Types for better type safety
+interface UploadRequest {
+  files: File[];
+  courseId: string | null;
+  folderId: string | null;
+}
+
+interface UploadResult {
+  file?: FileType;
+  error?: string;
+  filename: string;
+}
+
+interface FileValidationResult {
+  isValid: boolean;
+  error?: string;
+  category?: string;
+}
+
+interface FileMetadata {
+  user_id: string;
+  course_id: string | null;
+  folder_id: string | null;
+  original_name: string;
+  display_name: string;
+  storage_url: string;
+  file_type: string;
+  file_size: number;
+  file_hash: string;
+  upload_source: 'web';
+  is_academic_content: boolean;
+  ai_category: string;
+}
+
+// Authentication handler
+async function authenticateUser(supabase: SupabaseClient) {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  if (error || !user) {
+    logger.warn('Unauthorized file upload attempt', { error });
+    return null;
+  }
+  
+  return user;
+}
+
+// Request validation
+function validateUploadRequest(files: File[]): { isValid: boolean; error?: string } {
+  if (!files || files.length === 0) {
+    return { isValid: false, error: ERROR_MESSAGES.GENERIC };
+  }
+
+  if (files.length > FILE_UPLOAD.MAX_BATCH_SIZE) {
+    return { 
+      isValid: false, 
+      error: `Maximum ${FILE_UPLOAD.MAX_BATCH_SIZE} files can be uploaded at once` 
+    };
+  }
+
+  return { isValid: true };
+}
+
+// File validation pipeline
+async function validateFile(file: File): Promise<FileValidationResult> {
+  // Validate file type
+  const typeValidation = validateFileType(file);
+  if (!typeValidation.valid) {
+    return { isValid: false, error: typeValidation.error };
+  }
+
+  // Validate file size
+  const sizeValidation = validateFileSize(file);
+  if (!sizeValidation.valid) {
+    return { isValid: false, error: sizeValidation.error };
+  }
+
+  // Validate magic bytes
+  const magicValidation = await validateMagicBytes(file);
+  if (!magicValidation.valid) {
+    return { isValid: false, error: magicValidation.error };
+  }
+
+  return { isValid: true, category: typeValidation.category };
+}
+
+// Check for duplicate files
+async function checkDuplicateFile(
+  supabase: SupabaseClient,
+  userId: string,
+  fileHash: string,
+  courseId?: string | null
+): Promise<{ isDuplicate: boolean; existingFileName?: string }> {
+  // Check general duplicates
+  const { data: existingFile } = await supabase
+    .from('files')
+    .select('id, display_name')
+    .eq('user_id', userId)
+    .eq('file_hash', fileHash)
+    .single();
+
+  if (existingFile) {
+    return { 
+      isDuplicate: true, 
+      existingFileName: existingFile.display_name 
+    };
+  }
+
+  // Check course-specific duplicates
+  if (courseId) {
+    const { data: courseFile } = await supabase
+      .from('files')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('course_id', courseId)
+      .eq('file_hash', fileHash)
+      .single();
+
+    if (courseFile) {
+      return { isDuplicate: true };
+    }
+  }
+
+  return { isDuplicate: false };
+}
+
+// Generate storage path
+function generateStoragePath(
+  userId: string,
+  fileName: string,
+  categoryFolder: string,
+  courseId?: string | null
+): string {
+  const timestamp = Date.now();
+  const randomStr = Math.random().toString(36).substring(7);
+  const sanitizedName = sanitizeFilename(fileName);
+  
+  return courseId 
+    ? `${userId}/${courseId}/${categoryFolder}/${timestamp}-${randomStr}-${sanitizedName}`
+    : `${userId}/general/${categoryFolder}/${timestamp}-${randomStr}-${sanitizedName}`;
+}
+
+// Upload file to storage
+async function uploadToStorage(
+  supabase: SupabaseClient,
+  file: File,
+  storagePath: string
+): Promise<{ success: boolean; error?: string }> {
+  const { error } = await supabase.storage
+    .from('user-files')
+    .upload(storagePath, file, {
+      contentType: file.type,
+      upsert: false,
+    });
+
+  if (error) {
+    logger.error('Storage upload failed', error, {
+      storagePath,
+      fileType: file.type,
+      fileSize: file.size,
+    });
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+// Save file metadata to database
+async function saveFileMetadata(
+  supabase: SupabaseClient,
+  metadata: FileMetadata
+): Promise<{ file?: FileType; error?: string }> {
+  const { data, error } = await supabase
+    .from('files')
+    .insert(metadata)
+    .select()
+    .single();
+
+  if (error) {
+    logger.error('Failed to save file metadata', error, { metadata });
+    return { error: 'Failed to save file metadata' };
+  }
+
+  return { file: data };
+}
+
+// Track upload analytics
+async function trackUploadAnalytics(
+  supabase: SupabaseClient,
+  userId: string,
+  fileId: string,
+  file: File,
+  userAgent: string | null
+): Promise<void> {
+  try {
+    await supabase.from('upload_analytics').insert({
+      user_id: userId,
+      file_id: fileId,
+      upload_status: 'completed',
+      file_type: file.type,
+      file_size: file.size,
+      upload_duration_ms: 0, // Would be calculated in real implementation
+      client_info: { userAgent },
+    });
+  } catch (error) {
+    logger.warn('Failed to track upload analytics', { error, fileId });
+  }
+}
+
+// Process single file upload
+async function processFileUpload(
+  supabase: SupabaseClient,
+  file: File,
+  userId: string,
+  courseId: string | null,
+  folderId: string | null,
+  userAgent: string | null
+): Promise<UploadResult> {
+  try {
+    // Validate file
+    const validation = await validateFile(file);
+    if (!validation.isValid) {
+      return { error: validation.error, filename: file.name };
+    }
+
+    // Calculate file hash
+    const fileHash = await calculateFileHash(file);
+
+    // Check for duplicates
+    const duplicateCheck = await checkDuplicateFile(supabase, userId, fileHash, courseId);
+    if (duplicateCheck.isDuplicate) {
+      const error = duplicateCheck.existingFileName
+        ? `Duplicate file already exists: ${duplicateCheck.existingFileName}`
+        : 'This file already exists in this course';
+      return { error, filename: file.name };
+    }
+
+    // Categorize file
+    const aiCategory = categorizeFile(file.name);
+    const categoryFolder = getCategoryFolder(aiCategory);
+
+    // Generate storage path
+    const storagePath = generateStoragePath(userId, file.name, categoryFolder, courseId);
+
+    // Upload to storage
+    const uploadResult = await uploadToStorage(supabase, file, storagePath);
+    if (!uploadResult.success) {
+      return { 
+        error: `Failed to upload file to storage: ${uploadResult.error}`, 
+        filename: file.name 
+      };
+    }
+
+    // Prepare file metadata
+    const metadata: FileMetadata = {
+      user_id: userId,
+      course_id: courseId,
+      folder_id: folderId,
+      original_name: file.name,
+      display_name: file.name,
+      storage_url: storagePath,
+      file_type: file.type,
+      file_size: file.size,
+      file_hash: fileHash,
+      upload_source: 'web',
+      is_academic_content: true, // For MVP, all content is considered valid
+      ai_category: aiCategory,
+    };
+
+    // Save to database
+    const { file: savedFile, error: dbError } = await saveFileMetadata(supabase, metadata);
+    if (dbError) {
+      // Clean up uploaded file on database error
+      await supabase.storage.from('user-files').remove([storagePath]);
+      return { error: dbError, filename: file.name };
+    }
+
+    // Track analytics
+    if (savedFile) {
+      await trackUploadAnalytics(supabase, userId, savedFile.id, file, userAgent);
+    }
+
+    return { file: savedFile, filename: file.name };
+
+  } catch (error) {
+    logger.error('Error processing file upload', error, { filename: file.name });
+    return { error: 'Failed to process file', filename: file.name };
+  }
+}
+
+// Format upload response
+function formatUploadResponse(results: UploadResult[]) {
+  const successfulUploads = results.filter(r => r.file).map(r => r.file!);
+  const failedUploads = results.filter(r => r.error);
+
+  if (successfulUploads.length === 0) {
+    return {
+      success: false,
+      status: 400,
+      body: {
+        error: 'All files failed to upload',
+        details: failedUploads,
+      },
+    };
+  }
+
+  return {
+    success: true,
+    status: 200,
+    body: {
+      files: successfulUploads,
+      errors: failedUploads.length > 0 ? failedUploads : undefined,
+    },
+  };
+}
+
+// Add security headers to response
+function addSecurityHeaders(response: NextResponse): NextResponse {
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' blob: data:; script-src 'self'");
+  return response;
+}
 
 export async function POST(req: NextRequest) {
+  const startTime = Date.now();
+  
   try {
     const supabase = await createClient();
     
-    // Check authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // Authenticate user
+    const user = await authenticateUser(supabase);
+    if (!user) {
+      return NextResponse.json({ error: ERROR_MESSAGES.UNAUTHORIZED }, { status: 401 });
     }
 
-    // Rate limiting would go here
+    logger.info('File upload request', { userId: user.id });
 
     // Parse form data
     const formData = await req.formData();
@@ -29,202 +357,48 @@ export async function POST(req: NextRequest) {
     const courseId = formData.get('course_id') as string | null;
     const folderId = formData.get('folder_id') as string | null;
 
-    if (!files || files.length === 0) {
-      return NextResponse.json({ error: 'No files provided' }, { status: 400 });
+    // Validate request
+    const validation = validateUploadRequest(files);
+    if (!validation.isValid) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
-
-    // Validate batch size
-    if (files.length > 10) {
-      return NextResponse.json({ error: 'Maximum 10 files can be uploaded at once' }, { status: 400 });
-    }
-
-    const uploadResults: (FileType | { error: string; filename: string })[] = [];
 
     // Process each file
-    for (const file of files) {
-      try {
-        // Validate file type
-        const typeValidation = validateFileType(file);
-        if (!typeValidation.valid) {
-          uploadResults.push({ error: typeValidation.error!, filename: file.name });
-          continue;
-        }
+    const userAgent = req.headers.get('user-agent');
 
-        // Apply type-specific rate limiting
-        const fileCategory = typeValidation.category;
-        const typeLimit = fileCategory === 'image' ? 10 : 20;
-        // Type-specific rate limiting would go here
+    // Process files in parallel for better performance
+    const uploadPromises = files.map(file =>
+      processFileUpload(
+        supabase,
+        file,
+        user.id,
+        courseId,
+        folderId,
+        userAgent
+      )
+    );
 
-        // Validate file size
-        const sizeValidation = validateFileSize(file);
-        if (!sizeValidation.valid) {
-          uploadResults.push({ error: sizeValidation.error!, filename: file.name });
-          continue;
-        }
+    const uploadResults = await Promise.all(uploadPromises);
 
-        // Validate magic bytes
-        const magicValidation = await validateMagicBytes(file);
-        if (!magicValidation.valid) {
-          uploadResults.push({ error: magicValidation.error!, filename: file.name });
-          continue;
-        }
-
-        // Calculate file hash for deduplication
-        const fileHash = await calculateFileHash(file);
-
-        // Check for duplicates
-        const { data: existingFile } = await supabase
-          .from('files')
-          .select('id, display_name, created_at')
-          .eq('user_id', user.id)
-          .eq('file_hash', fileHash)
-          .single();
-
-        if (existingFile) {
-          uploadResults.push({ 
-            error: `Duplicate file already exists: ${existingFile.display_name}`, 
-            filename: file.name 
-          });
-          continue;
-        }
-
-        // For MVP, all content is considered valid
-        const isAcademicContent = true;
-
-        // Check for duplicate file in the same course
-        if (fileHash && courseId) {
-          const { data: existingFile } = await supabase
-            .from('files')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('course_id', courseId)
-            .eq('file_hash', fileHash)
-            .single();
-
-          if (existingFile) {
-            uploadResults.push({ 
-              error: 'This file already exists in this course', 
-              filename: file.name 
-            });
-            continue;
-          }
-        }
-
-        // Categorize the file
-        const aiCategory = categorizeFile(file.name);
-        const categoryFolder = getCategoryFolder(aiCategory);
-
-        // Generate unique storage path with category folder
-        const timestamp = Date.now();
-        const randomStr = Math.random().toString(36).substring(7);
-        const sanitizedName = sanitizeFilename(file.name);
-        const storagePath = courseId 
-          ? `${user.id}/${courseId}/${categoryFolder}/${timestamp}-${randomStr}-${sanitizedName}`
-          : `${user.id}/general/${categoryFolder}/${timestamp}-${randomStr}-${sanitizedName}`;
-
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('user-files')
-          .upload(storagePath, file, {
-            contentType: file.type,
-            upsert: false,
-          });
-
-        if (uploadError) {
-          console.error('Storage upload error:', uploadError);
-          console.error('Storage path:', storagePath);
-          console.error('File type:', file.type);
-          console.error('File size:', file.size);
-          uploadResults.push({ 
-            error: `Failed to upload file to storage: ${uploadError.message}`, 
-            filename: file.name 
-          });
-          continue;
-        }
-
-        // Get public URL for the file
-        const { data: { publicUrl } } = supabase.storage
-          .from('user-files')
-          .getPublicUrl(storagePath);
-
-        // Save file metadata to database
-        const fileRecord = {
-          user_id: user.id,
-          course_id: courseId,
-          folder_id: folderId,
-          original_name: file.name,
-          display_name: file.name,
-          storage_url: storagePath,
-          file_type: file.type,
-          file_size: file.size,
-          file_hash: fileHash,
-          upload_source: 'web' as const,
-          is_academic_content: isAcademicContent,
-          ai_category: aiCategory,
-        };
-
-        const { data: savedFile, error: dbError } = await supabase
-          .from('files')
-          .insert(fileRecord)
-          .select()
-          .single();
-
-        if (dbError) {
-          console.error('Database error:', dbError);
-          // Try to clean up the uploaded file
-          await supabase.storage.from('user-files').remove([storagePath]);
-          uploadResults.push({ error: 'Failed to save file metadata', filename: file.name });
-          continue;
-        }
-
-        // Track upload analytics
-        await supabase.from('upload_analytics').insert({
-          user_id: user.id,
-          file_id: savedFile.id,
-          upload_status: 'completed',
-          file_type: file.type,
-          file_size: file.size,
-          upload_duration_ms: 0, // Would be calculated in real implementation
-          client_info: {
-            userAgent: req.headers.get('user-agent'),
-          },
-        });
-
-
-        uploadResults.push(savedFile);
-
-      } catch (fileError) {
-        console.error('Error processing file:', file.name, fileError);
-        uploadResults.push({ error: 'Failed to process file', filename: file.name });
-      }
-    }
-
-    // Return results
-    const successfulUploads = uploadResults.filter(r => !('error' in r));
-    const failedUploads = uploadResults.filter(r => 'error' in r);
-
-    if (successfulUploads.length === 0) {
-      return NextResponse.json({ 
-        error: 'All files failed to upload', 
-        details: failedUploads 
-      }, { status: 400 });
-    }
-
-    const response = NextResponse.json({
-      files: successfulUploads,
-      errors: failedUploads.length > 0 ? failedUploads : undefined,
+    // Format response
+    const responseData = formatUploadResponse(uploadResults);
+    
+    // Log completion
+    const duration = Date.now() - startTime;
+    logger.info('File upload completed', {
+      userId: user.id,
+      filesUploaded: uploadResults.filter(r => r.file).length,
+      filesFailed: uploadResults.filter(r => r.error).length,
+      duration: `${duration}ms`,
     });
 
-    // Add security headers
-    response.headers.set('X-Content-Type-Options', 'nosniff');
-    response.headers.set('X-Frame-Options', 'DENY');
-    response.headers.set('Content-Security-Policy', "default-src 'self'; img-src 'self' blob: data:; script-src 'self'");
-    
-    return response;
+    // Create and return response with security headers
+    const response = NextResponse.json(responseData.body, { status: responseData.status });
+    return addSecurityHeaders(response);
 
   } catch (error) {
-    console.error('Unexpected error in POST /api/files/upload:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    logger.error('Unexpected error in file upload', error);
+    return NextResponse.json({ error: ERROR_MESSAGES.GENERIC }, { status: 500 });
   }
 }
 

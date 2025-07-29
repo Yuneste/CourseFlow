@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Course, User } from '@/types';
+import { Course, User, StatsCardProps, FeatureCardProps } from '@/types';
 import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
 import { useAppStore } from '@/stores/useAppStore';
 import { useRouter } from 'next/navigation';
@@ -28,6 +28,7 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
+import { UI } from '@/lib/constants';
 
 interface DashboardClientProps {
   initialCourses: Course[];
@@ -35,7 +36,7 @@ interface DashboardClientProps {
 }
 
 // Redesigned stats card with new design system
-const StatsCard = ({ title, value, icon: Icon, delay, trend, color }: any) => (
+const StatsCard = ({ title, value, icon: Icon, delay = 0, trend, color }: StatsCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -77,16 +78,7 @@ const StatsCard = ({ title, value, icon: Icon, delay, trend, color }: any) => (
 );
 
 // Enhanced feature card with modern design
-const FeatureCard = ({ title, description, icon: Icon, href, color, delay, available = true, badge }: {
-  title: string;
-  description: string;
-  icon: any;
-  href: string;
-  color: string;
-  delay: number;
-  available?: boolean;
-  badge?: string;
-}) => {
+const FeatureCard = ({ title, description, icon: Icon, href, color, delay, available = true, badge }: FeatureCardProps) => {
   const router = useRouter();
   
   return (
@@ -337,7 +329,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
               icon={BookOpen}
               color="bg-primary/10"
               delay={0.4}
-              trend={activeCourses > 0 ? activeCourses : null}
+              trend={activeCourses > 0 ? activeCourses : undefined}
             />
             <StatsCard
               title="Files Uploaded"
