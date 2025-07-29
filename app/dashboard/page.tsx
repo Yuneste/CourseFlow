@@ -35,7 +35,7 @@ export default async function DashboardPage() {
       {/* Beautiful animated background */}
       <div className="absolute inset-0">
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F5F5] via-[#FAFAFA] to-[#F8F8F8]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#EEEEEE] via-[#F2F2F2] to-[#F0F0F0]"></div>
         
         {/* Animated blobs */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-[#FFE4E1] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
