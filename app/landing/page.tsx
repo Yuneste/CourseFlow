@@ -23,6 +23,7 @@ import {
 import { FileOrganizationDemo, CollaborationDemo, ResourceRecommendationDemo } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
 import { UnifiedBackground, UnifiedCard } from '@/components/ui/unified-background';
 import { EducationalPattern } from '@/components/ui/educational-pattern';
+import { AcademicStars } from '@/components/ui/academic-stars';
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -93,12 +94,14 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Educational Pattern Background */}
-      <EducationalPattern />
+    <div className="min-h-screen bg-black relative">
+      {/* Starry Academic Background for Hero Section */}
+      <div className="absolute inset-0 h-[100vh]">
+        <AcademicStars />
+      </div>
       
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-card/80 backdrop-blur-md z-50 border-b border-border">
+      <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-md z-50 border-b border-white/10">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
@@ -110,9 +113,9 @@ export default function LandingPage() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Features</a>
-              <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-colors">Testimonials</a>
-              <a href="#pricing" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a>
+              <a href="#features" className="text-white/70 hover:text-white transition-colors">Features</a>
+              <a href="#testimonials" className="text-white/70 hover:text-white transition-colors">Testimonials</a>
+              <a href="#pricing" className="text-white/70 hover:text-white transition-colors">Pricing</a>
               <Button variant="outline" className="mr-2" asChild>
                 <Link href="/login">Log In</Link>
               </Button>
@@ -126,7 +129,7 @@ export default function LandingPage() {
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-6 w-6 text-white" /> : <Menu className="h-6 w-6 text-white" />}
             </button>
           </div>
         </div>
@@ -136,12 +139,12 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden bg-card border-t border-border"
+            className="md:hidden bg-black/90 border-t border-white/10"
           >
             <div className="container mx-auto px-4 py-4 space-y-4">
-              <a href="#features" className="block text-muted-foreground hover:text-primary">Features</a>
-              <a href="#testimonials" className="block text-muted-foreground hover:text-primary">Testimonials</a>
-              <a href="#pricing" className="block text-muted-foreground hover:text-primary">Pricing</a>
+              <a href="#features" className="block text-white/70 hover:text-white">Features</a>
+              <a href="#testimonials" className="block text-white/70 hover:text-white">Testimonials</a>
+              <a href="#pricing" className="block text-white/70 hover:text-white">Pricing</a>
               <Button variant="outline" className="w-full" asChild>
                 <Link href="/login" className="block">Log In</Link>
               </Button>
@@ -154,12 +157,12 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 md:pt-32 pb-12 md:pb-20 px-4">
+      <section className="relative pt-24 md:pt-32 pb-12 md:pb-20 px-4 min-h-screen flex items-center">
         <div className="container mx-auto text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-foreground"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-white"
           >
             Your Academic Success
             <br />
@@ -172,7 +175,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-lg sm:text-xl md:text-2xl text-foreground/90 mb-6 md:mb-8 max-w-3xl mx-auto px-4"
+            className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 md:mb-8 max-w-3xl mx-auto px-4"
           >
             The all-in-one platform that organizes your courses, powers your study sessions, 
             and helps you achieve better grades with AI assistance.
@@ -210,7 +213,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-12 md:py-20 px-4">
+      <section id="features" className="relative py-12 md:py-20 px-4 bg-background">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
