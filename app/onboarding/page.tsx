@@ -240,10 +240,10 @@ export default function OnboardingPage() {
     <div className="min-h-screen">
       <div className="max-w-2xl mx-auto pt-12 px-4">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-[#1a1a1a] mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             Welcome to CourseFlow
           </h1>
-          <p className="text-[#C7C7AD]">Let&apos;s set up your courses in just a few steps</p>
+          <p className="text-muted-foreground">Let&apos;s set up your courses in just a few steps</p>
         </div>
 
         <div className="mb-8">
@@ -260,13 +260,13 @@ export default function OnboardingPage() {
 // Step 1: Country Selection
 function StepCountrySelection({ onSelect }: { onSelect: (country: CountryCode) => void }) {
   return (
-    <Card className="bg-white/95 border-[#C7C7AD]/20">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-[#1a1a1a]">
+        <CardTitle className="flex items-center gap-2 text-foreground">
           <Globe className="h-5 w-5" />
           Select Your Country
         </CardTitle>
-        <CardDescription className="text-[#C7C7AD]">
+        <CardDescription className="text-muted-foreground">
           We&apos;ll customize your academic calendar based on your location
         </CardDescription>
       </CardHeader>
@@ -277,18 +277,18 @@ function StepCountrySelection({ onSelect }: { onSelect: (country: CountryCode) =
               <Button
                 key={code}
                 variant="outline"
-                className="justify-between h-auto p-4 border-[#C7C7AD]/30 hover:bg-[#F0C4C0]/10"
+                className="justify-between h-auto p-4 border-border hover:bg-accent"
                 onClick={() => onSelect(code)}
               >
                 <div className="text-left">
-                  <div className="font-medium text-[#1a1a1a]">{system.name}</div>
-                  <div className="text-sm text-[#C7C7AD]">
+                  <div className="font-medium text-foreground">{system.name}</div>
+                  <div className="text-sm text-muted-foreground">
                     {system.periodType === 'semester' && 'Semester system'}
                     {system.periodType === 'term' && 'Term system'}
                     {system.periodType === 'trimester' && 'Block/Period system'}
                   </div>
                 </div>
-                <ChevronRight className="h-5 w-5 text-[#1a1a1a]" />
+                <ChevronRight className="h-5 w-5 text-foreground" />
               </Button>
             )
           )}
@@ -382,30 +382,30 @@ function StepAddCourses({
   };
 
   return (
-    <Card className="bg-white/95 border-[#C7C7AD]/20">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-[#1a1a1a]">
+        <CardTitle className="flex items-center gap-2 text-foreground">
           <BookOpen className="h-5 w-5" />
           Add Your Courses
         </CardTitle>
-        <CardDescription className="text-[#C7C7AD]">
+        <CardDescription className="text-muted-foreground">
           Add the courses you&apos;re taking this term
         </CardDescription>
       </CardHeader>
       <CardContent>
         {courses.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-[#1a1a1a] mb-3">Your courses:</h3>
+            <h3 className="text-sm font-medium text-foreground mb-3">Your courses:</h3>
             <div className="grid gap-2">
               {courses.map((course) => (
                 <div
                   key={course.id}
-                  className="flex items-center gap-3 p-3 rounded-lg border border-[#C7C7AD]/20 bg-white/90 group hover:bg-[#F0C4C0]/10 transition-colors"
+                  className="flex items-center gap-3 p-3 rounded-lg border border-[#C7C7AD]/20 bg-white/90 group hover:bg-accent transition-colors"
                 >
                   <span className="text-2xl">{course.emoji}</span>
                   <div className="flex-1">
                     <div className="font-medium">{course.name}</div>
-                    <div className="text-sm text-[#C7C7AD]">
+                    <div className="text-sm text-muted-foreground">
                       {course.code && `${course.code} • `}
                       {course.term}
                     </div>
@@ -456,7 +456,7 @@ function StepAddCourses({
           <div className="space-y-3">
             <Button
               onClick={() => setShowForm(true)}
-              className="w-full border-[#C7C7AD]/30 hover:bg-[#F0C4C0]/10"
+              className="w-full border-border hover:bg-accent"
               variant="outline"
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -482,7 +482,7 @@ function StepAddCourses({
                   <ChevronLeft className="h-4 w-4 mr-2" />
                   Previous
                 </Button>
-                <Button onClick={onNext} className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]">
+                <Button onClick={onNext} className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-foreground">
                   Continue
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -503,7 +503,7 @@ function StepAddCourses({
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 border border-[#C7C7AD]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
                 placeholder="e.g., Introduction to Psychology"
                 required
                 minLength={2}
@@ -516,7 +516,7 @@ function StepAddCourses({
               <select
                 value={formData.term}
                 onChange={(e) => setFormData({ ...formData, term: e.target.value })}
-                className="w-full px-3 py-2 border border-[#C7C7AD]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
                 required
               >
                 {academicSystem.terms.map((term) => (
@@ -534,7 +534,7 @@ function StepAddCourses({
                   type="text"
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#C7C7AD]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
                   placeholder="e.g., PSY 101"
                   maxLength={20}
                 />
@@ -546,7 +546,7 @@ function StepAddCourses({
                   type="text"
                   value={formData.professor}
                   onChange={(e) => setFormData({ ...formData, professor: e.target.value })}
-                  className="w-full px-3 py-2 border border-[#C7C7AD]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
                   placeholder="e.g., Dr. Smith"
                   maxLength={100}
                 />
@@ -562,7 +562,7 @@ function StepAddCourses({
                   onChange={(e) =>
                     setFormData({ ...formData, credits: e.target.value ? parseInt(e.target.value) : undefined })
                   }
-                  className="w-full px-3 py-2 border border-[#C7C7AD]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
                   placeholder="e.g., 3"
                   min="0"
                   max="10"
@@ -579,7 +579,7 @@ function StepAddCourses({
                   onChange={(e) =>
                     setFormData({ ...formData, ects_credits: e.target.value ? parseInt(e.target.value) : undefined })
                   }
-                  className="w-full px-3 py-2 border border-[#C7C7AD]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F0C4C0]"
                   placeholder="e.g., 6"
                   min="0"
                   max="30"
@@ -724,20 +724,20 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext, onPrevious 
   };
 
   return (
-    <Card className="bg-white/95 border-[#C7C7AD]/20">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-[#1a1a1a]">
+        <CardTitle className="flex items-center gap-2 text-foreground">
           <GraduationCap className="h-5 w-5" />
           Your Study Program
         </CardTitle>
-        <CardDescription className="text-[#C7C7AD]">
+        <CardDescription className="text-muted-foreground">
           Tell us about your academic journey
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="study_program" className="text-[#1a1a1a]">What are you studying? *</Label>
+            <Label htmlFor="study_program" className="text-foreground">What are you studying? *</Label>
             <Input
               id="study_program"
               value={studyProgram.study_program}
@@ -752,7 +752,7 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext, onPrevious 
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="degree_type" className="text-[#1a1a1a]">Degree Type *</Label>
+            <Label htmlFor="degree_type" className="text-foreground">Degree Type *</Label>
             <Select
               value={studyProgram.degree_type}
               onValueChange={(value) => onChange({ ...studyProgram, degree_type: value })}
@@ -773,7 +773,7 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext, onPrevious 
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="start_year" className="text-[#1a1a1a]">Start Year</Label>
+              <Label htmlFor="start_year" className="text-foreground">Start Year</Label>
               <Select
                 value={studyProgram.start_year.toString()}
                 onValueChange={(value) => onChange({ ...studyProgram, start_year: parseInt(value) })}
@@ -792,7 +792,7 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext, onPrevious 
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="expected_graduation" className="text-[#1a1a1a]">Expected Graduation</Label>
+              <Label htmlFor="expected_graduation" className="text-foreground">Expected Graduation</Label>
               <Select
                 value={studyProgram.expected_graduation_year.toString()}
                 onValueChange={(value) => onChange({ ...studyProgram, expected_graduation_year: parseInt(value) })}
@@ -823,7 +823,7 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext, onPrevious 
             </Button>
             <Button 
               type="submit" 
-              className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]"
+              className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-foreground"
               disabled={!studyProgram.study_program || !studyProgram.degree_type}
             >
               Continue
@@ -849,15 +849,15 @@ function StepComplete({
   onPrevious: () => void;
 }) {
   return (
-    <Card className="bg-white/95 border-[#C7C7AD]/20">
+    <Card className="bg-card border-border">
       <CardHeader>
-        <CardTitle className="text-[#1a1a1a]">
+        <CardTitle className="text-foreground">
           You&apos;re All Set!
         </CardTitle>
       </CardHeader>
       <CardContent className="text-center space-y-6">
         <div className="py-8">
-          <p className="text-lg text-[#C7C7AD]">
+          <p className="text-lg text-muted-foreground">
             {coursesCount > 0
               ? `Great! You've added ${coursesCount} course${
                   coursesCount > 1 ? 's' : ''
@@ -875,7 +875,7 @@ function StepComplete({
             <ChevronLeft className="h-5 w-5 mr-2" />
             Previous
           </Button>
-          <Button onClick={onShowBenefits} size="lg" className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]">
+          <Button onClick={onShowBenefits} size="lg" className="flex-1 bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-foreground">
             Discover CourseFlow
             <ChevronRight className="h-5 w-5 ml-2" />
           </Button>

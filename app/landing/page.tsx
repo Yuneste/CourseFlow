@@ -155,11 +155,11 @@ export default function LandingPage() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-gray-900"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-foreground"
           >
             Your Academic Success
             <br />
-            <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+            <span className="text-primary font-extrabold">
               Simplified
             </span>
           </motion.h1>
@@ -168,7 +168,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto px-4"
+            className="text-lg sm:text-xl md:text-2xl text-foreground/90 mb-6 md:mb-8 max-w-3xl mx-auto px-4"
           >
             The all-in-one platform that organizes your courses, powers your study sessions, 
             and helps you achieve better grades with AI assistance.
@@ -180,13 +180,13 @@ export default function LandingPage() {
             transition={{ delay: 0.2 }}
             className="flex flex-col md:flex-row gap-4 justify-center mb-8"
           >
-            <Button size="lg" className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" asChild>
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" asChild>
               <Link href="/register">
                 Start Free Trial
                 <Sparkles className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
               </Link>
             </Button>
-            <Button size="lg" className="border-2 border-[#FA8072] bg-[#FA8072]/10 hover:bg-[#FA8072]/20 text-[#FA8072] hover:text-[#FF6B6B] hover:border-[#FF6B6B] transition-all px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" onClick={() => {
+            <Button size="lg" className="border-2 border-primary bg-primary/10 hover:bg-primary/20 text-primary hover:text-primary/80 hover:border-primary/80 transition-all px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" onClick={() => {
               const element = document.getElementById('features');
               element?.scrollIntoView({ behavior: 'smooth' });
             }}>
@@ -198,7 +198,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-sm text-gray-500"
+            className="text-sm text-muted-foreground"
           >
             No credit card required • 14-day free trial • Cancel anytime
           </motion.p>
@@ -209,11 +209,11 @@ export default function LandingPage() {
       <section id="features" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
               Features that Power Your
-              <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> Success</span>
+              <span className="text-primary font-extrabold"> Success</span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+            <p className="text-lg sm:text-xl text-foreground/90 max-w-3xl mx-auto px-4">
               See how CourseFlow transforms your academic journey with intelligent features
             </p>
           </div>
@@ -230,24 +230,24 @@ export default function LandingPage() {
               >
                 <div className="flex-1 max-w-xl">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 sm:p-3 bg-[#FFE4E1] rounded-lg">
-                      <feature.icon className="h-6 sm:h-8 w-6 sm:w-8 text-[#FA8072]" />
+                    <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
+                      <feature.icon className="h-6 sm:h-8 w-6 sm:w-8 text-primary" />
                     </div>
-                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{feature.title}</h3>
+                    <h3 className="text-2xl sm:text-3xl font-bold text-foreground">{feature.title}</h3>
                   </div>
-                  <p className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6">{feature.description}</p>
+                  <p className="text-base sm:text-lg text-foreground/90 mb-4 sm:mb-6">{feature.description}</p>
                   <ul className="space-y-3">
                     <li className="flex items-center gap-2">
                       <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">Automatic organization</span>
+                      <span className="text-foreground">Automatic organization</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">Real-time collaboration</span>
+                      <span className="text-foreground">Real-time collaboration</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-gray-700">AI-powered insights</span>
+                      <span className="text-foreground">AI-powered insights</span>
                     </li>
                   </ul>
                 </div>
@@ -263,14 +263,14 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-12 md:py-20 px-4 bg-white/50">
+      <section id="testimonials" className="py-12 md:py-20 px-4 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
               Students Love
-              <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> CourseFlow</span>
+              <span className="text-primary font-extrabold"> CourseFlow</span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600">
+            <p className="text-lg sm:text-xl text-foreground/90">
               Join thousands of students achieving their academic goals
             </p>
           </div>
@@ -283,17 +283,17 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-xl shadow-lg p-6"
+                className="bg-card rounded-xl shadow-lg p-6 border border-border"
               >
                 <div className="flex mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-gray-700 mb-4 italic">&ldquo;{testimonial.content}&rdquo;</p>
+                <p className="text-foreground mb-4 italic">&ldquo;{testimonial.content}&rdquo;</p>
                 <div>
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
+                  <p className="font-semibold text-foreground">{testimonial.name}</p>
+                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                 </div>
               </motion.div>
             ))}
@@ -305,11 +305,11 @@ export default function LandingPage() {
       <section id="pricing" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
               Simple, Transparent
-              <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> Pricing</span>
+              <span className="text-primary font-extrabold"> Pricing</span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600">
+            <p className="text-lg sm:text-xl text-foreground/90">
               Choose the plan that fits your needs
             </p>
           </div>
@@ -324,8 +324,8 @@ export default function LandingPage() {
                 transition={{ delay: index * 0.1 }}
                 className={`relative rounded-xl p-8 ${
                   plan.highlighted 
-                    ? 'bg-gradient-to-br from-[#FA8072] to-[#FF6B6B] text-white shadow-2xl scale-105' 
-                    : 'bg-white shadow-lg'
+                    ? 'bg-primary text-primary-foreground shadow-2xl scale-105 border-2 border-primary' 
+                    : 'bg-card shadow-lg border border-border'
                 }`}
               >
                 {plan.highlighted && (
@@ -333,24 +333,24 @@ export default function LandingPage() {
                     Most Popular
                   </div>
                 )}
-                <h3 className={`text-2xl font-bold mb-2 ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>{plan.name}</h3>
+                <h3 className={`text-2xl font-bold mb-2 ${plan.highlighted ? 'text-white' : 'text-foreground'}`}>{plan.name}</h3>
                 <div className="mb-6">
-                  <span className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>{plan.price}</span>
-                  {plan.period && <span className={`text-lg ${plan.highlighted ? 'text-white/80' : 'text-gray-600'}`}>{plan.period}</span>}
+                  <span className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-foreground'}`}>{plan.price}</span>
+                  {plan.period && <span className={`text-lg ${plan.highlighted ? 'text-white/80' : 'text-foreground/90'}`}>{plan.period}</span>}
                 </div>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2">
                       <Check className={`h-5 w-5 ${plan.highlighted ? 'text-white' : 'text-green-500'}`} />
-                      <span className={plan.highlighted ? 'text-white' : 'text-gray-700'}>{feature}</span>
+                      <span className={plan.highlighted ? 'text-white' : 'text-foreground'}>{feature}</span>
                     </li>
                   ))}
                 </ul>
                 <Button 
                   className={`w-full ${
                     plan.highlighted 
-                      ? 'bg-white text-[#FA8072] hover:bg-gray-100' 
-                      : 'bg-[#FA8072] text-white hover:bg-[#FF6B6B]'
+                      ? 'bg-primary-foreground text-primary hover:bg-primary-foreground/90' 
+                      : 'bg-primary text-primary-foreground hover:bg-primary/90'
                   }`}
                   asChild
                 >
@@ -365,15 +365,15 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 md:py-20 px-4 bg-gradient-to-r from-[#FA8072] to-[#FF6B6B]">
+      <section className="py-12 md:py-20 px-4 bg-primary">
         <div className="container mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 md:mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-foreground mb-4 md:mb-6">
             Ready to Transform Your Studies?
           </h2>
-          <p className="text-lg sm:text-xl text-white/90 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
+          <p className="text-lg sm:text-xl text-primary-foreground/90 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
             Join thousands of students who are already achieving better grades with CourseFlow
           </p>
-          <Button size="lg" className="bg-white text-[#FA8072] hover:bg-gray-100 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg" asChild>
+          <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg" asChild>
             <Link href="/register">
               Start Your Free Trial
               <Sparkles className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
@@ -383,7 +383,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 md:py-12 px-4 bg-gray-900 text-white">
+      <footer className="py-8 md:py-12 px-4 bg-muted/50">
         <div className="container mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8">
             <div>
@@ -391,36 +391,36 @@ export default function LandingPage() {
                 <GraduationCap className="h-6 w-6" />
                 <span className="text-xl font-bold">CourseFlow</span>
               </div>
-              <p className="text-gray-400">
+              <p className="text-muted-foreground">
                 Your academic success, simplified.
               </p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#features" className="hover:text-white">Features</a></li>
-                <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
-                <li><a href="#" className="hover:text-white">API</a></li>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><a href="#features" className="hover:text-foreground">Features</a></li>
+                <li><a href="#pricing" className="hover:text-foreground">Pricing</a></li>
+                <li><a href="#" className="hover:text-foreground">API</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">About</a></li>
-                <li><a href="#" className="hover:text-white">Blog</a></li>
-                <li><a href="#" className="hover:text-white">Careers</a></li>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground">About</a></li>
+                <li><a href="#" className="hover:text-foreground">Blog</a></li>
+                <li><a href="#" className="hover:text-foreground">Careers</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Help Center</a></li>
-                <li><a href="#" className="hover:text-white">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground">Help Center</a></li>
+                <li><a href="#" className="hover:text-foreground">Contact Us</a></li>
+                <li><a href="#" className="hover:text-foreground">Privacy Policy</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
+          <div className="border-t border-border pt-8 text-center text-muted-foreground">
             <p>&copy; 2024 CourseFlow. All rights reserved.</p>
           </div>
         </div>

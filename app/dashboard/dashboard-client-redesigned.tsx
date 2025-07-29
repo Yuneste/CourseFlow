@@ -279,15 +279,6 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       badge: activeCourses > 0 ? `${activeCourses}` : undefined
     },
     {
-      title: 'File Manager',
-      description: 'Upload, organize, and access all your study materials in one place',
-      icon: FileText,
-      href: '/files',
-      color: 'bg-accent/50',
-      available: true,
-      badge: totalFiles > 0 ? `${totalFiles}` : undefined
-    },
-    {
       title: 'AI Study Assistant',
       description: 'Get personalized help with coursework and study recommendations',
       icon: Brain,
@@ -299,9 +290,9 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       title: 'Analytics Dashboard',
       description: 'Track your academic performance with detailed insights and trends',
       icon: BarChart3,
-      href: '/analytics',
+      href: '/dashboard/analytics',
       color: 'bg-warning/10',
-      available: false
+      available: true
     },
     {
       title: 'Study Groups',
