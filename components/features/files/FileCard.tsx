@@ -199,13 +199,6 @@ export function FileCard({ file, onDelete, onDownload, onPreview }: FileCardProp
           <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
             <Calendar className="h-3 w-3" />
             <span>{formatDate(file.created_at)}</span>
-            {file.page_count && (
-              <>
-                <span>•</span>
-                <FileText className="h-3 w-3" />
-                <span>{file.page_count} pages</span>
-              </>
-            )}
           </div>
 
           {/* Hover Effect */}
