@@ -30,21 +30,21 @@ interface DashboardClientProps {
 }
 
 // Compact stats card
-const StatsCard = ({ title, value, icon: Icon, delay }: any) => (
+const StatsCard = ({ title, value, icon: Icon, delay, color }: any) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.5 }}
     className="relative"
   >
-    <Card className="p-4 border-0 !bg-white dark:!bg-white shadow-md hover:shadow-lg transition-shadow">
+    <Card className="p-4 border-0 !bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-shadow">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-[#FFE4E1] rounded-lg">
-          <Icon className="h-5 w-5 text-[#FA8072]" />
+        <div className={`p-2 rounded-lg ${color}`}>
+          <Icon className="h-5 w-5 text-[#1a1a1a]" />
         </div>
         <div>
-          <p className="text-xs text-gray-600 dark:text-gray-600">{title}</p>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-900">
+          <p className="text-xs text-[#C7C7AD]">{title}</p>
+          <h3 className="text-xl font-bold text-[#1a1a1a]">
             {value}
           </h3>
         </div>
@@ -76,10 +76,10 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
       <Card 
         className={cn(
           "relative overflow-hidden cursor-pointer h-full",
-          "transition-all duration-300",
+          "transition-all duration-300 border-[#C7C7AD]/20",
           available 
-            ? "hover:shadow-xl hover:border-[#FA8072] bg-white" 
-            : "opacity-60 cursor-not-allowed bg-gray-50"
+            ? "hover:shadow-xl hover:border-[#C7C7AD] bg-white/90 backdrop-blur-sm" 
+            : "opacity-60 cursor-not-allowed bg-white/50 backdrop-blur-sm"
         )}
         onClick={() => available && router.push(href)}
       >
@@ -88,18 +88,18 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
             "w-14 h-14 rounded-lg flex items-center justify-center mb-4",
             color
           )}>
-            <Icon className="h-7 w-7 text-white" />
+            <Icon className="h-7 w-7 text-[#1a1a1a]" />
           </div>
-          <h3 className="text-xl font-semibold mb-2 text-gray-900">{title}</h3>
-          <p className="text-gray-600 mb-4">{description}</p>
-          <div className="flex items-center text-[#FA8072] font-medium">
+          <h3 className="text-xl font-semibold mb-2 text-[#1a1a1a]">{title}</h3>
+          <p className="text-[#C7C7AD] mb-4">{description}</p>
+          <div className="flex items-center text-[#1a1a1a] font-medium">
             <span>{available ? 'Access Now' : 'Coming Soon'}</span>
             <ChevronRight className="h-5 w-5 ml-1" />
           </div>
         </div>
         {!available && (
-          <div className="absolute inset-0 bg-gray-900/5 flex items-center justify-center">
-            <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-sm font-medium">
+          <div className="absolute inset-0 bg-[#1a1a1a]/5 flex items-center justify-center">
+            <span className="bg-[#1a1a1a] text-white px-3 py-1 rounded-full text-sm font-medium">
               Coming Soon
             </span>
           </div>
@@ -129,10 +129,10 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
       animate={{ opacity: 1, y: 0 }}
       className="mb-8 text-center"
     >
-      <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gray-900">
-        Welcome back, <span className="text-[#FA8072]">{userName}!</span>
+      <h1 className="text-4xl md:text-5xl font-bold mb-3 text-[#1a1a1a]">
+        Welcome back, <span className="bg-gradient-to-r from-[#F0C4C0] to-[#C4C0F0] bg-clip-text text-transparent">{userName}!</span>
       </h1>
-      <p className="text-lg text-gray-600">{greeting}</p>
+      <p className="text-lg text-[#C7C7AD]">{greeting}</p>
     </motion.div>
   );
 };
@@ -166,7 +166,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       description: `Manage your ${activeCourses} active courses and track progress`,
       icon: BookOpen,
       href: '/courses',
-      color: 'bg-[#FA8072]',
+      color: 'bg-[#F0C4C0]',
       available: true
     },
     {
@@ -174,7 +174,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       description: 'Plan study sessions and manage your time effectively',
       icon: Calendar,
       href: '/planner',
-      color: 'bg-blue-500',
+      color: 'bg-[#ECF0C0]',
       available: false
     },
     {
@@ -182,7 +182,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       description: 'Get personalized help with your coursework',
       icon: Brain,
       href: '/ai-assistant',
-      color: 'bg-purple-500',
+      color: 'bg-[#C0ECF0]',
       available: false
     },
     {
@@ -190,7 +190,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       description: 'Track your academic performance and progress',
       icon: BarChart3,
       href: '/analytics',
-      color: 'bg-green-500',
+      color: 'bg-[#C4C0F0]',
       available: false
     },
     {
@@ -198,7 +198,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       description: 'Collaborate with classmates and share resources',
       icon: Users,
       href: '/groups',
-      color: 'bg-indigo-500',
+      color: 'bg-[#F0C4C0]',
       available: false
     },
     {
@@ -206,7 +206,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
       description: 'Monitor time spent on each course',
       icon: Clock,
       href: '/time-tracker',
-      color: 'bg-orange-500',
+      color: 'bg-[#ECF0C0]',
       available: false
     }
   ];
@@ -222,50 +222,34 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         transition={{ delay: 0.2 }}
         className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto"
       >
-        <Card className="p-4 bg-white border-0 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-[#FFE4E1] rounded-lg">
-              <BookOpen className="h-5 w-5 text-[#FA8072]" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-600">Active</p>
-              <p className="text-lg font-bold text-gray-900">{activeCourses}</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4 bg-white border-0 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Target className="h-5 w-5 text-green-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-600">Completed</p>
-              <p className="text-lg font-bold text-gray-900">{completedCourses}</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4 bg-white border-0 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Calendar className="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-600">Term</p>
-              <p className="text-lg font-bold text-gray-900">{systemInfo.currentTerm}</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4 bg-white border-0 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Award className="h-5 w-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-600">GPA</p>
-              <p className="text-lg font-bold text-gray-900">--</p>
-            </div>
-          </div>
-        </Card>
+        <StatsCard
+          title="Active"
+          value={activeCourses}
+          icon={BookOpen}
+          color="bg-[#F0C4C0]"
+          delay={0.2}
+        />
+        <StatsCard
+          title="Completed"
+          value={completedCourses}
+          icon={Target}
+          color="bg-[#ECF0C0]"
+          delay={0.3}
+        />
+        <StatsCard
+          title="Term"
+          value={systemInfo.currentTerm}
+          icon={Calendar}
+          color="bg-[#C0ECF0]"
+          delay={0.4}
+        />
+        <StatsCard
+          title="GPA"
+          value="--"
+          icon={Award}
+          color="bg-[#C4C0F0]"
+          delay={0.5}
+        />
       </motion.div>
 
       {/* Features Grid */}
@@ -274,7 +258,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">
+        <h2 className="text-2xl font-bold mb-6 text-center text-[#1a1a1a]">
           What would you like to do today?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
@@ -295,10 +279,10 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
         transition={{ delay: 1 }}
         className="mt-12 text-center"
       >
-        <Card className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF5F5] border-[#FA8072] border">
-          <Sparkles className="h-4 w-4 text-[#FA8072]" />
-          <span className="text-sm text-gray-700">
-            <span className="font-medium">Pro tip:</span> Start by adding your courses to unlock all features
+        <Card className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border-[#C7C7AD]/30">
+          <Sparkles className="h-4 w-4 text-[#1a1a1a]" />
+          <span className="text-sm text-[#C7C7AD]">
+            <span className="font-medium text-[#1a1a1a]">Pro tip:</span> Start by adding your courses to unlock all features
           </span>
         </Card>
       </motion.div>
