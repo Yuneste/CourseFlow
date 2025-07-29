@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { DashboardClient } from './dashboard-client-v3'
+import { DashboardClient } from './dashboard-client-redesigned'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -31,7 +31,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#ECF0C0]">
+    <div className="min-h-screen bg-background">
       <DashboardClient 
         initialCourses={courses || []} 
         userProfile={profile}

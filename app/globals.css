@@ -4,50 +4,62 @@
 
 @layer base {
   :root {
-    /* Light mode - Beautiful salmon/coral theme (keeping original for landing) */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 13%; /* Dark gray for better contrast */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    /* CourseFlow Design System - Light Mode */
+    --background: 0 0% 99%; /* #FEFEFE - Clean white background */
+    --foreground: 220 13% 18%; /* #1F2937 - Dark gray for optimal contrast */
+    --card: 0 0% 100%; /* #FFFFFF - Pure white cards */
+    --card-foreground: 220 13% 18%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
-    --primary: 8 94% 72%; /* #FA8072 - Salmon */
+    --popover-foreground: 220 13% 18%;
+    --primary: 8 94% 72%; /* #FA8072 - Salmon (brand primary) */
     --primary-foreground: 0 0% 100%;
-    --secondary: 8 100% 97%; /* #FFF5F5 - Light salmon */
-    --secondary-foreground: 0 0% 13%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 38%; /* Better contrast for muted text */
-    --accent: 8 100% 94%; /* #FFE4E1 - Light coral */
-    --accent-foreground: 0 0% 13%;
-    --destructive: 0 84% 60%;
+    --secondary: 8 100% 97%; /* #FFF5F5 - Light salmon for backgrounds */
+    --secondary-foreground: 220 13% 18%;
+    --muted: 220 14% 96%; /* #F9FAFB - Subtle gray background */
+    --muted-foreground: 220 9% 46%; /* #6B7280 - Medium contrast gray */
+    --accent: 8 100% 94%; /* #FFE4E1 - Light coral accent */
+    --accent-foreground: 220 13% 18%;
+    --destructive: 0 84% 60%; /* #EF4444 - Error red */
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
-    --ring: 8 94% 72%;
+    --border: 220 13% 91%; /* #E5E7EB - Light border */
+    --input: 220 13% 91%;
+    --ring: 8 94% 72%; /* Match primary */
     --radius: 0.75rem;
+    
+    /* Success and Warning colors */
+    --success: 142 76% 36%; /* #10B981 - Success green */
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%; /* #F59E0B - Warning amber */
+    --warning-foreground: 0 0% 100%;
   }
 
   .dark {
-    /* Dark mode - High contrast with warm tones */
-    --background: 0 0% 7%; /* Very dark but not pure black */
-    --foreground: 0 0% 95%; /* Off-white for softer contrast */
-    --card: 0 0% 10%; /* Slightly lighter than background */
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 8 94% 72%; /* Keep salmon color */
-    --primary-foreground: 0 0% 13%;
-    --secondary: 0 0% 15%; /* Dark gray with slight warmth */
-    --secondary-foreground: 0 0% 95%;
-    --muted: 0 0% 20%;
-    --muted-foreground: 0 0% 65%; /* Better contrast for dark mode */
-    --accent: 8 30% 25%; /* Dark coral accent */
-    --accent-foreground: 0 0% 95%;
-    --destructive: 0 62% 50%;
+    /* CourseFlow Design System - Dark Mode */
+    --background: 220 27% 8%; /* #0F172A - Rich dark blue-gray */
+    --foreground: 220 13% 91%; /* #F1F5F9 - Light gray text */
+    --card: 220 27% 12%; /* #1E293B - Elevated dark surface */
+    --card-foreground: 220 13% 91%;
+    --popover: 220 27% 12%;
+    --popover-foreground: 220 13% 91%;
+    --primary: 8 94% 72%; /* #FA8072 - Keep salmon brand color */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 27% 18%; /* #334155 - Medium dark gray */
+    --secondary-foreground: 220 13% 91%;
+    --muted: 220 27% 15%; /* #1E2532 - Subtle dark background */
+    --muted-foreground: 220 9% 56%; /* #94A3B8 - Medium contrast */
+    --accent: 8 30% 25%; /* #523A37 - Dark coral accent */
+    --accent-foreground: 220 13% 91%;
+    --destructive: 0 62% 50%; /* #DC2626 - Error red for dark */
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 8 94% 72%;
+    --border: 220 27% 18%; /* #334155 - Border color */
+    --input: 220 27% 18%;
+    --ring: 8 94% 72%; /* Match primary */
+    
+    /* Success and Warning for dark mode */
+    --success: 142 76% 36%; /* #10B981 - Success green */
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%; /* #F59E0B - Warning amber */
+    --warning-foreground: 0 0% 100%;
   }
   
   /* Academic theme for dashboard/app pages */
