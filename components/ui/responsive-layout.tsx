@@ -77,7 +77,7 @@ export const TwoColumnLayout = forwardRef<
 TwoColumnLayout.displayName = 'TwoColumnLayout'
 
 // Sidebar layout for dashboard-style pages
-interface SidebarLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SidebarLayoutProps {
   sidebar: React.ReactNode
   content: React.ReactNode
   sidebarClassName?: string
@@ -86,6 +86,7 @@ interface SidebarLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
   sidebarWidth?: 'narrow' | 'default' | 'wide'
   collapsible?: boolean
   defaultCollapsed?: boolean
+  className?: string
 }
 
 export const SidebarLayout = forwardRef<
@@ -101,7 +102,6 @@ export const SidebarLayout = forwardRef<
   sidebarWidth = 'default',
   collapsible = false,
   defaultCollapsed = false,
-  ...props 
 }, ref) => {
   const widthClasses = {
     narrow: 'w-48',
@@ -113,7 +113,6 @@ export const SidebarLayout = forwardRef<
     <div
       ref={ref}
       className={cn('flex min-h-screen', className)}
-      {...props}
     >
       {sidebarPosition === 'left' && (
         <>
