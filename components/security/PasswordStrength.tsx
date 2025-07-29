@@ -37,7 +37,15 @@ export function PasswordStrengthMeter({
   const [strength, setStrength] = useState(0);
 
   useEffect(() => {
-    const updatedRequirements = requirements.map(req => ({
+    const initialRequirements = [
+      { label: 'At least 8 characters', regex: /.{8,}/, met: false },
+      { label: 'Contains uppercase letter', regex: /[A-Z]/, met: false },
+      { label: 'Contains lowercase letter', regex: /[a-z]/, met: false },
+      { label: 'Contains a number', regex: /[0-9]/, met: false },
+      { label: 'Contains special character', regex: /[^A-Za-z0-9]/, met: false }
+    ];
+    
+    const updatedRequirements = initialRequirements.map(req => ({
       ...req,
       met: req.regex.test(password)
     }));
@@ -45,11 +53,11 @@ export function PasswordStrengthMeter({
     setRequirements(updatedRequirements);
     
     const metCount = updatedRequirements.filter(req => req.met).length;
-    const calculatedStrength = (metCount / requirements.length) * 100;
+    const calculatedStrength = (metCount / initialRequirements.length) * 100;
     setStrength(calculatedStrength);
     
     onStrengthChange?.(calculatedStrength);
-  }, [password, requirements.length, onStrengthChange]);
+  }, [password, onStrengthChange]);
 
   const getStrengthLabel = () => {
     if (strength === 0) return 'Too weak';

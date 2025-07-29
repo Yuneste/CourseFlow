@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 interface WebVitalsData {
   FCP?: number; // First Contentful Paint
   LCP?: number; // Largest Contentful Paint
-  FID?: number; // First Input Delay
+  INP?: number; // Interaction to Next Paint (replaced FID)
   CLS?: number; // Cumulative Layout Shift
   TTFB?: number; // Time to First Byte
 }
@@ -19,10 +19,10 @@ export function useWebVitals() {
     if (typeof window === 'undefined') return;
 
     // Dynamically import web-vitals
-    import('web-vitals').then(({ onFCP, onLCP, onFID, onCLS, onTTFB }) => {
+    import('web-vitals').then(({ onFCP, onLCP, onINP, onCLS, onTTFB }) => {
       onFCP((metric) => setVitals(prev => ({ ...prev, FCP: metric.value })));
       onLCP((metric) => setVitals(prev => ({ ...prev, LCP: metric.value })));
-      onFID((metric) => setVitals(prev => ({ ...prev, FID: metric.value })));
+      onINP((metric) => setVitals(prev => ({ ...prev, INP: metric.value })));
       onCLS((metric) => setVitals(prev => ({ ...prev, CLS: metric.value })));
       onTTFB((metric) => setVitals(prev => ({ ...prev, TTFB: metric.value })));
     });
