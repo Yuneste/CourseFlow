@@ -43,7 +43,7 @@ const StatsCard = ({ title, value, icon: Icon, delay, color }: any) => (
           <Icon className="h-5 w-5 text-[#1a1a1a]" />
         </div>
         <div>
-          <p className="text-xs text-[#C7C7AD]">{title}</p>
+          <p className="text-xs text-[#1a1a1a]/60 font-medium">{title}</p>
           <h3 className="text-sm font-bold text-[#1a1a1a] break-words">
             {value}
           </h3>
@@ -81,7 +81,15 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
             ? "hover:shadow-2xl hover:border-[#C7C7AD] bg-white/80 backdrop-blur-sm shadow-xl" 
             : "opacity-60 cursor-not-allowed bg-white/60 backdrop-blur-sm shadow-lg"
         )}
-        onClick={() => available && router.push(href)}
+        onClick={() => {
+          if (available) {
+            if (href.startsWith('http')) {
+              window.open(href, '_blank')
+            } else {
+              router.push(href)
+            }
+          }
+        }}
       >
         <div className="p-6">
           <div className={cn(
@@ -91,7 +99,7 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
             <Icon className="h-7 w-7 text-[#1a1a1a]" />
           </div>
           <h3 className="text-xl font-semibold mb-2 text-[#1a1a1a]">{title}</h3>
-          <p className="text-[#C7C7AD] mb-4">{description}</p>
+          <p className="text-[#1a1a1a]/70 mb-4">{description}</p>
           <div className="flex items-center text-[#1a1a1a] font-medium">
             <span>{available ? 'Access Now' : 'Coming Soon'}</span>
             <ChevronRight className="h-5 w-5 ml-1" />
@@ -144,7 +152,7 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
           {firstName}!
         </span>
       </h1>
-      <p className="text-lg text-[#C7C7AD]">{greeting}</p>
+      <p className="text-lg text-[#1a1a1a]/70 font-medium">{greeting}</p>
     </motion.div>
   );
 };

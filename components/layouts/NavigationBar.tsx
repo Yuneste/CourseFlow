@@ -30,6 +30,7 @@ import {
   BookOpen,
   BarChart3,
   MessageSquare,
+  Award,
 } from 'lucide-react'
 
 interface NavigationBarProps {
@@ -44,10 +45,10 @@ interface NavigationBarProps {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
-  { name: 'My Files', href: '/dashboard/files', icon: FolderOpen },
-  { name: 'Courses', href: '/dashboard/courses', icon: BookOpen },
-  { name: 'Study Groups', href: '/dashboard/groups', icon: Users },
+  { name: 'Courses', href: '/courses', icon: BookOpen },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+  { name: 'Achievements', href: '/dashboard/achievements', icon: Award },
+  { name: 'Search', href: '/dashboard/search', icon: MessageSquare },
 ]
 
 export function NavigationBar({ user, className }: NavigationBarProps) {
@@ -142,27 +143,21 @@ export function NavigationBar({ user, className }: NavigationBarProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/profile" className="cursor-pointer">
+                  <Link href="/settings/profile" className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/billing" className="cursor-pointer">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    <span>Billing</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard/settings" className="cursor-pointer">
+                  <Link href="/settings" className="cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/support" className="cursor-pointer">
+                  <Link href="/help" className="cursor-pointer">
                     <HelpCircle className="mr-2 h-4 w-4" />
-                    <span>Support</span>
+                    <span>Help</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -217,7 +212,7 @@ export function NavigationBar({ user, className }: NavigationBarProps) {
                     <h2 className="mb-2 px-4 text-lg font-semibold">Account</h2>
                     <div className="space-y-1">
                       <Link
-                        href="/dashboard/profile"
+                        href="/settings/profile"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                       >
@@ -225,15 +220,7 @@ export function NavigationBar({ user, className }: NavigationBarProps) {
                         <span>Profile</span>
                       </Link>
                       <Link
-                        href="/dashboard/billing"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                      >
-                        <CreditCard className="h-4 w-4" />
-                        <span>Billing</span>
-                      </Link>
-                      <Link
-                        href="/dashboard/settings"
+                        href="/settings"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                       >
@@ -241,12 +228,12 @@ export function NavigationBar({ user, className }: NavigationBarProps) {
                         <span>Settings</span>
                       </Link>
                       <Link
-                        href="/support"
+                        href="/help"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                       >
                         <HelpCircle className="h-4 w-4" />
-                        <span>Support</span>
+                        <span>Help</span>
                       </Link>
                       <button
                         onClick={() => setIsMobileMenuOpen(false)}

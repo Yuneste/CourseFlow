@@ -91,15 +91,15 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 shadow-xl">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-900">Check your email</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Check your email</CardTitle>
+          <CardDescription className="text-[#1a1a1a]/70">
             We&apos;ve sent you a verification link to {email}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-[#C7C7AD]">
+          <p className="text-sm text-[#1a1a1a]/60">
             Please check your email and click the verification link to complete your registration.
           </p>
         </CardContent>
@@ -113,10 +113,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-white/95 border-[#C7C7AD]/20">
+    <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 shadow-xl">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Create an account</CardTitle>
-        <CardDescription className="text-[#C7C7AD]">
+        <CardDescription className="text-[#1a1a1a]/70">
           Enter your details below to create your account
         </CardDescription>
       </CardHeader>
@@ -125,7 +125,7 @@ export default function RegisterPage() {
           variant="outline"
           onClick={() => handleOAuthSignUp('google')}
           disabled={loading}
-          className="w-full border-[#C7C7AD]/30 hover:bg-[#F0C4C0]/10"
+          className="w-full border-[#C7C7AD]/40 hover:bg-[#F0C4C0]/20 hover:border-[#F0C4C0] transition-all bg-white/80"
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -153,7 +153,7 @@ export default function RegisterPage() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-[#C7C7AD]">
+            <span className="bg-white/90 px-2 text-[#1a1a1a]/60">
               Or continue with
             </span>
           </div>

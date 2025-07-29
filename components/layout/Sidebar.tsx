@@ -64,21 +64,9 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
     },
     {
       title: 'My Courses',
-      href: '/dashboard',
+      href: '/courses',
       icon: BookOpen,
       description: 'View all courses'
-    },
-    {
-      title: 'Upload Files',
-      href: '/dashboard?tab=upload',
-      icon: Upload,
-      description: 'Add new materials'
-    },
-    {
-      title: 'Files',
-      href: '/dashboard?tab=files',
-      icon: FolderOpen,
-      description: 'Browse all files'
     },
     {
       title: 'Analytics',

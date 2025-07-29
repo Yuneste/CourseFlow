@@ -28,7 +28,7 @@ export function useEnhancedAnalytics() {
       trackPageView(pathname)
       previousPathname.current = pathname
     }
-  }, [pathname])
+  }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Core tracking function
   const track = useCallback((event: AnalyticsEvent) => {

@@ -7,11 +7,13 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#ECF0C0]">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#ECF0C0] via-[#F0C4C0]/20 to-[#ECF0C0]">
       {/* Header */}
-      <div className="p-4">
-        <Link href="/" className="flex items-center gap-2 w-fit">
-          <GraduationCap className="h-8 w-8 text-[#1a1a1a]" />
+      <div className="p-6">
+        <Link href="/" className="flex items-center gap-3 w-fit group">
+          <div className="p-2 bg-white/80 backdrop-blur-sm rounded-lg group-hover:scale-110 transition-transform">
+            <GraduationCap className="h-8 w-8 text-[#1a1a1a]" />
+          </div>
           <span className="text-2xl font-bold text-[#1a1a1a]">
             CourseFlow
           </span>
@@ -20,8 +22,17 @@ export default function AuthLayout({
       
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          {children}
+        <div className="max-w-md w-full">
+          {/* Decorative elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#F0C4C0]/20 rounded-full blur-3xl" />
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#C7C7AD]/20 rounded-full blur-3xl" />
+          </div>
+          
+          {/* Content */}
+          <div className="relative z-10">
+            {children}
+          </div>
         </div>
       </div>
     </div>

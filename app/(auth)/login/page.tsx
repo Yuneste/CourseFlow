@@ -57,11 +57,11 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-white/95 border-[#C7C7AD]/20">
+    <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 shadow-xl">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Sign in</CardTitle>
-        <CardDescription className="text-[#C7C7AD]">
-          Choose your preferred sign in method
+        <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Welcome back</CardTitle>
+        <CardDescription className="text-[#1a1a1a]/70">
+          Sign in to continue to CourseFlow
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -69,7 +69,7 @@ export default function LoginPage() {
           variant="outline"
           onClick={() => handleOAuthLogin('google')}
           disabled={loading}
-          className="w-full border-[#C7C7AD]/30 hover:bg-[#F0C4C0]/10"
+          className="w-full border-[#C7C7AD]/40 hover:bg-[#F0C4C0]/20 hover:border-[#F0C4C0] transition-all bg-white/80"
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -97,7 +97,7 @@ export default function LoginPage() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-[#C7C7AD]">
+            <span className="bg-white/90 px-2 text-[#1a1a1a]/60">
               Or continue with
             </span>
           </div>
