@@ -19,13 +19,14 @@ export function Announcement({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (ref.current && message) {
-      ref.current.textContent = message;
+    const element = ref.current;
+    if (element && message) {
+      element.textContent = message;
     }
 
     return () => {
-      if (clearOnUnmount && ref.current) {
-        ref.current.textContent = '';
+      if (clearOnUnmount && element) {
+        element.textContent = '';
       }
     };
   }, [message, clearOnUnmount]);

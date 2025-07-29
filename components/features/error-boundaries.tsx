@@ -27,7 +27,7 @@ export function FeatureErrorBoundary({
             {featureName} is temporarily unavailable
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            We're having trouble loading this feature. Please try again.
+            We&apos;re having trouble loading this feature. Please try again.
           </p>
           {onRetry && (
             <Button onClick={onRetry} size="sm" variant="outline">

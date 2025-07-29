@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, forwardRef } from 'react';
+import React, { ReactNode, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 interface AccessibleWrapperProps {
@@ -21,7 +21,7 @@ interface AccessibleWrapperProps {
   interactive?: boolean;
 }
 
-export const AccessibleWrapper = forwardRef<HTMLElement, AccessibleWrapperProps>(
+export const AccessibleWrapper = forwardRef<any, AccessibleWrapperProps>(
   function AccessibleWrapper({
     children,
     as: Component = 'div',
@@ -68,10 +68,10 @@ export const AccessibleWrapper = forwardRef<HTMLElement, AccessibleWrapperProps>
       ...props
     };
 
-    return (
-      <Component {...componentProps}>
-        {children}
-      </Component>
+    return React.createElement(
+      Component,
+      componentProps,
+      children
     );
   }
 );
