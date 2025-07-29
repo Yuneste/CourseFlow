@@ -227,7 +227,7 @@ const WelcomeHeader = ({ userName }: { userName: string }) => {
   );
 };
 
-// Quick search bar
+// Quick search bar (temporarily disabled)
 const QuickSearch = () => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
@@ -236,11 +236,12 @@ const QuickSearch = () => (
     className="mb-8"
   >
     <div className="relative max-w-md mx-auto">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
       <input
         type="text"
-        placeholder="Search courses, files, or features..."
-        className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+        placeholder="Search functionality coming soon..."
+        className="w-full pl-10 pr-4 py-3 bg-card/50 border border-border rounded-lg cursor-not-allowed opacity-60 transition-colors"
+        disabled
       />
     </div>
   </motion.div>

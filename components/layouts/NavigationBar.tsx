@@ -106,15 +106,17 @@ export function NavigationBar({ user, className }: NavigationBarProps) {
           {/* Right side items */}
           <div className="flex items-center space-x-4 ml-auto">
             {/* Notifications */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-              aria-label="View notifications"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-600" />
-            </Button>
+            <Link href="/dashboard/notifications">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative"
+                aria-label="View notifications"
+              >
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-600" />
+              </Button>
+            </Link>
 
             {/* Theme Toggle */}
             <ThemeToggle />

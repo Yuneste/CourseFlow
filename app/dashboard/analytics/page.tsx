@@ -17,7 +17,7 @@ export default function AnalyticsPage() {
             Analytics Coming Soon
           </h1>
           <p className="text-muted-foreground mb-6">
-            We're working on powerful analytics tools to help you track your academic progress, 
+            We&apos;re working on powerful analytics tools to help you track your academic progress, 
             study habits, and performance insights.
           </p>
           <Link href="/dashboard">

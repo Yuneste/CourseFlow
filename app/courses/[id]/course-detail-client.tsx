@@ -64,15 +64,6 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   const [uploadingFiles, setUploadingFiles] = useState(false);
   const [reorderMode, setReorderMode] = useState(false);
 
-  // Auto-hide upload when files finish uploading
-  useEffect(() => {
-    if (!uploadingFiles && showUpload) {
-      const timer = setTimeout(() => {
-        setShowUpload(false);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [uploadingFiles, showUpload]);
 
   // Build folder tree structure
   const buildFolderTree = (): FolderNode[] => {

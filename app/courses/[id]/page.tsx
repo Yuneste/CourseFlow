@@ -30,6 +30,11 @@ export default async function CoursePage({ params }: { params: { id: string } })
     .eq('course_id', params.id)
     .order('display_order');
 
+  // Remove any duplicate folders (in case of data issues)
+  const uniqueFolders = folders ? Array.from(
+    new Map(folders.map(folder => [folder.name, folder])).values()
+  ) : [];
+
   // Fetch files for this course
   const { data: files = [] } = await supabase
     .from('files')
@@ -37,5 +42,5 @@ export default async function CoursePage({ params }: { params: { id: string } })
     .eq('course_id', params.id)
     .order('created_at', { ascending: false });
 
-  return <CourseDetailClient course={course} folders={folders || []} files={files || []} />;
+  return <CourseDetailClient course={course} folders={uniqueFolders} files={files || []} />;
 }

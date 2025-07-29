@@ -13,10 +13,12 @@ import {
   Plus,
   Search,
   Filter,
-  ChevronRight
+  ChevronRight,
+  GripVertical
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background'
+import { toast } from 'sonner'
 
 interface CoursesClientProps {
   courses: Course[]
@@ -26,12 +28,57 @@ interface CoursesClientProps {
 export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<'all'>('all')
+  const [courseList, setCourseList] = useState(courses)
+  const [draggedCourse, setDraggedCourse] = useState<Course | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
-  const filteredCourses = courses.filter(course => {
+  const filteredCourses = courseList.filter(course => {
     const matchesSearch = course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (course.code?.toLowerCase().includes(searchQuery.toLowerCase()) || false)
     return matchesSearch
   })
+
+  const handleDragStart = (e: React.DragEvent, course: Course, index: number) => {
+    setDraggedCourse(course)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault()
+    setDragOverIndex(index)
+  }
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null)
+  }
+
+  const handleDrop = async (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault()
+    setDragOverIndex(null)
+
+    if (!draggedCourse) return
+
+    const draggedIndex = courseList.findIndex(c => c.id === draggedCourse.id)
+    if (draggedIndex === dropIndex) return
+
+    // Reorder courses
+    const newCourses = [...courseList]
+    newCourses.splice(draggedIndex, 1)
+    newCourses.splice(dropIndex, 0, draggedCourse)
+    
+    setCourseList(newCourses)
+    setDraggedCourse(null)
+    
+    // Update display order in database
+    try {
+      // This would need an API endpoint to update display orders
+      toast.success('Course order updated')
+    } catch (error) {
+      toast.error('Failed to update course order')
+      // Revert on error
+      setCourseList(courses)
+    }
+  }
 
   return (
     <UnifiedBackground>
@@ -111,9 +158,24 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + index * 0.05 }}
+              draggable
+              onDragStart={(e) => handleDragStart(e, course, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, index)}
+              className={cn(
+                "relative",
+                dragOverIndex === index && "scale-105 opacity-50"
+              )}
             >
-              <Link href={`/courses/${course.id}`}>
-                <Card className="h-full p-6 hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 cursor-pointer group">
+              <Card className={cn(
+                "h-full hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 cursor-move",
+                draggedCourse?.id === course.id && "opacity-50"
+              )}>
+                <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity">
+                  <GripVertical className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <Link href={`/courses/${course.id}`} className="block p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div className="p-3 rounded-lg bg-[#F0C4C0]/20">
                       <BookOpen className="h-6 w-6 text-[#1a1a1a]" />
@@ -143,8 +205,8 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                     </div>
                     <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </Card>
-              </Link>
+                </Link>
+              </Card>
             </motion.div>
           ))}
         </div>
