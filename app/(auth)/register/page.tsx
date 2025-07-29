@@ -109,20 +109,20 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 shadow-xl">
+      <Card className="w-full max-w-md bg-card/95 backdrop-blur-sm border-border shadow-xl">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Check your email</CardTitle>
-          <CardDescription className="text-[#1a1a1a]/70">
+          <CardTitle className="text-2xl font-bold text-foreground">Check your email</CardTitle>
+          <CardDescription className="text-muted-foreground">
             We&apos;ve sent you a verification link to {email}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-[#1a1a1a]/60">
+          <p className="text-sm text-muted-foreground">
             Please check your email and click the verification link to complete your registration.
           </p>
         </CardContent>
         <CardFooter>
-          <Link href="/login" className="text-sm text-[#1a1a1a] hover:underline font-medium">
+          <Link href="/login" className="text-sm text-primary hover:underline font-medium">
             Back to sign in
           </Link>
         </CardFooter>
@@ -131,10 +131,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 shadow-xl">
+    <Card className="w-full max-w-md bg-card/95 backdrop-blur-sm border-border shadow-xl">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Create an account</CardTitle>
-        <CardDescription className="text-[#1a1a1a]/70">
+        <CardTitle className="text-2xl font-bold text-foreground">Create an account</CardTitle>
+        <CardDescription className="text-muted-foreground">
           Enter your details below to create your account
         </CardDescription>
       </CardHeader>
@@ -143,7 +143,7 @@ export default function RegisterPage() {
           variant="outline"
           onClick={() => handleOAuthSignUp('google')}
           disabled={loading}
-          className="w-full border-[#C7C7AD]/40 hover:bg-[#F0C4C0]/20 hover:border-[#F0C4C0] transition-all bg-white/80"
+          className="w-full"
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -171,7 +171,7 @@ export default function RegisterPage() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white/90 px-2 text-[#1a1a1a]/60">
+            <span className="bg-card px-2 text-muted-foreground">
               Or continue with
             </span>
           </div>
@@ -179,7 +179,7 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSignUp} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-[#1a1a1a]">Full Name</Label>
+            <Label htmlFor="fullName">Full Name</Label>
             <Input
               id="fullName"
               type="text"
@@ -191,7 +191,7 @@ export default function RegisterPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-[#1a1a1a]">Email</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
@@ -203,7 +203,7 @@ export default function RegisterPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-[#1a1a1a]">Password</Label>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               type="password"
@@ -212,12 +212,12 @@ export default function RegisterPage() {
               required
               disabled={loading}
             />
-            <p className="text-xs text-[#1a1a1a]/60 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               At least 8 characters with uppercase, lowercase, and numbers
             </p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-[#1a1a1a]">Confirm Password</Label>
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -234,7 +234,7 @@ export default function RegisterPage() {
             </div>
           )}
           
-          <Button type="submit" className="w-full bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]" disabled={loading}>
+          <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
             {loading ? (
               <>
                 <LoadingSpinner size="sm" className="mr-2" />
@@ -247,9 +247,9 @@ export default function RegisterPage() {
         </form>
       </CardContent>
       <CardFooter>
-        <div className="text-sm text-[#C7C7AD]">
+        <div className="text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link href="/login" className="text-[#1a1a1a] hover:underline font-medium">
+          <Link href="/login" className="text-primary hover:underline font-medium">
             Sign in
           </Link>
         </div>
