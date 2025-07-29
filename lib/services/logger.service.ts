@@ -63,6 +63,19 @@ class Logger {
     this.log('warn', message, context);
   }
 
+  /**
+   * Log error messages with optional error object and context
+   * 
+   * @param message - Human-readable error description
+   * @param error - Optional Error object or unknown error value
+   * @param context - Optional context including userId, action, and metadata
+   * 
+   * @example
+   * logger.error('Failed to upload file', error, {
+   *   action: 'fileUpload',
+   *   metadata: { fileId: '123', size: 1024 }
+   * });
+   */
   error(message: string, error?: Error | unknown, context?: LogContext): void {
     const errorDetails = error instanceof Error ? {
       name: error.name,

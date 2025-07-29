@@ -103,7 +103,22 @@ export class UploadService {
   }
 
   /**
-   * Check for duplicate files
+   * Check for duplicate files based on file hash
+   * 
+   * Performs two-level duplicate checking:
+   * 1. General duplicates across all user files
+   * 2. Course-specific duplicates if courseId is provided
+   * 
+   * @param supabase - Authenticated Supabase client
+   * @param userId - User ID to check duplicates for
+   * @param fileHash - SHA-256 hash of the file content
+   * @param courseId - Optional course ID for course-specific duplicate check
+   * 
+   * @returns Object containing:
+   *   - isDuplicate: boolean indicating if duplicate exists
+   *   - existingFileName?: string name of the duplicate file if found
+   * 
+   * @private
    */
   private static async checkDuplicate(
     supabase: SupabaseClient,
@@ -245,7 +260,36 @@ export class UploadService {
   }
 
   /**
-   * Process single file upload
+   * Process single file upload with comprehensive validation and error handling
+   * 
+   * @param supabase - Authenticated Supabase client instance
+   * @param file - File object to upload
+   * @param userId - ID of the user uploading the file
+   * @param courseId - Optional course ID to associate the file with
+   * @param folderId - Optional folder ID to place the file in
+   * @param userAgent - User agent string for analytics tracking
+   * 
+   * @returns Promise<UploadResult> containing either:
+   *   - Success: { file: FileType, filename: string }
+   *   - Error: { error: string, filename: string }
+   * 
+   * @throws Never - All errors are caught and returned in result object
+   * 
+   * @example
+   * const result = await UploadService.processFile(
+   *   supabase,
+   *   file,
+   *   'user123',
+   *   'course456',
+   *   null,
+   *   'Mozilla/5.0...'
+   * );
+   * 
+   * if (result.error) {
+   *   console.error('Upload failed:', result.error);
+   * } else {
+   *   console.log('File uploaded:', result.file);
+   * }
    */
   static async processFile(
     supabase: SupabaseClient,

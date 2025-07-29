@@ -107,7 +107,19 @@ export function validateFileSize(file: File): FileValidationResult {
 }
 
 /**
- * Validate magic bytes (file signature)
+ * Validate magic bytes (file signature) to ensure file content matches declared type
+ * 
+ * This provides an additional security layer by checking the actual file content
+ * against known file signatures, preventing malicious files with incorrect extensions.
+ * 
+ * @param file - File object to validate
+ * @returns Promise<FileValidationResult> with validation status
+ * 
+ * @example
+ * const result = await validateMagicBytes(file);
+ * if (!result.valid) {
+ *   throw new Error(result.error);
+ * }
  */
 export async function validateMagicBytes(file: File): Promise<FileValidationResult> {
   const buffer = await file.slice(0, 8).arrayBuffer();
@@ -139,7 +151,17 @@ export async function validateMagicBytes(file: File): Promise<FileValidationResu
 }
 
 /**
- * Calculate SHA-256 hash of a file
+ * Calculate SHA-256 hash of a file for deduplication and integrity verification
+ * 
+ * Uses Web Crypto API when available, with fallback for environments without crypto.subtle.
+ * The hash is used to detect duplicate files and ensure file integrity.
+ * 
+ * @param file - File object to hash
+ * @returns Promise<string> - Hexadecimal SHA-256 hash or fallback identifier
+ * 
+ * @example
+ * const hash = await calculateFileHash(file);
+ * // Returns: "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
  */
 export async function calculateFileHash(file: File): Promise<string> {
   try {

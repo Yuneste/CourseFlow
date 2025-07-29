@@ -19,6 +19,39 @@ interface AsyncOperationState<T> {
 /**
  * Custom hook for handling async operations with consistent loading and error states
  * Provides automatic error logging and optional success/error callbacks
+ * 
+ * @template T - The expected return type of the async operation
+ * 
+ * @param operation - Async function to execute
+ * @param options - Configuration options
+ * @param options.onSuccess - Callback executed on successful operation
+ * @param options.onError - Callback executed on operation error
+ * @param options.successMessage - Message to log on success
+ * @param options.errorMessage - Custom error message (defaults to generic)
+ * @param options.throwOnError - Whether to rethrow errors after handling
+ * 
+ * @returns Object containing:
+ *   - data: T | null - Result data when successful
+ *   - loading: boolean - Loading state indicator
+ *   - error: Error | null - Error object if operation failed
+ *   - execute: Function - Trigger the async operation
+ *   - reset: Function - Reset state to initial values
+ *   - isIdle: boolean - True when no operation has been executed
+ *   - isSuccess: boolean - True when operation completed successfully
+ *   - isError: boolean - True when operation failed
+ * 
+ * @example
+ * const { data, loading, error, execute } = useAsyncOperation(
+ *   async (id: string) => fetchUser(id),
+ *   {
+ *     onSuccess: (user) => toast.success('User loaded'),
+ *     onError: (error) => toast.error(error.message),
+ *     errorMessage: 'Failed to load user'
+ *   }
+ * );
+ * 
+ * // Execute the operation
+ * await execute('user123');
  */
 export function useAsyncOperation<T = any>(
   operation: (...args: any[]) => Promise<T>,
