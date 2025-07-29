@@ -38,12 +38,12 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
     return matchesSearch
   })
 
-  const handleDragStart = (e: React.DragEvent, course: Course, index: number) => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, course: Course, index: number) => {
     setDraggedCourse(course)
     e.dataTransfer.effectAllowed = 'move'
   }
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.preventDefault()
     setDragOverIndex(index)
   }
@@ -52,7 +52,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
     setDragOverIndex(null)
   }
 
-  const handleDrop = async (e: React.DragEvent, dropIndex: number) => {
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>, dropIndex: number) => {
     e.preventDefault()
     setDragOverIndex(null)
 
@@ -158,16 +158,18 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + index * 0.05 }}
-              draggable
-              onDragStart={(e) => handleDragStart(e, course, index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDragLeave={handleDragLeave}
-              onDrop={(e) => handleDrop(e, index)}
               className={cn(
                 "relative",
                 dragOverIndex === index && "scale-105 opacity-50"
               )}
             >
+              <div
+                draggable
+                onDragStart={(e) => handleDragStart(e, course, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, index)}
+              >
               <Card className={cn(
                 "h-full hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 cursor-move",
                 draggedCourse?.id === course.id && "opacity-50"
@@ -207,6 +209,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                   </div>
                 </Link>
               </Card>
+              </div>
             </motion.div>
           ))}
         </div>
