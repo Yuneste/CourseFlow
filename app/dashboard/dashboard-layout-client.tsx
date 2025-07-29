@@ -6,8 +6,8 @@ import { Toaster } from 'sonner';
 import { User } from '@/types';
 import { signOut } from '@/app/actions/auth';
 import { cn } from '@/lib/utils';
-import { SearchModal } from '@/components/search/search-modal';
-import { KeyboardShortcutsModal } from '@/components/modals/keyboard-shortcuts-modal';
+import { SearchModal } from '@/components/search/SearchModal';
+import { KeyboardShortcutsModal } from '@/components/modals/KeyboardShortcutsModal';
 import { useGlobalKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 
 interface DashboardLayoutClientProps {

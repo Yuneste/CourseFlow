@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { Toaster } from 'sonner'
-import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { GlobalErrorBoundary } from '@/components/error-boundaries/GlobalErrorBoundary'
 import { SkipLinks } from '@/components/accessibility/SkipLinks'
 import { generateMetadata } from '@/components/seo/metadata'
 
@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ErrorBoundary>
+        <GlobalErrorBoundary>
           <SkipLinks />
           <ThemeProvider
             attribute="class"
@@ -64,7 +64,7 @@ export default function RootLayout({
               }}
             />
           </ThemeProvider>
-        </ErrorBoundary>
+        </GlobalErrorBoundary>
       </body>
     </html>
   )

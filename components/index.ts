@@ -42,33 +42,33 @@ export { PaymentErrorBoundary } from './error-boundaries/PaymentErrorBoundary';
 // Feedback Components
 export { EmptyStates } from './feedback/EmptyStates';
 export { ConfirmationDialog } from './feedback/ConfirmationDialog';
-export { FormValidation } from './feedback/FormValidation';
-export { NetworkStatus } from './feedback/NetworkStatus';
-export { ProgressIndicators } from './feedback/ProgressIndicators';
-export { SuccessAnimations } from './feedback/SuccessAnimations';
+export { ValidationMessage } from './feedback/FormValidation';
+export { useNetworkStatus, NetworkStatusIndicator } from './feedback/NetworkStatus';
+export { LinearProgress, CircularProgress, StepProgress, InfiniteProgress } from './feedback/ProgressIndicators';
+export { CheckmarkAnimation, ConfettiEffect, TrophyAnimation, SparkleEffect, SuccessToast, CelebrationModal } from './feedback/SuccessAnimations';
 
 // Accessibility Components
-export { AccessibleForm } from './accessibility/AccessibleForm';
-export { AccessibleNotification } from './accessibility/AccessibleNotification';
-export { AccessibleWrapper } from './accessibility/AccessibleWrapper';
-export { Announcements } from './accessibility/Announcements';
-export { AriaLiveRegion } from './accessibility/AriaLiveRegion';
-export { FocusManager } from './accessibility/FocusManager';
-export { FocusTrap } from './accessibility/FocusTrap';
-export { HighContrastMode } from './accessibility/HighContrastMode';
-export { KeyboardNavigableList } from './accessibility/KeyboardNavigableList';
-export { KeyboardNavigation } from './accessibility/KeyboardNavigation';
-export { KeyboardShortcutsDialog } from './accessibility/KeyboardShortcutsDialog';
+// export { AccessibleForm } from './accessibility/AccessibleForm';
+// export { AccessibleNotification } from './accessibility/AccessibleNotification';
+// export { AccessibleWrapper } from './accessibility/AccessibleWrapper';
+// export { Announcements } from './accessibility/Announcements';
+// export { AriaLiveRegion } from './accessibility/AriaLiveRegion';
+// export { FocusManager } from './accessibility/FocusManager';
+// export { FocusTrap } from './accessibility/FocusTrap';
+// export { HighContrastMode } from './accessibility/HighContrastMode';
+// export { KeyboardNavigableList } from './accessibility/KeyboardNavigableList';
+// export { KeyboardNavigation } from './accessibility/KeyboardNavigation';
+// export { KeyboardShortcutsDialog } from './accessibility/KeyboardShortcutsDialog';
 export { SkipLinks } from './accessibility/SkipLinks';
 
 // Performance Components
-export { CodeSplitBoundary } from './performance/CodeSplitBoundary';
-export { LazyComponents } from './performance/LazyComponents';
-export { LazyImage } from './performance/LazyImage';
-export { OptimisticUpdate } from './performance/OptimisticUpdate';
-export { PerformanceMonitor } from './performance/PerformanceMonitor';
-export { Prefetch } from './performance/Prefetch';
-export { VirtualList } from './performance/VirtualList';
+// export { CodeSplitBoundary } from './performance/CodeSplitBoundary';
+// export { LazyComponents } from './performance/LazyComponents';
+// export { LazyImage } from './performance/LazyImage';
+// export { OptimisticUpdate } from './performance/OptimisticUpdate';
+// export { PerformanceMonitor } from './performance/PerformanceMonitor';
+// export { Prefetch } from './performance/Prefetch';
+// export { VirtualList } from './performance/VirtualList';
 
 // Security Components
 export { PasswordStrength } from './security/PasswordStrength';
@@ -142,8 +142,8 @@ export { ResponsiveGrid } from './ui/responsive-grid';
 export { ResponsiveTable } from './ui/responsive-table';
 
 // Monitoring Components
-export { AnalyticsHooks } from './monitoring/AnalyticsHooks';
-export { ErrorTracking } from './monitoring/ErrorTracking';
-export { PerformanceMonitoring } from './monitoring/PerformanceMonitoring';
-export { SentryIntegration } from './monitoring/SentryIntegration';
-export { UserFeedbackCollector } from './monitoring/UserFeedbackCollector';
+// export { AnalyticsHooks } from './monitoring/AnalyticsHooks';
+// export { ErrorTracking } from './monitoring/ErrorTracking';
+// export { PerformanceMonitoring } from './monitoring/PerformanceMonitoring';
+// export { SentryIntegration } from './monitoring/SentryIntegration';
+// export { UserFeedbackCollector } from './monitoring/UserFeedbackCollector';

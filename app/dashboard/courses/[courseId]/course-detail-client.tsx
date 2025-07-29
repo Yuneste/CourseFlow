@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, FolderOpen, Grid3x3, List, Settings, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { FileUpload } from '@/components/features/files/FileUpload-v2';
+import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileCategoryView } from '@/components/features/files/FileCategoryView';
 import { FileList } from '@/components/features/files/FileList';
 import { StorageUsage } from '@/components/features/files/StorageUsage';
