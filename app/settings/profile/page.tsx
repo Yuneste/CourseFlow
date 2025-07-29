@@ -91,10 +91,10 @@ export default function ProfileSettingsPage() {
             Back to Settings
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold text-foreground">
           Profile Settings
         </h1>
-        <p className="text-gray-600 mt-1">Update your personal information</p>
+        <p className="text-muted-foreground mt-1">Update your personal information</p>
       </div>
 
       <Card className="max-w-2xl">
@@ -123,9 +123,9 @@ export default function ProfileSettingsPage() {
                 type="email"
                 value={profile.email}
                 disabled
-                className="bg-gray-50"
+                className="bg-muted"
               />
-              <p className="text-sm text-gray-500">Email cannot be changed</p>
+              <p className="text-sm text-muted-foreground">Email cannot be changed</p>
             </div>
 
             <div className="space-y-2">
@@ -165,7 +165,7 @@ export default function ProfileSettingsPage() {
               <Button 
                 type="submit" 
                 disabled={isLoading}
-                className="bg-[#FA8072] hover:bg-[#FF6B6B] text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 {isLoading ? 'Saving...' : 'Save Changes'}
               </Button>

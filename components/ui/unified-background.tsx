@@ -18,7 +18,7 @@ export function UnifiedBackground({
 }: UnifiedBackgroundProps) {
   return (
     <div className={cn(
-      "min-h-screen bg-gradient-to-br from-background via-accent/20 to-secondary/30",
+      "min-h-screen bg-background", // Simple solid background for better contrast
       className
     )}>
       {/* Decorative elements matching dashboard */}
@@ -34,7 +34,7 @@ export function UnifiedBackground({
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"
+            className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"
           />
           <motion.div
             animate={{
@@ -46,7 +46,7 @@ export function UnifiedBackground({
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute -bottom-40 -left-40 w-96 h-96 bg-accent/30 rounded-full blur-3xl"
+            className="absolute -bottom-40 -left-40 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
           />
           <motion.div
             animate={{
@@ -58,7 +58,7 @@ export function UnifiedBackground({
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl"
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/3 rounded-full blur-3xl"
           />
         </div>
       )}
@@ -83,7 +83,7 @@ export function UnifiedCard({
 }) {
   return (
     <div className={cn(
-      "bg-card/95 backdrop-blur-sm border-border shadow-sm rounded-lg",
+      "bg-card border border-border shadow-sm rounded-lg",
       hover && "hover:shadow-lg transition-all duration-300",
       className
     )}>

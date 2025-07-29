@@ -4,21 +4,21 @@
 
 @layer base {
   :root {
-    /* CourseFlow Design System - Light Mode */
-    --background: 0 0% 99%; /* #FEFEFE - Clean white background */
-    --foreground: 220 13% 18%; /* #1F2937 - Dark gray for optimal contrast */
+    /* CourseFlow Design System - Light Mode with High Contrast */
+    --background: 0 0% 100%; /* #FFFFFF - Pure white background */
+    --foreground: 0 0% 9%; /* #171717 - Almost black for maximum contrast */
     --card: 0 0% 100%; /* #FFFFFF - Pure white cards */
-    --card-foreground: 220 13% 18%;
+    --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 13% 18%;
-    --primary: 8 94% 72%; /* #FA8072 - Salmon (brand primary) */
+    --popover-foreground: 0 0% 9%;
+    --primary: 347 77% 45%; /* #D63384 - Darker pink for better contrast */
     --primary-foreground: 0 0% 100%;
-    --secondary: 8 100% 97%; /* #FFF5F5 - Light salmon for backgrounds */
-    --secondary-foreground: 220 13% 18%;
-    --muted: 220 14% 96%; /* #F9FAFB - Subtle gray background */
-    --muted-foreground: 220 9% 46%; /* #6B7280 - Medium contrast gray */
-    --accent: 8 100% 94%; /* #FFE4E1 - Light coral accent */
-    --accent-foreground: 220 13% 18%;
+    --secondary: 220 13% 95%; /* #F1F3F5 - Light gray for backgrounds */
+    --secondary-foreground: 0 0% 9%;
+    --muted: 217 19% 94%; /* #F0F2F4 - Subtle gray background */
+    --muted-foreground: 0 0% 25%; /* #404040 - Dark gray for strong contrast */
+    --accent: 217 19% 88%; /* #DFE3E8 - Neutral accent */
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 84% 60%; /* #EF4444 - Error red */
     --destructive-foreground: 0 0% 98%;
     --border: 220 13% 91%; /* #E5E7EB - Light border */
@@ -34,21 +34,21 @@
   }
 
   .dark {
-    /* CourseFlow Design System - Dark Mode */
-    --background: 220 27% 8%; /* #0F172A - Rich dark blue-gray */
-    --foreground: 220 13% 91%; /* #F1F5F9 - Light gray text */
-    --card: 220 27% 12%; /* #1E293B - Elevated dark surface */
-    --card-foreground: 220 13% 91%;
-    --popover: 220 27% 12%;
-    --popover-foreground: 220 13% 91%;
-    --primary: 8 94% 72%; /* #FA8072 - Keep salmon brand color */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 27% 18%; /* #334155 - Medium dark gray */
-    --secondary-foreground: 220 13% 91%;
-    --muted: 220 27% 15%; /* #1E2532 - Subtle dark background */
-    --muted-foreground: 220 9% 56%; /* #94A3B8 - Medium contrast */
-    --accent: 8 30% 25%; /* #523A37 - Dark coral accent */
-    --accent-foreground: 220 13% 91%;
+    /* CourseFlow Design System - Dark Mode with High Contrast */
+    --background: 0 0% 5%; /* #0D0D0D - Very dark background */
+    --foreground: 0 0% 95%; /* #F2F2F2 - Almost white text */
+    --card: 0 0% 9%; /* #171717 - Slightly elevated surface */
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 347 77% 60%; /* #E85D9F - Brighter pink for dark mode */
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 15%; /* #262626 - Dark gray */
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 12%; /* #1F1F1F - Subtle dark */
+    --muted-foreground: 0 0% 70%; /* #B3B3B3 - Light gray for contrast */
+    --accent: 0 0% 20%; /* #333333 - Dark accent */
+    --accent-foreground: 0 0% 95%;
     --destructive: 0 62% 50%; /* #DC2626 - Error red for dark */
     --destructive-foreground: 0 0% 98%;
     --border: 220 27% 18%; /* #334155 - Border color */

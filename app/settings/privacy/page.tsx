@@ -79,8 +79,7 @@ export default function PrivacySettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="max-w-4xl">
         <div className="mb-8">
           <Link href="/settings">
             <Button variant="ghost" className="mb-4">
@@ -88,18 +87,18 @@ export default function PrivacySettingsPage() {
               Back to Settings
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-foreground">
             Privacy & Security
           </h1>
-          <p className="text-gray-600 mt-1">Manage your account security and privacy settings</p>
+          <p className="text-muted-foreground mt-1">Manage your account security and privacy settings</p>
         </div>
 
         <div className="space-y-6">
           {/* Password Change Section */}
-          <Card className="bg-white">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-[#FA8072]" />
+                <Shield className="h-5 w-5 text-primary" />
                 Change Password
               </CardTitle>
               <CardDescription>
@@ -116,7 +115,7 @@ export default function PrivacySettingsPage() {
           </Card>
 
           {/* Delete Account Section */}
-          <Card className="bg-white border-red-200">
+          <Card className="border-destructive/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-red-600">
                 <Trash2 className="h-5 w-5" />
@@ -127,10 +126,10 @@ export default function PrivacySettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 mb-4">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
-                  <div className="text-sm text-red-800">
+                  <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
+                  <div className="text-sm text-destructive-foreground">
                     <p className="font-semibold mb-1">This action cannot be undone</p>
                     <p>Deleting your account will:</p>
                     <ul className="list-disc list-inside mt-2 space-y-1">
@@ -184,7 +183,6 @@ export default function PrivacySettingsPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
     </div>
   );
 }

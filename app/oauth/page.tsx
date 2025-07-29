@@ -23,7 +23,7 @@ function OAuthHandler() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-gray-600">Completing authentication...</p>
+      <p className="text-muted-foreground">Completing authentication...</p>
     </div>
   )
 }
@@ -32,7 +32,7 @@ export default function OAuthPage() {
   return (
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-600">Loading...</p>
+        <p className="text-muted-foreground">Loading...</p>
       </div>
     }>
       <OAuthHandler />
