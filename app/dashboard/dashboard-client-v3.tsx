@@ -83,7 +83,7 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
       animate={{ opacity: 1, y: 0 }}
       className="mb-12 text-center"
     >
-      <h1 className="text-5xl md:text-6xl font-bold mb-4">
+      <h1 className="text-5xl md:text-6xl font-bold mb-4 text-gray-900">
         Welcome back,
         <br />
         <span className="gradient-text">{userName}!</span>
@@ -269,7 +269,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           transition={{ delay: 0.6 }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
+            <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900">
               My Courses
               <Sparkles className="h-6 w-6 text-[#FA8072]" />
             </h2>

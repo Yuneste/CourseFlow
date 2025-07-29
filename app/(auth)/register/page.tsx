@@ -93,7 +93,7 @@ export default function RegisterPage() {
     return (
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Check your email</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900">Check your email</CardTitle>
           <CardDescription>
             We&apos;ve sent you a verification link to {email}
           </CardDescription>
@@ -115,7 +115,7 @@ export default function RegisterPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+        <CardTitle className="text-2xl font-bold text-gray-900">Create an account</CardTitle>
         <CardDescription>
           Enter your details below to create your account
         </CardDescription>

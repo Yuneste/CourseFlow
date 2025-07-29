@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
     return (
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Check your email</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900">Check your email</CardTitle>
           <CardDescription>
             We&apos;ve sent a password reset link to {email}
           </CardDescription>
@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Reset password</CardTitle>
+        <CardTitle className="text-2xl font-bold text-gray-900">Reset password</CardTitle>
         <CardDescription>
           Enter your email address and we&apos;ll send you a reset link
         </CardDescription>

@@ -59,7 +59,7 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
+        <CardTitle className="text-2xl font-bold text-gray-900">Sign in</CardTitle>
         <CardDescription>
           Choose your preferred sign in method
         </CardDescription>

@@ -262,7 +262,7 @@ function StepCountrySelection({ onSelect }: { onSelect: (country: CountryCode) =
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-gray-900">
           <Globe className="h-5 w-5" />
           Select Your Country
         </CardTitle>
@@ -384,7 +384,7 @@ function StepAddCourses({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-gray-900">
           <BookOpen className="h-5 w-5" />
           Add Your Courses
         </CardTitle>
@@ -726,7 +726,7 @@ function StepStudyProgram({ country, studyProgram, onChange, onNext, onPrevious 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-gray-900">
           <GraduationCap className="h-5 w-5" />
           Your Study Program
         </CardTitle>

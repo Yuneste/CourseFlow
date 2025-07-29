@@ -80,7 +80,7 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
+            <h1 className="text-3xl font-bold flex items-center gap-3 text-gray-900">
               <span className="text-4xl">{course.emoji}</span>
               {course.name}
             </h1>
@@ -128,7 +128,7 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
                 <Icon className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium capitalize">{category}</span>
               </div>
-              <p className="text-2xl font-bold">{count}</p>
+              <p className="text-2xl font-bold text-gray-900">{count}</p>
               <p className="text-xs text-muted-foreground">
                 {count === 1 ? 'file' : 'files'}
               </p>
@@ -139,7 +139,7 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
 
       {/* Upload Section */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Course Files</h2>
+        <h2 className="text-xl font-semibold text-gray-900">Course Files</h2>
         <div className="flex items-center gap-2">
           <div className="flex items-center border rounded-lg">
             <Button
@@ -172,7 +172,7 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
       {showFileUpload && (
         <Card className="p-6">
           <div className="mb-4">
-            <h3 className="font-medium mb-2">Upload to {course.name}</h3>
+            <h3 className="font-medium mb-2 text-gray-900">Upload to {course.name}</h3>
             <p className="text-sm text-muted-foreground">
               Files will be automatically categorized and organized in your course directory.
             </p>
