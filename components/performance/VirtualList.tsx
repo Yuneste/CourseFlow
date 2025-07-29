@@ -113,7 +113,7 @@ export function VirtualList<T>({
   }, [onScroll]);
 
   const { startIndex, endIndex } = getVisibleRange();
-  const totalHeight = getTotalHeight();
+  const totalHeight = getTotalHeight;
   const offsetY = getItemOffset(startIndex);
 
   // Cleanup timeout on unmount
