@@ -25,38 +25,6 @@ export function useKeyboardShortcut(
   // Update handler ref to avoid stale closures
   handlerRef.current = handler
 
-  const parseKeyCombo = useCallback((combo: string | KeyCombo): KeyCombo => {
-    if (typeof combo === 'object') return combo
-
-    // Parse string format like "ctrl+shift+k" or "cmd+k"
-    const parts = combo.toLowerCase().split('+')
-    const key = parts[parts.length - 1]
-    const modifiers = parts.slice(0, -1) as ModifierKey[]
-
-    return { key, modifiers }
-  }, [])
-
-  const checkModifiers = useCallback((event: KeyboardEvent, modifiers: ModifierKey[] = []) => {
-    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-    
-    return modifiers.every(modifier => {
-      switch (modifier) {
-        case 'ctrl':
-          return isMac ? event.metaKey : event.ctrlKey
-        case 'cmd':
-          return isMac ? event.metaKey : event.ctrlKey
-        case 'meta':
-          return event.metaKey
-        case 'alt':
-          return event.altKey
-        case 'shift':
-          return event.shiftKey
-        default:
-          return false
-      }
-    })
-  }, [])
-
   useEffect(() => {
     if (!enabled) return
 
@@ -93,7 +61,7 @@ export function useKeyboardShortcut(
       targetElement.addEventListener('keydown', handleKeyDown as any)
       return () => targetElement.removeEventListener('keydown', handleKeyDown as any)
     }
-  }, [enabled, keyCombo, target, parseKeyCombo, checkModifiers])
+  }, [enabled, keyCombo, target])
 }
 
 // Hook for multiple shortcuts
@@ -106,22 +74,60 @@ export function useKeyboardShortcuts(
   } = {}
 ) {
   const { enabled = true, target = window, enableHelp = true } = options
+  const shortcutEntriesRef = useRef<Array<[string, ShortcutHandler]>>([])
 
-  // Register each shortcut
-  Object.entries(shortcuts).forEach(([keyCombo, handlerOrConfig]) => {
-    const handler = typeof handlerOrConfig === 'function' 
-      ? handlerOrConfig 
-      : handlerOrConfig.handler
-    
-    useKeyboardShortcut(keyCombo, handler, { enabled, target })
-  })
+  // Prepare shortcuts array
+  useEffect(() => {
+    shortcutEntriesRef.current = Object.entries(shortcuts).map(([keyCombo, handlerOrConfig]) => {
+      const handler = typeof handlerOrConfig === 'function' 
+        ? handlerOrConfig 
+        : handlerOrConfig.handler
+      return [keyCombo, handler]
+    })
+  }, [shortcuts])
 
-  // Register help shortcut if enabled
-  useKeyboardShortcut('shift+?', () => {
-    if (enableHelp) {
-      showShortcutHelp(shortcuts)
+  useEffect(() => {
+    if (!enabled) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Check help shortcut first
+      if (enableHelp && event.shiftKey && event.key === '?') {
+        event.preventDefault()
+        showShortcutHelp(shortcuts)
+        return
+      }
+
+      // Check all registered shortcuts
+      for (const [keyCombo, handler] of shortcutEntriesRef.current) {
+        const combo = typeof keyCombo === 'string' 
+          ? parseKeyCombo(keyCombo)
+          : keyCombo
+
+        if (event.key.toLowerCase() === combo.key.toLowerCase()) {
+          const modifiersMatch = checkModifiers(event, combo.modifiers)
+          if (modifiersMatch) {
+            if (combo.preventDefault !== false) {
+              event.preventDefault()
+            }
+            if (combo.stopPropagation) {
+              event.stopPropagation()
+            }
+            handler(event)
+            break
+          }
+        }
+      }
     }
-  }, { enabled: enabled && enableHelp, target })
+
+    const targetElement = target instanceof HTMLElement || target === window
+      ? target
+      : target.current
+
+    if (targetElement) {
+      targetElement.addEventListener('keydown', handleKeyDown as any)
+      return () => targetElement.removeEventListener('keydown', handleKeyDown as any)
+    }
+  }, [enabled, target, enableHelp, shortcuts])
 
   return {
     shortcuts: Object.entries(shortcuts).map(([keyCombo, handlerOrConfig]) => ({
@@ -129,6 +135,38 @@ export function useKeyboardShortcuts(
       description: typeof handlerOrConfig === 'object' ? handlerOrConfig.description : undefined
     }))
   }
+}
+
+// Helper functions (moved outside to be accessible)
+function parseKeyCombo(combo: string | KeyCombo): KeyCombo {
+  if (typeof combo === 'object') return combo
+
+  const parts = combo.toLowerCase().split('+')
+  const key = parts[parts.length - 1]
+  const modifiers = parts.slice(0, -1) as ModifierKey[]
+
+  return { key, modifiers }
+}
+
+function checkModifiers(event: KeyboardEvent, modifiers: ModifierKey[] = []) {
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+  
+  return modifiers.every(modifier => {
+    switch (modifier) {
+      case 'ctrl':
+        return isMac ? event.metaKey : event.ctrlKey
+      case 'cmd':
+        return isMac ? event.metaKey : event.ctrlKey
+      case 'meta':
+        return event.metaKey
+      case 'alt':
+        return event.altKey
+      case 'shift':
+        return event.shiftKey
+      default:
+        return false
+    }
+  })
 }
 
 // Helper to show keyboard shortcuts
