@@ -154,7 +154,7 @@ export default function LandingPage() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 text-gray-900"
           >
             Your Academic Success
             <br />
@@ -209,7 +209,7 @@ export default function LandingPage() {
       <section id="features" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
               Features that Power Your
               <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> Success</span>
             </h2>
@@ -233,7 +233,7 @@ export default function LandingPage() {
                     <div className="p-2 sm:p-3 bg-[#FFE4E1] rounded-lg">
                       <feature.icon className="h-6 sm:h-8 w-6 sm:w-8 text-[#FA8072]" />
                     </div>
-                    <h3 className="text-2xl sm:text-3xl font-bold">{feature.title}</h3>
+                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">{feature.title}</h3>
                   </div>
                   <p className="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6">{feature.description}</p>
                   <ul className="space-y-3">
@@ -266,7 +266,7 @@ export default function LandingPage() {
       <section id="testimonials" className="py-12 md:py-20 px-4 bg-white/50">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
               Students Love
               <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> CourseFlow</span>
             </h2>
@@ -292,7 +292,7 @@ export default function LandingPage() {
                 </div>
                 <p className="text-gray-700 mb-4 italic">&ldquo;{testimonial.content}&rdquo;</p>
                 <div>
-                  <p className="font-semibold">{testimonial.name}</p>
+                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
                   <p className="text-sm text-gray-500">{testimonial.role}</p>
                 </div>
               </motion.div>
@@ -305,7 +305,7 @@ export default function LandingPage() {
       <section id="pricing" className="py-12 md:py-20 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
               Simple, Transparent
               <span className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] bg-clip-text text-transparent"> Pricing</span>
             </h2>
@@ -333,16 +333,16 @@ export default function LandingPage() {
                     Most Popular
                   </div>
                 )}
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                <h3 className={`text-2xl font-bold mb-2 ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>{plan.name}</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  {plan.period && <span className="text-lg">{plan.period}</span>}
+                  <span className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>{plan.price}</span>
+                  {plan.period && <span className={`text-lg ${plan.highlighted ? 'text-white/80' : 'text-gray-600'}`}>{plan.period}</span>}
                 </div>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2">
                       <Check className={`h-5 w-5 ${plan.highlighted ? 'text-white' : 'text-green-500'}`} />
-                      <span>{feature}</span>
+                      <span className={plan.highlighted ? 'text-white' : 'text-gray-700'}>{feature}</span>
                     </li>
                   ))}
                 </ul>
