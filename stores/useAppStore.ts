@@ -78,12 +78,18 @@ export const useAppStore = create<AppState>()(
 
         // User actions
         setUser: (user) => set((state) => {
-          // Clear files when user changes to prevent stale data
+          // Clear all user-specific data when user changes to prevent stale data
           const isUserChange = state.user?.id !== user?.id;
           return {
             user,
+            courses: isUserChange ? [] : state.courses,
+            selectedCourse: isUserChange ? null : state.selectedCourse,
+            coursesLastFetched: isUserChange ? null : state.coursesLastFetched,
             files: isUserChange ? [] : state.files,
             filesLastFetched: isUserChange ? null : state.filesLastFetched,
+            uploadQueue: isUserChange ? [] : state.uploadQueue,
+            coursesError: isUserChange ? null : state.coursesError,
+            filesError: isUserChange ? null : state.filesError,
           };
         }),
 

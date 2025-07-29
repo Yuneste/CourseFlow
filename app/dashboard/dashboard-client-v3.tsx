@@ -3,37 +3,23 @@
 import { useState, useEffect } from 'react';
 import { Course, User } from '@/types';
 import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
-import dynamic from 'next/dynamic';
-
-// Lazy load CourseList to reduce initial bundle size
-const CourseList = dynamic(
-  () => import('@/components/features/courses/CourseList').then(mod => ({ default: mod.CourseList })),
-  { 
-    loading: () => (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[1, 2, 3].map(i => (
-          <div key={i} className="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-        ))}
-      </div>
-    )
-  }
-);
-import { coursesService } from '@/lib/services/courses.service';
 import { useAppStore } from '@/stores/useAppStore';
 import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Loader2, 
-  Plus, 
-  TrendingUp, 
   BookOpen, 
   Calendar,
   Target,
-  Sparkles,
+  FileText,
+  Brain,
+  BarChart3,
+  Users,
+  Clock,
+  Award,
   ChevronRight,
-  BarChart3
+  Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -67,9 +53,65 @@ const StatsCard = ({ title, value, icon: Icon, delay }: any) => (
   </motion.div>
 );
 
+// Feature card component
+const FeatureCard = ({ title, description, icon: Icon, href, color, delay, available = true }: {
+  title: string;
+  description: string;
+  icon: any;
+  href: string;
+  color: string;
+  delay: number;
+  available?: boolean;
+}) => {
+  const router = useRouter();
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.5 }}
+      whileHover={available ? { scale: 1.05 } : {}}
+      whileTap={available ? { scale: 0.95 } : {}}
+    >
+      <Card 
+        className={cn(
+          "relative overflow-hidden cursor-pointer h-full",
+          "transition-all duration-300",
+          available 
+            ? "hover:shadow-xl hover:border-[#FA8072] bg-white" 
+            : "opacity-60 cursor-not-allowed bg-gray-50"
+        )}
+        onClick={() => available && router.push(href)}
+      >
+        <div className="p-6">
+          <div className={cn(
+            "w-14 h-14 rounded-lg flex items-center justify-center mb-4",
+            color
+          )}>
+            <Icon className="h-7 w-7 text-white" />
+          </div>
+          <h3 className="text-xl font-semibold mb-2 text-gray-900">{title}</h3>
+          <p className="text-gray-600 mb-4">{description}</p>
+          <div className="flex items-center text-[#FA8072] font-medium">
+            <span>{available ? 'Access Now' : 'Coming Soon'}</span>
+            <ChevronRight className="h-5 w-5 ml-1" />
+          </div>
+        </div>
+        {!available && (
+          <div className="absolute inset-0 bg-gray-900/5 flex items-center justify-center">
+            <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-sm font-medium">
+              Coming Soon
+            </span>
+          </div>
+        )}
+      </Card>
+    </motion.div>
+  );
+};
+
 // Animated welcome message
 const WelcomeMessage = ({ userName }: { userName: string }) => {
-  const [greeting, setGreeting] = useState("Ready to ace your courses?");
+  const [greeting, setGreeting] = useState("");
   
   useEffect(() => {
     const greetings = [
@@ -85,35 +127,19 @@ const WelcomeMessage = ({ userName }: { userName: string }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mb-12 text-center"
+      className="mb-8 text-center"
     >
-      <h1 className="text-5xl md:text-6xl font-bold mb-4 text-gray-900">
-        Welcome back,
-        <br />
-        <span className="gradient-text">{userName}!</span>
+      <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gray-900">
+        Welcome back, <span className="text-[#FA8072]">{userName}!</span>
       </h1>
-      <p className="text-xl text-gray-600">{greeting}</p>
+      <p className="text-lg text-gray-600">{greeting}</p>
     </motion.div>
   );
 };
 
 export function DashboardClient({ initialCourses, userProfile }: DashboardClientProps) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  
-  const {
-    courses,
-    setCourses,
-    setUser,
-    addCourse,
-    updateCourse,
-    deleteCourse,
-    isLoadingCourses,
-    setLoadingCourses,
-    coursesError,
-    setCoursesError,
-  } = useAppStore();
+  const { courses, setCourses, setUser } = useAppStore();
 
   // Set user on mount
   useEffect(() => {
@@ -127,237 +153,155 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
     }
   }, [initialCourses, courses, setCourses]);
 
-  const handleCourseClick = (course: Course) => {
-    router.push(`/courses/${course.id}`);
-  };
-
-  const handleCreateCourse = async (courseData: Partial<Course>) => {
-    setIsLoading(true);
-    setLoadingCourses(true);
-    try {
-      const newCourse = await coursesService.createCourse(courseData as any);
-      addCourse(newCourse);
-      setShowCreateForm(false);
-    } catch (error) {
-      console.error('Failed to create course:', error);
-      setCoursesError('Failed to create course');
-    } finally {
-      setIsLoading(false);
-      setLoadingCourses(false);
-    }
-  };
-
-  const handleUpdateCourse = async (id: string, updates: Partial<Course>) => {
-    setIsLoading(true);
-    try {
-      const updatedCourse = await coursesService.updateCourse(id, updates);
-      updateCourse(id, updatedCourse);
-    } catch (error) {
-      console.error('Failed to update course:', error);
-      setCoursesError('Failed to update course');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDeleteCourse = async (id: string) => {
-    setIsLoading(true);
-    try {
-      await coursesService.deleteCourse(id);
-      deleteCourse(id);
-    } catch (error) {
-      console.error('Failed to delete course:', error);
-      setCoursesError('Failed to delete course');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const country = userProfile?.country || 'US';
   const systemInfo = getAcademicSystemWithTerms(country);
   
-  const academicSystem = {
-    terms: systemInfo.terms,
-    periodType: systemInfo.periodType,
-    creditSystem: systemInfo.creditSystem
-  };
-
   // Calculate stats
   const activeCourses = courses.length;
   const completedCourses = 0; // TODO: Add completion tracking later
+  
+  const features = [
+    {
+      title: 'My Courses',
+      description: `Manage your ${activeCourses} active courses and track progress`,
+      icon: BookOpen,
+      href: '/courses',
+      color: 'bg-[#FA8072]',
+      available: true
+    },
+    {
+      title: 'Study Planner',
+      description: 'Plan study sessions and manage your time effectively',
+      icon: Calendar,
+      href: '/planner',
+      color: 'bg-blue-500',
+      available: false
+    },
+    {
+      title: 'AI Assistant',
+      description: 'Get personalized help with your coursework',
+      icon: Brain,
+      href: '/ai-assistant',
+      color: 'bg-purple-500',
+      available: false
+    },
+    {
+      title: 'Analytics',
+      description: 'Track your academic performance and progress',
+      icon: BarChart3,
+      href: '/analytics',
+      color: 'bg-green-500',
+      available: false
+    },
+    {
+      title: 'Study Groups',
+      description: 'Collaborate with classmates and share resources',
+      icon: Users,
+      href: '/groups',
+      color: 'bg-indigo-500',
+      available: false
+    },
+    {
+      title: 'Time Tracker',
+      description: 'Monitor time spent on each course',
+      icon: Clock,
+      href: '/time-tracker',
+      color: 'bg-orange-500',
+      available: false
+    }
+  ];
 
   return (
-    <>
-      {/* Loading overlay */}
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-            >
-              <Card className="p-4 flex items-center gap-3">
-                <Loader2 className="h-5 w-5 animate-spin" />
-                <span>Processing...</span>
-              </Card>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div id="main-content" className="container mx-auto px-4 py-8">
+      <WelcomeMessage userName={userProfile.full_name || 'Student'} />
 
-      <div id="main-content" className="container mx-auto px-4 py-8 space-y-8">
-        <WelcomeMessage userName={userProfile.full_name || 'Student'} />
-
-        {/* Stats Grid - Compact */}
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            <StatsCard
-              title="Active Courses"
-              value={activeCourses}
-              icon={BookOpen}
-              delay={0.1}
-            />
-            <StatsCard
-              title="Completed"
-              value={completedCourses}
-              icon={Target}
-              delay={0.2}
-            />
-            <StatsCard
-              title="Current Term"
-              value={systemInfo.currentTerm}
-              icon={Calendar}
-              delay={0.3}
-            />
+      {/* Quick Stats */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8 max-w-4xl mx-auto"
+      >
+        <Card className="p-4 bg-white border-0 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-[#FFE4E1] rounded-lg">
+              <BookOpen className="h-5 w-5 text-[#FA8072]" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-600">Active</p>
+              <p className="text-lg font-bold text-gray-900">{activeCourses}</p>
+            </div>
           </div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex justify-center"
-          >
-            <Link href="/dashboard/stats">
-              <Button variant="outline" size="sm" className="text-[#FA8072] border-[#FA8072] hover:bg-[#FFF5F5]">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                View Statistics
-              </Button>
-            </Link>
-          </motion.div>
+        </Card>
+        <Card className="p-4 bg-white border-0 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Target className="h-5 w-5 text-green-600" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-600">Completed</p>
+              <p className="text-lg font-bold text-gray-900">{completedCourses}</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-4 bg-white border-0 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Calendar className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-600">Term</p>
+              <p className="text-lg font-bold text-gray-900">{systemInfo.currentTerm}</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-4 bg-white border-0 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <Award className="h-5 w-5 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-600">GPA</p>
+              <p className="text-lg font-bold text-gray-900">--</p>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* Features Grid */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">
+          What would you like to do today?
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {features.map((feature, index) => (
+            <FeatureCard
+              key={feature.title}
+              {...feature}
+              delay={0.4 + index * 0.1}
+            />
+          ))}
         </div>
+      </motion.div>
 
-
-        {/* Error display */}
-        <AnimatePresence>
-          {coursesError && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600"
-            >
-              {coursesError}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Courses Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900">
-              My Courses
-              <Sparkles className="h-6 w-6 text-[#FA8072]" />
-            </h2>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <Button
-                onClick={() => setShowCreateForm(true)}
-                className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] text-white hover:from-[#FF6B6B] hover:to-[#FA8072] rounded-md px-4 py-4"
-                size="icon"
-              >
-                <Plus className="h-5 w-5" />
-              </Button>
-            </motion.div>
-          </div>
-
-          <CourseList
-            courses={courses}
-            academicSystem={academicSystem}
-            isLoading={isLoadingCourses}
-            onCreateCourse={handleCreateCourse}
-            onUpdateCourse={handleUpdateCourse}
-            onDeleteCourse={handleDeleteCourse}
-            onCourseClick={handleCourseClick}
-            viewMode="grid"
-            showCreateForm={showCreateForm}
-            onCloseCreateForm={() => setShowCreateForm(false)}
-          />
-        </motion.div>
-
-        {/* Empty state */}
-        {courses.length === 0 && !isLoadingCourses && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-16"
-          >
-            <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">
-              No courses yet
-            </h3>
-            <p className="text-gray-500 mb-6">
-              Start by adding your first course to organize your academic life
-            </p>
-            <Button
-              onClick={() => setShowCreateForm(true)}
-              className="bg-gradient-to-r from-[#FA8072] to-[#FF6B6B] text-white hover:from-[#FF6B6B] hover:to-[#FA8072]"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Your First Course
-            </Button>
-          </motion.div>
-        )}
-      </div>
-
-      {/* Background decorations */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <motion.div
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute top-1/4 -left-32 w-64 h-64 bg-[#FFB6B0] rounded-full blur-3xl opacity-10"
-        />
-        <motion.div
-          animate={{
-            x: [0, -100, 0],
-            y: [0, 50, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute bottom-1/4 -right-32 w-96 h-96 bg-[#FFDAB9] rounded-full blur-3xl opacity-10"
-        />
-      </div>
-    </>
+      {/* Pro Tip */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1 }}
+        className="mt-12 text-center"
+      >
+        <Card className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF5F5] border-[#FA8072] border">
+          <Sparkles className="h-4 w-4 text-[#FA8072]" />
+          <span className="text-sm text-gray-700">
+            <span className="font-medium">Pro tip:</span> Start by adding your courses to unlock all features
+          </span>
+        </Card>
+      </motion.div>
+    </div>
   );
 }
