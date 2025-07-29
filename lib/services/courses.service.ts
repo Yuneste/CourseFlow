@@ -181,6 +181,25 @@ class CoursesService {
   }
 
   /**
+   * Reorder folders within a course
+   */
+  async reorderFolders(folders: { id: string; display_order: number }[]): Promise<void> {
+    try {
+      await api.patch('/courses/folders', { folders });
+      logger.info('Folders reordered successfully', {
+        action: 'reorderFolders',
+        metadata: { count: folders.length }
+      });
+    } catch (error) {
+      logger.error('Failed to reorder folders', error, {
+        action: 'reorderFolders',
+        metadata: { folderCount: folders.length }
+      });
+      throw error;
+    }
+  }
+
+  /**
    * Check if user has reached course limits
    */
   async checkCourseLimits(userId: string, term?: string): Promise<{ canCreate: boolean; reason?: string }> {

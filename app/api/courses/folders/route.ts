@@ -70,3 +70,66 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const supabase = await createClient();
+    
+    // Check authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { folders } = body;
+
+    if (!folders || !Array.isArray(folders)) {
+      return NextResponse.json({ error: 'Folders array is required' }, { status: 400 });
+    }
+
+    // Verify user owns all the folders
+    const folderIds = folders.map(f => f.id);
+    const { data: existingFolders } = await supabase
+      .from('course_folders')
+      .select('id, course_id')
+      .in('id', folderIds);
+
+    if (!existingFolders || existingFolders.length !== folderIds.length) {
+      return NextResponse.json({ error: 'Invalid folder IDs' }, { status: 400 });
+    }
+
+    // Verify all folders belong to courses owned by the user
+    const courseIds = Array.from(new Set(existingFolders.map(f => f.course_id)));
+    const { data: courses } = await supabase
+      .from('courses')
+      .select('id')
+      .in('id', courseIds)
+      .eq('user_id', user.id);
+
+    if (!courses || courses.length !== courseIds.length) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Update folder orders
+    const updates = folders.map((folder, index) => ({
+      id: folder.id,
+      display_order: index
+    }));
+
+    // Perform batch update
+    const updatePromises = updates.map(update =>
+      supabase
+        .from('course_folders')
+        .update({ display_order: update.display_order })
+        .eq('id', update.id)
+    );
+
+    await Promise.all(updatePromises);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Unexpected error in PATCH /api/courses/folders:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

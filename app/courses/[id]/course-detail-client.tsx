@@ -66,14 +66,22 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
   const [dragOverFolder, setDragOverFolder] = useState<string | null>(null);
   const [uploadingFiles, setUploadingFiles] = useState(false);
   const [reorderMode, setReorderMode] = useState(false);
+  const [draggedFolder, setDraggedFolder] = useState<CourseFolder | null>(null);
+  const [folderOrder, setFolderOrder] = useState<CourseFolder[]>([]);
 
+
+  // Initialize folder order on mount or when folders change
+  useEffect(() => {
+    setFolderOrder([...folders].sort((a, b) => a.display_order - b.display_order));
+  }, [folders]);
 
   // Build folder tree structure
   const buildFolderTree = (): FolderNode[] => {
-    const rootFolders = folders.filter(f => !f.parent_id);
+    const orderedFolders = folderOrder.length > 0 ? folderOrder : folders;
+    const rootFolders = orderedFolders.filter(f => !f.parent_id);
     
     const buildNode = (folder: CourseFolder): FolderNode => {
-      const children = folders
+      const children = orderedFolders
         .filter(f => f.parent_id === folder.id)
         .map(buildNode);
       
@@ -87,7 +95,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
       };
     };
     
-    return rootFolders.map(buildNode);
+    return rootFolders.sort((a, b) => a.display_order - b.display_order).map(buildNode);
   };
 
   const folderTree = buildFolderTree();
@@ -190,6 +198,62 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
     }
   };
 
+  const handleFolderDragStart = (e: React.DragEvent, folder: CourseFolder) => {
+    if (!reorderMode) return;
+    setDraggedFolder(folder);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleFolderDragOver = (e: React.DragEvent) => {
+    if (!reorderMode) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleFolderReorder = async (e: React.DragEvent, targetFolder: CourseFolder) => {
+    e.preventDefault();
+    if (!reorderMode || !draggedFolder || draggedFolder.id === targetFolder.id) return;
+
+    const newOrder = [...folderOrder];
+    const draggedIndex = newOrder.findIndex(f => f.id === draggedFolder.id);
+    const targetIndex = newOrder.findIndex(f => f.id === targetFolder.id);
+
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      // Remove dragged folder
+      const [removed] = newOrder.splice(draggedIndex, 1);
+      // Insert at target position
+      newOrder.splice(targetIndex, 0, removed);
+
+      // Update display orders
+      const updatedFolders = newOrder.map((folder, index) => ({
+        ...folder,
+        display_order: index
+      }));
+
+      setFolderOrder(updatedFolders);
+
+      try {
+        // Send only root folders to API (children maintain their parent relationships)
+        const rootFoldersToUpdate = updatedFolders
+          .filter(f => !f.parent_id)
+          .map((f, index) => ({ id: f.id, display_order: index }));
+        
+        await coursesService.reorderFolders(rootFoldersToUpdate);
+        toast.success('Folders reordered successfully');
+      } catch (error) {
+        toast.error('Failed to reorder folders');
+        // Revert on error
+        setFolderOrder(folders);
+      }
+    }
+
+    setDraggedFolder(null);
+  };
+
+  const handleFolderDragEnd = () => {
+    setDraggedFolder(null);
+  };
+
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) {
       toast.error('Please enter a folder name');
@@ -227,27 +291,43 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
             "flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer transition-all duration-200",
             "hover:bg-primary/10",
             isSelected && "bg-primary/20",
-            isDragOver && "bg-accent/30 scale-105"
+            isDragOver && "bg-accent/30 scale-105",
+            reorderMode && "cursor-move"
           )}
           style={{ paddingLeft: `${level * 16 + 8}px` }}
+          draggable={reorderMode && level === 0} // Only allow dragging root folders
+          onDragStart={(e) => handleFolderDragStart(e, node.folder)}
+          onDragOver={handleFolderDragOver}
+          onDrop={(e) => handleFolderReorder(e, node.folder)}
+          onDragEnd={handleFolderDragEnd}
           onClick={() => {
-            setSelectedFolder(node.folder);
-            if (hasContent) {
-              toggleFolder(node.folder.id);
+            if (!reorderMode) {
+              setSelectedFolder(node.folder);
+              if (hasContent) {
+                toggleFolder(node.folder.id);
+              }
             }
           }}
-          onDragOver={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setDragOverFolder(node.folder.id);
+          onDragOverCapture={(e) => {
+            if (!reorderMode) {
+              e.preventDefault();
+              e.stopPropagation();
+              setDragOverFolder(node.folder.id);
+            }
           }}
           onDragLeave={(e) => {
-            e.stopPropagation();
-            if (dragOverFolder === node.folder.id) {
-              setDragOverFolder(null);
+            if (!reorderMode) {
+              e.stopPropagation();
+              if (dragOverFolder === node.folder.id) {
+                setDragOverFolder(null);
+              }
             }
           }}
-          onDrop={(e) => handleFolderDrop(node.folder.id, e)}
+          onDropCapture={(e) => {
+            if (!reorderMode && draggedFiles.length > 0) {
+              handleFolderDrop(node.folder.id, e);
+            }
+          }}
         >
           {hasChildren && (
             <button
