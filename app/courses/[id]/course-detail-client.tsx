@@ -24,6 +24,8 @@ import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileCardDraggable } from '@/components/features/files/FileCardDraggable';
 import { useRouter } from 'next/navigation';
 import { filesService } from '@/lib/services/files.service';
+import { coursesService } from '@/lib/services/courses.service';
+import { logger } from '@/lib/services/logger.service';
 import {
   Dialog,
   DialogContent,
@@ -35,6 +37,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
+import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
 
 interface CourseDetailClientProps {
   course: Course;
@@ -106,10 +109,13 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
     try {
       await filesService.deleteFile(fileId);
       router.refresh();
-      toast.success('File deleted');
+      toast.success(SUCCESS_MESSAGES.FILE_DELETED);
     } catch (error) {
-      console.error('Failed to delete file:', error);
-      toast.error('Failed to delete file');
+      logger.error('Failed to delete file', error, {
+        action: 'deleteFile',
+        metadata: { fileId }
+      });
+      toast.error(ERROR_MESSAGES.GENERIC);
     }
   };
 
@@ -123,8 +129,11 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error('Failed to download file:', error);
-      toast.error('Failed to download file');
+      logger.error('Failed to download file', error, {
+        action: 'downloadFile',
+        metadata: { fileId: file.id, fileName: file.display_name }
+      });
+      toast.error(ERROR_MESSAGES.GENERIC);
     }
   };
 
@@ -173,8 +182,11 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
       router.refresh();
       toast.success(`Moved ${draggedFiles.length} file(s)`);
     } catch (error) {
-      console.error('Failed to move files:', error);
-      toast.error('Failed to move files');
+      logger.error('Failed to move files', error, {
+        action: 'moveFiles',
+        metadata: { fileCount: draggedFiles.length, targetFolderId: folderId }
+      });
+      toast.error(ERROR_MESSAGES.GENERIC);
     }
   };
 
@@ -186,28 +198,17 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
 
     setIsCreatingFolder(true);
     try {
-      const response = await fetch('/api/courses/folders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          course_id: course.id,
-          name: newFolderName.trim(),
-          parent_id: null,
-        }),
-      });
-
-      if (response.ok) {
-        toast.success('Folder created successfully');
-        setNewFolderName('');
-        setDialogOpen(false);
-        router.refresh();
-      } else {
-        const error = await response.json();
-        toast.error(error.error || 'Failed to create folder');
-      }
+      await coursesService.createCourseFolder(course.id, newFolderName.trim());
+      toast.success(SUCCESS_MESSAGES.FOLDER_CREATED || 'Folder created successfully');
+      setNewFolderName('');
+      setDialogOpen(false);
+      router.refresh();
     } catch (error) {
-      console.error('Failed to create folder:', error);
-      toast.error('Failed to create folder');
+      logger.error('Failed to create folder', error, {
+        action: 'createFolder',
+        metadata: { courseId: course.id, folderName: newFolderName }
+      });
+      toast.error(error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC);
     } finally {
       setIsCreatingFolder(false);
     }

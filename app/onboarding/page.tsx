@@ -9,8 +9,8 @@ import { ChevronRight, ChevronLeft, BookOpen, Globe, Plus, Edit2, Trash2, Gradua
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { coursesService, CreateCourseInput } from '@/lib/services/courses.service';
-import { Course } from '@/types';
+import { coursesService } from '@/lib/services/courses.service';
+import { Course, CourseFormData } from '@/types';
 import { cn } from '@/lib/utils';
 import { BenefitsShowcaseStyles } from '@/components/features/onboarding/BenefitsShowcase';
 import { BenefitsShowcaseAnimated } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
@@ -140,7 +140,7 @@ export default function OnboardingPage() {
     }
   };
 
-  const addCourse = async (courseData: CreateCourseInput) => {
+  const addCourse = async (courseData: CourseFormData) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -303,7 +303,7 @@ interface StepAddCoursesProps {
   country: CountryCode;
   academicSystem: ReturnType<typeof getAcademicSystemWithTerms>;
   courses: Course[];
-  onAddCourse: (course: CreateCourseInput) => Promise<void>;
+  onAddCourse: (course: CourseFormData) => Promise<void>;
   onUpdateCourse: (id: string, course: any) => Promise<void>;
   onDeleteCourse: (id: string) => Promise<void>;
   onNext: () => void;
@@ -329,7 +329,7 @@ function StepAddCourses({
   setEditingCourse,
 }: StepAddCoursesProps) {
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState<CreateCourseInput>({
+  const [formData, setFormData] = useState<CourseFormData>({
     name: '',
     term: academicSystem.currentTerm || academicSystem.terms[0],
     code: '',

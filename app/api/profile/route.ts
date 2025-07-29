@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { ProfileService, ProfileUpdateData } from '@/lib/services/profile.service';
+import { logger } from '@/lib/services/logger.service';
+import { ERROR_MESSAGES } from '@/lib/constants';
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -9,7 +12,7 @@ export async function PATCH(request: NextRequest) {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: ERROR_MESSAGES.UNAUTHORIZED },
         { status: 401 }
       );
     }
@@ -17,8 +20,8 @@ export async function PATCH(request: NextRequest) {
     // Parse request body
     const body = await request.json();
     
-    // Update profile
-    const updateData: any = {};
+    // Build update data with proper typing
+    const updateData: ProfileUpdateData = {};
     
     // Only add fields that are provided
     if (body.study_program !== undefined) updateData.study_program = body.study_program;
@@ -29,50 +32,62 @@ export async function PATCH(request: NextRequest) {
     if (body.full_name !== undefined) updateData.full_name = body.full_name;
     if (body.onboarding_completed !== undefined) updateData.onboarding_completed = body.onboarding_completed;
     
-    console.log('Updating profile for user:', user.id, 'with data:', updateData);
+    // Update profile using service
+    const result = await ProfileService.updateProfile(
+      user.id,
+      user.email,
+      updateData
+    );
     
-    // First try to update
-    const { data: updateResult, error: updateError } = await supabase
-      .from('profiles')
-      .update(updateData)
-      .eq('id', user.id)
-      .select();
-
-    if (updateError) {
-      console.error('Error updating profile:', updateError);
-      
-      // If update fails, try to create the profile
-      if (updateError.code === 'PGRST116') { // No rows returned
-        console.log('Profile not found, creating new profile');
-        const { error: insertError } = await supabase
-          .from('profiles')
-          .insert({
-            id: user.id,
-            email: user.email,
-            ...updateData
-          });
-          
-        if (insertError) {
-          console.error('Error creating profile:', insertError);
-          return NextResponse.json(
-            { error: 'Failed to create profile' },
-            { status: 500 }
-          );
-        }
-      } else {
-        return NextResponse.json(
-          { error: 'Failed to update profile' },
-          { status: 500 }
-        );
-      }
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error || ERROR_MESSAGES.GENERIC },
+        { status: 500 }
+      );
     }
     
-    console.log('Profile updated successfully:', updateResult);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Unexpected error in PATCH /api/profile:', error);
+    logger.error('Unexpected error in PATCH /api/profile', error, {
+      action: 'patchProfile'
+    });
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: ERROR_MESSAGES.GENERIC },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = await createClient();
+    
+    // Check authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.UNAUTHORIZED },
+        { status: 401 }
+      );
+    }
+    
+    // Get profile using service
+    const profile = await ProfileService.getProfile(user.id);
+    
+    if (!profile) {
+      return NextResponse.json(
+        { error: 'Profile not found' },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json(profile);
+  } catch (error) {
+    logger.error('Unexpected error in GET /api/profile', error, {
+      action: 'getProfile'
+    });
+    return NextResponse.json(
+      { error: ERROR_MESSAGES.GENERIC },
       { status: 500 }
     );
   }

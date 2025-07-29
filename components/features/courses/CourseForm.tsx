@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Course } from '@/types';
-import { CreateCourseInput, UpdateCourseInput } from '@/lib/services/courses.service';
+import { Course, CourseFormData } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -37,7 +36,7 @@ import {
 interface CourseFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: CreateCourseInput | UpdateCourseInput) => Promise<void>;
+  onSubmit: (data: CourseFormData | Partial<CourseFormData>) => Promise<void>;
   onDelete?: () => Promise<void>;
   course?: Course | null;
   academicSystem: {
@@ -72,7 +71,7 @@ export function CourseForm({
   course,
   academicSystem,
 }: CourseFormProps) {
-  const [formData, setFormData] = useState<CreateCourseInput>({
+  const [formData, setFormData] = useState<CourseFormData>({
     name: '',
     term: academicSystem.terms[0],
     code: '',

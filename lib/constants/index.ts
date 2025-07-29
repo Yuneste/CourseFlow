@@ -130,6 +130,8 @@ export const SUCCESS_MESSAGES = {
   COURSE_DELETED: 'Course deleted successfully',
   PROFILE_UPDATED: 'Profile updated successfully',
   PASSWORD_CHANGED: 'Password changed successfully',
+  FOLDER_CREATED: 'Folder created successfully',
+  FOLDER_DELETED: 'Folder deleted successfully',
 } as const;
 
 // Regular expressions
