@@ -78,8 +78,8 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
           "relative overflow-hidden cursor-pointer h-full",
           "transition-all duration-300 border-[#C7C7AD]/20",
           available 
-            ? "hover:shadow-2xl hover:border-[#C7C7AD] bg-white/95 backdrop-blur-sm shadow-lg" 
-            : "opacity-60 cursor-not-allowed bg-white/50 backdrop-blur-sm shadow-md"
+            ? "hover:shadow-2xl hover:border-[#C7C7AD] bg-white/80 backdrop-blur-sm shadow-xl" 
+            : "opacity-60 cursor-not-allowed bg-white/60 backdrop-blur-sm shadow-lg"
         )}
         onClick={() => available && router.push(href)}
       >
