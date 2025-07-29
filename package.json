@@ -19,7 +19,10 @@
     "health:check": "curl -f http://localhost:3000/api/health || exit 1",
     "prestart": "npm run db:migrate",
     "clean": "node scripts/clean.js",
-    "clean:all": "node scripts/clean.js && rm -rf node_modules"
+    "clean:all": "node scripts/clean.js && rm -rf node_modules",
+    "test:load:basic": "k6 run tests/load/k6-basic.js",
+    "test:load:full": "k6 run tests/load/k6-full-flow.js",
+    "test:load:report": "k6 run --out html=tests/load/report.html tests/load/k6-basic.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.0",

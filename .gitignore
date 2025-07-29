@@ -78,3 +78,9 @@ test-results/
 
 # BMad specific (but keeping docs)
 # We want to track .bmad-core in git for team collaboration
+
+# k6 load testing output
+tests/load/*.html
+tests/load/report-*
+tests/load/*.json
+tests/load/results/
