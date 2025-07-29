@@ -1,0 +1,85 @@
+// Example Next.js configuration for optimal code splitting
+// Add these configurations to your existing next.config.js
+
+module.exports = {
+  // ... existing config
+  
+  // Optimize chunk splitting
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Split vendor chunks for better caching
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            // React and core dependencies
+            react: {
+              test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+              name: 'react',
+              priority: 20,
+            },
+            // UI library chunks
+            ui: {
+              test: /[\\/]node_modules[\\/](@radix-ui|@headlessui|class-variance-authority)[\\/]/,
+              name: 'ui-libs',
+              priority: 15,
+            },
+            // Heavy libraries
+            pdfjs: {
+              test: /[\\/]node_modules[\\/](pdfjs-dist)[\\/]/,
+              name: 'pdf-viewer',
+              priority: 10,
+            },
+            charts: {
+              test: /[\\/]node_modules[\\/](recharts|d3)[\\/]/,
+              name: 'charts',
+              priority: 10,
+            },
+            // Default vendor chunk
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendor',
+              priority: 5,
+            },
+            // Common components chunk
+            commons: {
+              name: 'commons',
+              minChunks: 2,
+              priority: 0,
+            },
+          },
+        },
+      }
+    }
+    
+    return config
+  },
+  
+  // Experimental features for better performance
+  experimental: {
+    optimizeCss: true,
+    // Enable module/nomodule pattern for modern browsers
+    modern: true,
+    // Optimize package imports
+    optimizePackageImports: [
+      '@radix-ui/react-*',
+      'lucide-react',
+      'sonner',
+      'date-fns'
+    ],
+  },
+  
+  // Configure module IDs for consistent chunking
+  productionBrowserSourceMaps: false,
+  
+  // Prefetch configuration
+  prefetch: true,
+  
+  // Image optimization
+  images: {
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/webp'],
+  },
+}
