@@ -150,7 +150,7 @@ export const FileOrganizationDemo = () => {
   );
 };
 
-const AIAssistantDemo = () => {
+export const AIAssistantDemo = () => {
   const [currentSubject, setCurrentSubject] = useState(0);
   const [showFlashcards, setShowFlashcards] = useState(false);
   const isMobile = useIsMobile();
@@ -261,7 +261,7 @@ const AIAssistantDemo = () => {
   );
 };
 
-const CloudStorageDemo = () => {
+export const CloudStorageDemo = () => {
   const [syncActive, setSyncActive] = useState(false);
   const isMobile = useIsMobile();
 
@@ -471,7 +471,7 @@ const CloudStorageDemo = () => {
   );
 };
 
-const DeadlineTrackerDemo = () => {
+export const DeadlineTrackerDemo = () => {
   const isMobile = useIsMobile();
   
   return (
@@ -823,7 +823,7 @@ export const CollaborationDemo = () => {
   );
 };
 
-const ProgressTrackerDemo = () => {
+export const ProgressTrackerDemo = () => {
   const [showImprovement, setShowImprovement] = useState(false);
   const isMobile = useIsMobile();
 
