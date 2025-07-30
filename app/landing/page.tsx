@@ -275,11 +275,11 @@ export default function LandingPage() {
       <section id="testimonials" className="py-12 md:py-20 px-4 bg-gradient-to-b from-black to-gray-900">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">
               Students Love
               <span className="text-primary font-extrabold"> CourseFlow</span>
             </h2>
-            <p className="text-lg sm:text-xl text-foreground/90">
+            <p className="text-lg sm:text-xl text-white/90">
               Join thousands of students achieving their academic goals
             </p>
           </div>
@@ -314,11 +314,11 @@ export default function LandingPage() {
       <section id="pricing" className="py-12 md:py-20 px-4 bg-gray-900">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">
               Simple, Transparent
               <span className="text-primary font-extrabold"> Pricing</span>
             </h2>
-            <p className="text-lg sm:text-xl text-foreground/90">
+            <p className="text-lg sm:text-xl text-white/90">
               Choose the plan that fits your needs
             </p>
           </div>
@@ -397,39 +397,39 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <GraduationCap className="h-6 w-6" />
-                <span className="text-xl font-bold">CourseFlow</span>
+                <GraduationCap className="h-6 w-6 text-white" />
+                <span className="text-xl font-bold text-white">CourseFlow</span>
               </div>
-              <p className="text-muted-foreground">
+              <p className="text-gray-400">
                 Your academic success, simplified.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#features" className="hover:text-foreground">Features</a></li>
-                <li><a href="#pricing" className="hover:text-foreground">Pricing</a></li>
-                <li><a href="#" className="hover:text-foreground">API</a></li>
+              <h4 className="font-semibold mb-4 text-white">Product</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#features" className="hover:text-white">Features</a></li>
+                <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
+                <li><a href="#" className="hover:text-white">API</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">About</a></li>
-                <li><a href="#" className="hover:text-foreground">Blog</a></li>
-                <li><a href="#" className="hover:text-foreground">Careers</a></li>
+              <h4 className="font-semibold mb-4 text-white">Company</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">About</a></li>
+                <li><a href="#" className="hover:text-white">Blog</a></li>
+                <li><a href="#" className="hover:text-white">Careers</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">Help Center</a></li>
-                <li><a href="#" className="hover:text-foreground">Contact Us</a></li>
-                <li><a href="#" className="hover:text-foreground">Privacy Policy</a></li>
+              <h4 className="font-semibold mb-4 text-white">Support</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">Help Center</a></li>
+                <li><a href="#" className="hover:text-white">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-border pt-8 text-center text-muted-foreground">
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
             <p>&copy; 2024 CourseFlow. All rights reserved.</p>
           </div>
         </div>
