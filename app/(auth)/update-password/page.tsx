@@ -105,7 +105,7 @@ function UpdatePasswordForm() {
             </div>
           )}
           
-          <Button type="submit" className="w-full" variant="primary" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Updating password...' : 'Update password'}
           </Button>
         </form>

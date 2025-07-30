@@ -123,7 +123,7 @@
     /* Light mode - High contrast academic theme */
     --background: 0 0% 100%; /* Pure white for better contrast */
     --foreground: 222 84% 5%; /* Very dark blue text for WCAG AAA compliance */
-    --card: 0 0% 100%;
+    --card: 220 14% 97%; /* Slightly darker than background for subtle contrast */
     --card-foreground: 222 84% 5%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 84% 5%;
@@ -135,8 +135,8 @@
     --muted-foreground: 220 14% 30%; /* Much darker for better readability */
     --accent: 262 80% 50%; /* Purple with better contrast */
     --accent-foreground: 0 0% 100%;
-    --border: 220 13% 80%; /* Darker border for better visibility */
-    --input: 220 13% 80%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
     --ring: 243 75% 59%;
     --radius: 0.5rem;
   }
