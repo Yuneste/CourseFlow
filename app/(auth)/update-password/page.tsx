@@ -67,17 +67,17 @@ function UpdatePasswordForm() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm border-[#C7C7AD]/30 shadow-xl">
+    <Card className="w-full max-w-md bg-card/90 backdrop-blur-sm border-border shadow-xl">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-[#1a1a1a]">Update password</CardTitle>
-        <CardDescription className="text-[#1a1a1a]/70">
+        <CardTitle className="text-2xl font-bold text-foreground">Update password</CardTitle>
+        <CardDescription className="text-muted-foreground">
           Enter your new password below
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleUpdatePassword} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-[#1a1a1a]">New Password</Label>
+            <Label htmlFor="password" className="text-foreground">New Password</Label>
             <Input
               id="password"
               type="password"
@@ -88,7 +88,7 @@ function UpdatePasswordForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-[#1a1a1a]">Confirm New Password</Label>
+            <Label htmlFor="confirmPassword" className="text-foreground">Confirm New Password</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -105,7 +105,7 @@ function UpdatePasswordForm() {
             </div>
           )}
           
-          <Button type="submit" className="w-full bg-[#F0C4C0] hover:bg-[#F0C4C0]/90 text-[#1a1a1a]" disabled={loading}>
+          <Button type="submit" className="w-full" variant="primary" disabled={loading}>
             {loading ? 'Updating password...' : 'Update password'}
           </Button>
         </form>
@@ -118,7 +118,7 @@ export default function UpdatePasswordPage() {
   return (
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-[#1a1a1a]/60">Loading...</p>
+        <p className="text-muted-foreground">Loading...</p>
       </div>
     }>
       <UpdatePasswordForm />
