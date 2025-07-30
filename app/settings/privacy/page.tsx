@@ -126,10 +126,10 @@ export default function PrivacySettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5" />
-                  <div className="text-sm text-red-900 dark:text-red-100">
+                  <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
+                  <div className="text-sm text-red-900">
                     <p className="font-semibold mb-1">This action cannot be undone</p>
                     <p>Deleting your account will:</p>
                     <ul className="list-disc list-inside mt-2 space-y-1">

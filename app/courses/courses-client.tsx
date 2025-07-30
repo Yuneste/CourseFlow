@@ -171,7 +171,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                 onDrop={(e) => handleDrop(e, index)}
               >
               <Card className={cn(
-                "h-[250px] transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_rgba(255,255,255,0.05)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_8px_16px_rgba(255,255,255,0.08)] flex flex-col",
+                "h-[250px] transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] flex flex-col",
                 draggedCourse?.id === course.id && "opacity-50"
               )}>
                 <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity">

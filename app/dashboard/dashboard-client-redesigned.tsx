@@ -43,7 +43,7 @@ const StatsCard = ({ title, value, icon: Icon, delay = 0, trend, color }: StatsC
     whileHover={{ scale: 1.02, y: -2 }}
     className="relative group"
   >
-    <Card className="p-6 bg-card border-border shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_rgba(255,255,255,0.05)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_8px_16px_rgba(255,255,255,0.08)] transition-all duration-300 relative overflow-hidden">
+    <Card className="p-6 bg-card border-border shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] transition-all duration-300 relative overflow-hidden">
       {/* Subtle gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
@@ -92,9 +92,9 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
       <Card 
         className={cn(
           "relative overflow-hidden cursor-pointer h-full p-6 transition-all duration-300",
-          "border-border bg-card shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_rgba(255,255,255,0.05)]",
+          "border-border bg-card shadow-[0_2px_8px_rgba(0,0,0,0.08)]",
           available 
-            ? "hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_8px_16px_rgba(255,255,255,0.08)] hover:border-primary/20" 
+            ? "hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] hover:border-primary/20" 
             : "opacity-60 cursor-not-allowed"
         )}
         onClick={() => {

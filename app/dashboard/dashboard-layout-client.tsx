@@ -50,7 +50,7 @@ export function DashboardLayoutClient({ user, children }: DashboardLayoutClientP
         "transition-all duration-300",
         isCollapsed ? "lg:ml-20" : "lg:ml-[280px]"
       )}>
-        <Header className="border-b border-border">
+        <Header className="border-b border-border" showMenuButton={false}>
           <div className="flex items-center justify-between px-4">
             <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
           </div>

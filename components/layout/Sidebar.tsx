@@ -133,7 +133,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
           width: isCollapsed ? 80 : 280,
         }}
         className={cn(
-          "fixed top-0 left-0 z-40 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800",
+          "fixed top-0 left-0 z-40 h-full bg-white border-r border-gray-200",
           "transition-all duration-300 ease-in-out",
           "shadow-xl lg:shadow-sm",
           // Mobile positioning
@@ -144,7 +144,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+          <div className="p-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <Link 
                 href="/dashboard" 
@@ -165,7 +165,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="hidden lg:flex hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="hidden lg:flex hover:bg-gray-100"
                 onClick={() => setIsCollapsed(!isCollapsed)}
               >
                 <ChevronLeft className={cn(
@@ -177,22 +177,22 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
           </div>
 
           {/* User Section */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+          <div className="p-4 border-b border-gray-200">
             <div className={cn(
               "flex items-center gap-3",
               isCollapsed && "justify-center"
             )}>
-              <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900">
+              <Avatar className="h-10 w-10 border-2 border-indigo-100">
                 <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
                   {user?.full_name?.[0] || user?.email?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
               {!isCollapsed && (
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate text-gray-900 dark:text-gray-100">
+                  <p className="text-sm font-medium truncate text-gray-900">
                     {user?.full_name || 'Student'}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <p className="text-xs text-gray-500 truncate">
                     {user?.email}
                   </p>
                 </div>
@@ -212,25 +212,25 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                     href={item.href}
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
-                      "hover:bg-gray-100 dark:hover:bg-gray-800 group",
-                      active && "bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400",
+                      "hover:bg-gray-100 group",
+                      active && "bg-indigo-50 text-indigo-600",
                       isCollapsed && "justify-center"
                     )}
                     title={isCollapsed ? item.title : undefined}
                   >
                     <Icon className={cn(
                       "h-5 w-5 flex-shrink-0 transition-colors",
-                      active ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                      active ? "text-indigo-600" : "text-gray-500 group-hover:text-gray-700"
                     )} />
                     {!isCollapsed && (
                       <div className="flex-1 min-w-0">
                         <p className={cn(
                           "text-sm font-medium",
-                          active ? "text-indigo-600 dark:text-indigo-400" : "text-gray-700 dark:text-gray-300"
+                          active ? "text-indigo-600" : "text-gray-700"
                         )}>
                           {item.title}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-xs text-gray-500">
                           {item.description}
                         </p>
                       </div>
@@ -242,7 +242,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
           </ScrollArea>
 
           {/* Bottom Section */}
-          <div className="p-3 border-t border-gray-200 dark:border-gray-800 space-y-1">
+          <div className="p-3 border-t border-gray-200 space-y-1">
             {bottomItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
@@ -252,20 +252,20 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   href={item.href}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
-                    "hover:bg-gray-100 dark:hover:bg-gray-800",
-                    active && "bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400",
+                    "hover:bg-gray-100",
+                    active && "bg-indigo-50 text-indigo-600",
                     isCollapsed && "justify-center"
                   )}
                   title={isCollapsed ? item.title : undefined}
                 >
                   <Icon className={cn(
                     "h-5 w-5 flex-shrink-0",
-                    active ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400"
+                    active ? "text-indigo-600" : "text-gray-500"
                   )} />
                   {!isCollapsed && (
                     <span className={cn(
                       "text-sm",
-                      active ? "text-indigo-600 dark:text-indigo-400 font-medium" : "text-gray-700 dark:text-gray-300"
+                      active ? "text-indigo-600 font-medium" : "text-gray-700"
                     )}>
                       {item.title}
                     </span>
@@ -277,7 +277,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start gap-3 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950",
+                "w-full justify-start gap-3 text-gray-700 hover:text-red-600 hover:bg-red-50",
                 isCollapsed && "justify-center px-0"
               )}
               onClick={onSignOut}

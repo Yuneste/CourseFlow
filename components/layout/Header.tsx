@@ -1,7 +1,6 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { cn } from "@/lib/utils"
 import { Menu } from "lucide-react"
 
@@ -40,10 +39,6 @@ export function Header({
           <div className="flex-1">
             {children}
           </div>
-          
-          <nav className="flex items-center space-x-2">
-            <ThemeToggle />
-          </nav>
         </div>
       </div>
     </header>
