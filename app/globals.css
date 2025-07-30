@@ -135,8 +135,8 @@
     --muted-foreground: 220 14% 30%; /* Much darker for better readability */
     --accent: 262 80% 50%; /* Purple with better contrast */
     --accent-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
+    --border: 220 13% 80%; /* Darker border for better visibility */
+    --input: 220 13% 80%;
     --ring: 243 75% 59%;
     --radius: 0.5rem;
   }
