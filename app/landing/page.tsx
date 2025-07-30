@@ -98,6 +98,8 @@ export default function LandingPage() {
       {/* Starry Academic Background for Hero Section */}
       <div className="absolute inset-0 h-[100vh]">
         <AcademicStars />
+        {/* Gradient fade overlay at the bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-b from-transparent to-black" />
       </div>
       
       {/* Navigation */}
@@ -213,14 +215,14 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative py-12 md:py-20 px-4 bg-background">
+      <section id="features" className="relative py-12 md:py-20 px-4 bg-black">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">
               Features that Power Your
               <span className="text-primary font-extrabold"> Success</span>
             </h2>
-            <p className="text-lg sm:text-xl text-foreground/90 max-w-3xl mx-auto px-4">
+            <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto px-4">
               See how CourseFlow transforms your academic journey with intelligent features
             </p>
           </div>
@@ -240,21 +242,21 @@ export default function LandingPage() {
                     <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
                       <feature.icon className="h-6 sm:h-8 w-6 sm:w-8 text-primary" />
                     </div>
-                    <h3 className="text-2xl sm:text-3xl font-bold text-foreground">{feature.title}</h3>
+                    <h3 className="text-2xl sm:text-3xl font-bold text-white">{feature.title}</h3>
                   </div>
-                  <p className="text-base sm:text-lg text-foreground/90 mb-4 sm:mb-6">{feature.description}</p>
+                  <p className="text-base sm:text-lg text-white/90 mb-4 sm:mb-6">{feature.description}</p>
                   <ul className="space-y-3">
                     <li className="flex items-center gap-2">
                       <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-foreground">Automatic organization</span>
+                      <span className="text-white">Automatic organization</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-foreground">Real-time collaboration</span>
+                      <span className="text-white">Real-time collaboration</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-foreground">AI-powered insights</span>
+                      <span className="text-white">AI-powered insights</span>
                     </li>
                   </ul>
                 </div>
@@ -270,7 +272,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-12 md:py-20 px-4 bg-muted/30">
+      <section id="testimonials" className="py-12 md:py-20 px-4 bg-gradient-to-b from-black to-gray-900">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
@@ -309,7 +311,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-12 md:py-20 px-4">
+      <section id="pricing" className="py-12 md:py-20 px-4 bg-gray-900">
         <div className="container mx-auto">
           <div className="text-center mb-8 md:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
@@ -390,7 +392,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 md:py-12 px-4 bg-muted/50">
+      <footer className="py-8 md:py-12 px-4 bg-black">
         <div className="container mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-8">
             <div>
