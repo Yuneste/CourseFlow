@@ -20,7 +20,15 @@ import {
   GraduationCap,
   Sparkles
 } from 'lucide-react';
-import { FileOrganizationDemo, CollaborationDemo, ResourceRecommendationDemo } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
+import { 
+  FileOrganizationDemo, 
+  CollaborationDemo, 
+  ResourceRecommendationDemo,
+  AIAssistantDemo,
+  CloudStorageDemo,
+  DeadlineTrackerDemo,
+  ProgressTrackerDemo 
+} from '@/components/features/onboarding/BenefitsShowcaseAnimated';
 import { UnifiedBackground, UnifiedCard } from '@/components/ui/unified-background';
 import { EducationalPattern } from '@/components/ui/educational-pattern';
 import { AcademicStars } from '@/components/ui/academic-stars';
@@ -46,6 +54,30 @@ export default function LandingPage() {
       title: "Resource Recommendations",
       description: "Get personalized learning resources for your courses",
       Demo: ResourceRecommendationDemo
+    },
+    {
+      icon: Brain,
+      title: "AI-Powered Assistant",
+      description: "Get instant answers and personalized study support 24/7",
+      Demo: AIAssistantDemo
+    },
+    {
+      icon: FolderOpen,
+      title: "Access Anywhere",
+      description: "Your files sync across all devices - laptop, phone, or tablet",
+      Demo: CloudStorageDemo
+    },
+    {
+      icon: Calendar,
+      title: "Never Miss Deadlines",
+      description: "Track assignments and get smart reminders before due dates",
+      Demo: DeadlineTrackerDemo
+    },
+    {
+      icon: TrendingUp,
+      title: "Track Your Progress",
+      description: "Visualize your academic performance and study patterns",
+      Demo: ProgressTrackerDemo
     }
   ];
 
@@ -261,7 +293,7 @@ export default function LandingPage() {
                   </ul>
                 </div>
                 <div className="flex-1 max-w-2xl w-full">
-                  <div className="bg-card rounded-xl shadow-[0_0_40px_rgba(140,194,190,0.5)] p-4 sm:p-6 md:p-8 overflow-hidden border border-border">
+                  <div className="bg-card rounded-xl shadow-[0_0_50px_rgba(140,194,190,0.8)] hover:shadow-[0_0_60px_rgba(140,194,190,1)] transition-shadow duration-300 p-4 sm:p-6 md:p-8 overflow-hidden border border-border">
                     <feature.Demo />
                   </div>
                 </div>
