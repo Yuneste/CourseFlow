@@ -120,45 +120,45 @@
   
   /* Academic theme for dashboard/app pages */
   .academic-theme {
-    /* Light mode - Modern academic theme */
-    --background: 0 0% 98%; /* Soft gray background #FAFAFA */
-    --foreground: 222 47% 11%; /* Dark blue text */
+    /* Light mode - High contrast academic theme */
+    --background: 0 0% 100%; /* Pure white for better contrast */
+    --foreground: 222 84% 5%; /* Very dark blue text for WCAG AAA compliance */
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222 84% 5%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 243 80% 62%; /* Indigo #4F46E5 */
+    --popover-foreground: 222 84% 5%;
+    --primary: 243 75% 59%; /* Indigo with better contrast */
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14% 96%; /* Light gray */
-    --secondary-foreground: 222 47% 11%;
+    --secondary-foreground: 220 50% 13%; /* Darker text for better contrast */
     --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-    --accent: 262 83% 58%; /* Purple #8B5CF6 */
+    --muted-foreground: 220 14% 30%; /* Much darker for better readability */
+    --accent: 262 80% 50%; /* Purple with better contrast */
     --accent-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 243 80% 62%;
+    --ring: 243 75% 59%;
     --radius: 0.5rem;
   }
   
   .dark .academic-theme {
     /* Dark mode - Modern dark academic */
     --background: 222 47% 11%; /* Dark blue-gray */
-    --foreground: 210 40% 96%;
+    --foreground: 210 40% 98%; /* Lighter text for better contrast */
     --card: 222 47% 15%;
-    --card-foreground: 210 40% 96%;
+    --card-foreground: 210 40% 98%;
     --popover: 222 47% 15%;
-    --popover-foreground: 210 40% 96%;
+    --popover-foreground: 210 40% 98%;
     --primary: 234 89% 74%; /* Bright indigo #6366F1 */
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 222 47% 11%; /* Dark text on light primary */
     --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 96%;
+    --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 263 70% 65%; /* Light purple #A78BFA */
-    --accent-foreground: 0 0% 100%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+    --muted-foreground: 215 25% 75%; /* Lighter for better contrast */
+    --accent: 263 70% 70%; /* Slightly lighter purple */
+    --accent-foreground: 222 47% 11%;
+    --border: 217 33% 20%; /* Slightly lighter borders */
+    --input: 217 33% 20%;
     --ring: 234 89% 74%;
   }
 }

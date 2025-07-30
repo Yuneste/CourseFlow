@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { Header } from '@/components/layout/Header';
 import { Toaster } from 'sonner';
 import { User } from '@/types';
 import { signOut } from '@/app/actions/auth';
@@ -45,12 +46,19 @@ export function DashboardLayoutClient({ user, children }: DashboardLayoutClientP
       <Sidebar user={user} onSignOut={handleSignOut} />
       
       {/* Main content area with margin for sidebar */}
-      <main className={cn(
+      <div className={cn(
         "transition-all duration-300",
-        isCollapsed ? "lg:ml-16" : "lg:ml-64"
+        isCollapsed ? "lg:ml-20" : "lg:ml-[280px]"
       )}>
-        {children}
-      </main>
+        <Header className="border-b border-border">
+          <div className="flex items-center justify-between px-4">
+            <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
+          </div>
+        </Header>
+        <main className="min-h-[calc(100vh-3.5rem)]">
+          {children}
+        </main>
+      </div>
       
       <Toaster />
       <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />

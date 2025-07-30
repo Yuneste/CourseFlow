@@ -44,13 +44,12 @@ export default function RootLayout({
           <SkipLinks />
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
             {children}
             <Toaster 
-              theme="light"
               position="top-center"
               richColors
               closeButton
