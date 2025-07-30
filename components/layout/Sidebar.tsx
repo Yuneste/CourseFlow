@@ -153,11 +153,11 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   isCollapsed && "justify-center"
                 )}
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-gray-700 flex items-center justify-center text-white shadow-lg">
                   <BookOpen className="w-5 h-5" />
                 </div>
                 {!isCollapsed && (
-                  <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  <span className="text-gray-700 font-bold">
                     CourseFlow
                   </span>
                 )}
@@ -182,8 +182,8 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
               "flex items-center gap-3",
               isCollapsed && "justify-center"
             )}>
-              <Avatar className="h-10 w-10 border-2 border-indigo-100">
-                <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
+              <Avatar className="h-10 w-10 border-2 border-gray-200">
+                <AvatarFallback className="bg-gray-700 text-white">
                   {user?.full_name?.[0] || user?.email?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
@@ -213,20 +213,20 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
                       "hover:bg-gray-100 group",
-                      active && "bg-indigo-50 text-indigo-600",
+                      active && "bg-gray-100 text-gray-900",
                       isCollapsed && "justify-center"
                     )}
                     title={isCollapsed ? item.title : undefined}
                   >
                     <Icon className={cn(
                       "h-5 w-5 flex-shrink-0 transition-colors",
-                      active ? "text-indigo-600" : "text-gray-500 group-hover:text-gray-700"
+                      active ? "text-gray-900" : "text-gray-500 group-hover:text-gray-700"
                     )} />
                     {!isCollapsed && (
                       <div className="flex-1 min-w-0">
                         <p className={cn(
                           "text-sm font-medium",
-                          active ? "text-indigo-600" : "text-gray-700"
+                          active ? "text-gray-900" : "text-gray-700"
                         )}>
                           {item.title}
                         </p>
@@ -253,19 +253,19 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
                     "hover:bg-gray-100",
-                    active && "bg-indigo-50 text-indigo-600",
+                    active && "bg-gray-100 text-gray-900",
                     isCollapsed && "justify-center"
                   )}
                   title={isCollapsed ? item.title : undefined}
                 >
                   <Icon className={cn(
                     "h-5 w-5 flex-shrink-0",
-                    active ? "text-indigo-600" : "text-gray-500"
+                    active ? "text-gray-900" : "text-gray-500"
                   )} />
                   {!isCollapsed && (
                     <span className={cn(
                       "text-sm",
-                      active ? "text-indigo-600 font-medium" : "text-gray-700"
+                      active ? "text-gray-900 font-medium" : "text-gray-700"
                     )}>
                       {item.title}
                     </span>
