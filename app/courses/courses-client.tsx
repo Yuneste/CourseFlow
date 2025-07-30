@@ -171,46 +171,46 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                 onDrop={(e) => handleDrop(e, index)}
               >
               <Card className={cn(
-                "h-[250px] transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] flex flex-col",
+                "h-[200px] transition-all duration-300 bg-card backdrop-blur-sm border-border cursor-move shadow-lg hover:shadow-xl flex flex-col",
                 draggedCourse?.id === course.id && "opacity-50"
               )}>
                 <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity">
-                  <GripVertical className="h-5 w-5 text-muted-foreground" />
+                  <GripVertical className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <Link href={`/courses/${course.id}`} className="flex flex-col p-6 group h-full">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 rounded-lg bg-primary/10">
-                      <BookOpen className="h-6 w-6 text-primary" />
+                <Link href={`/courses/${course.id}`} className="flex flex-col p-4 group h-full">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <BookOpen className="h-5 w-5 text-primary" />
                     </div>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent text-accent-foreground">
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent text-accent-foreground">
                       {course.term}
                     </span>
                   </div>
                   
-                  <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
+                  <h3 className="text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
                     {course.name}
                   </h3>
                   
-                  <div className="h-5 mb-2">
+                  <div className="h-4 mb-1">
                     {course.code && (
-                      <p className="text-sm text-muted-foreground font-medium">{course.code}</p>
+                      <p className="text-xs text-muted-foreground font-medium">{course.code}</p>
                     )}
                   </div>
                   
-                  <div className="h-6 mb-3">
+                  <div className="h-5 mb-2">
                     {course.professor && (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         Professor: {course.professor}
                       </p>
                     )}
                   </div>
                   
-                  <div className="flex items-center justify-between text-sm text-muted-foreground mt-auto">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
                     <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
+                      <Calendar className="h-3.5 w-3.5" />
                       <span>{course.term || 'Current Term'}</span>
                     </div>
-                    <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
               </Card>
