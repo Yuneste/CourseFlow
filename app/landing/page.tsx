@@ -363,7 +363,7 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`relative rounded-xl p-8 ${
+                className={`relative rounded-xl p-8 flex flex-col ${
                   plan.highlighted 
                     ? 'bg-primary text-primary-foreground shadow-2xl scale-105 border-2 border-primary' 
                     : 'bg-card shadow-lg border border-border'
@@ -379,7 +379,7 @@ export default function LandingPage() {
                   <span className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-foreground'}`}>{plan.price}</span>
                   {plan.period && <span className={`text-lg ${plan.highlighted ? 'text-white/80' : 'text-foreground/90'}`}>{plan.period}</span>}
                 </div>
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3 mb-8 flex-grow">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2">
                       <Check className={`h-5 w-5 ${plan.highlighted ? 'text-white' : 'text-green-500'}`} />
