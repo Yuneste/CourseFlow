@@ -17,6 +17,16 @@ const config: Config = {
     },
     extend: {
       colors: {
+        // CourseFlow Design System Colors
+        courseflow: {
+          primary: '#8CC2BE',
+          primaryLight: 'rgba(140, 194, 190, 0.1)',
+          primaryMedium: 'rgba(140, 194, 190, 0.2)',
+          primaryGlow: 'rgba(140, 194, 190, 0.8)',
+          sectionHeader: '#7AFFCA',
+          cardTitle: '#FFC194',
+          termStatus: '#FF7878',
+        },
         // Brand colors (keeping for backward compatibility)
         brand: {
           salmon: '#FA8072',

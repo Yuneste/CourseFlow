@@ -168,10 +168,39 @@ This project uses the BMad brownfield development methodology:
 1. **File Management**: AI-powered file organization with automatic categorization
 2. **Course Management**: Complete academic course lifecycle management  
 3. **Multi-Regional**: Support for US, Canada, UK, and EU academic systems
-4. **Subscription Tiers**: Explorer (free), Scholar ($4.99/mo), Master ($9.99/mo)
+4. **Subscription Tiers**: Free (€0), Pro (€10/mo or €8/mo yearly), Team (€25/mo or €20/mo yearly)
 5. **Collaboration**: Real-time study groups with chat and shared resources
 6. **Performance Tracking**: Comprehensive analytics and progress monitoring
 7. **Security**: Enterprise-grade security with OAuth and secure file handling
+
+### Design System
+
+CourseFlow follows a strict design system for consistency. See `docs/design-system.md` for full guidelines.
+
+**Color Palette**:
+- Primary Teal: `#8CC2BE` - buttons, primary actions, hover states
+- Section Headers: `#7AFFCA` - main section titles (Overview, Quick Actions, My Courses)
+- Card Titles: `#FFC194` - card/component titles within sections
+- Term/Status: `#FF7878` - current term text, status indicators
+
+**Key Patterns**:
+- Use `text-courseflow-*` Tailwind classes for design system colors
+- Apply consistent shadows: `shadow-lg hover:shadow-xl transition-all duration-300`
+- Use Framer Motion with standard animations (see `hooks/use-courseflow-animations.ts`)
+- Maintain spacing consistency: sections `mb-6`, cards `p-4`, grids `gap-3 sm:gap-4`
+- All interactive elements need hover states with smooth transitions
+
+**Typography Hierarchy**:
+- Page titles: `text-4xl font-bold text-courseflow-sectionHeader`
+- Section headers: `text-base font-semibold text-courseflow-sectionHeader`
+- Card titles: `text-xs font-medium text-courseflow-cardTitle`
+- Term text: `text-xs text-courseflow-termStatus`
+- Body text: `text-sm text-muted-foreground`
+
+**Component Examples**:
+- See `components/examples/DesignSystemExample.tsx` for reference implementations
+- Use `lib/constants/colors.ts` for color constants
+- Apply animations from `hooks/use-courseflow-animations.ts`
 
 ### Deployment
 
