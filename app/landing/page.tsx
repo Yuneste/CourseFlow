@@ -35,7 +35,7 @@ import { AcademicStars } from '@/components/ui/academic-stars';
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isYearly, setIsYearly] = useState(false);
+  const [isYearly, setIsYearly] = useState(true);
 
   const features = [
     {
