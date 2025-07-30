@@ -106,7 +106,7 @@ export default function LandingPage() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
               <GraduationCap className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold text-primary">
                 CourseFlow
               </span>
             </div>
