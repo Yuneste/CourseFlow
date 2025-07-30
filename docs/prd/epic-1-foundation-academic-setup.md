@@ -157,7 +157,7 @@
 3. Checkout flow for upgrades
 4. Subscription management portal
 5. Usage tracking implementation
-6. Free trial activation (14 days)
+6. Free trial activation (7 days)
 7. Student discount verification
 8. Webhook handling for subscription events
 

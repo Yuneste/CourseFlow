@@ -17,59 +17,71 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Brand colors
+        // Brand colors (keeping for backward compatibility)
         brand: {
           salmon: '#FA8072',
           lightSalmon: '#FFF5F5',
           coral: '#FF6B6B',
           lightCoral: '#FFE4E1',
         },
-        // CSS Variable colors for shadcn/ui
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        // OKLCH-based color system
+        border: "oklch(var(--border))",
+        input: "oklch(var(--input))",
+        ring: "oklch(var(--ring))",
+        background: "oklch(var(--background))",
+        foreground: "oklch(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "oklch(var(--primary))",
+          foreground: "oklch(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "oklch(var(--secondary))",
+          foreground: "oklch(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "oklch(var(--destructive))",
+          foreground: "oklch(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "oklch(var(--muted))",
+          foreground: "oklch(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "oklch(var(--accent))",
+          foreground: "oklch(var(--accent-foreground))",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "oklch(var(--popover))",
+          foreground: "oklch(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "oklch(var(--card))",
+          foreground: "oklch(var(--card-foreground))",
         },
-        success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))",
+        // Chart colors
+        chart: {
+          1: "oklch(var(--chart-1))",
+          2: "oklch(var(--chart-2))",
+          3: "oklch(var(--chart-3))",
+          4: "oklch(var(--chart-4))",
+          5: "oklch(var(--chart-5))",
         },
-        warning: {
-          DEFAULT: "hsl(var(--warning))",
-          foreground: "hsl(var(--warning-foreground))",
+        // Sidebar colors
+        sidebar: {
+          DEFAULT: "oklch(var(--sidebar))",
+          foreground: "oklch(var(--sidebar-foreground))",
+          primary: "oklch(var(--sidebar-primary))",
+          'primary-foreground': "oklch(var(--sidebar-primary-foreground))",
+          accent: "oklch(var(--sidebar-accent))",
+          'accent-foreground': "oklch(var(--sidebar-accent-foreground))",
+          border: "oklch(var(--sidebar-border))",
+          ring: "oklch(var(--sidebar-ring))",
         },
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
+        sans: ['var(--font-sans)', 'Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Lora', 'Georgia', 'serif'],
+        mono: ['var(--font-mono)', 'Roboto Mono', 'Consolas', 'Monaco', 'monospace'],
       },
       fontSize: {
         'xs': ['0.75rem', { lineHeight: '1rem' }],
@@ -91,6 +103,20 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) + 4px)",
+      },
+      boxShadow: {
+        '2xs': 'var(--shadow-2xs)',
+        'xs': 'var(--shadow-xs)',
+        'sm': 'var(--shadow-sm)',
+        DEFAULT: 'var(--shadow)',
+        'md': 'var(--shadow-md)',
+        'lg': 'var(--shadow-lg)',
+        'xl': 'var(--shadow-xl)',
+        '2xl': 'var(--shadow-2xl)',
+      },
+      letterSpacing: {
+        normal: 'var(--tracking-normal)',
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

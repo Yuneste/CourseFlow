@@ -25,7 +25,8 @@
       "Bash(npm test:*)",
       "Bash(dir C:UsersLionGcursorCourseFlowcomponentsErrorBoundary.tsx)",
       "Bash(grep:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

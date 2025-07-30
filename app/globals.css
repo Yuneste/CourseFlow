@@ -1,65 +1,121 @@
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Roboto+Mono:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* CourseFlow Design System - Light Mode with High Contrast */
-    --background: 0 0% 100%; /* #FFFFFF - Pure white background */
-    --foreground: 0 0% 9%; /* #171717 - Almost black for maximum contrast */
-    --card: 0 0% 100%; /* #FFFFFF - Pure white cards */
-    --card-foreground: 0 0% 9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
-    --primary: 347 77% 45%; /* #D63384 - Darker pink for better contrast */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 13% 95%; /* #F1F3F5 - Light gray for backgrounds */
-    --secondary-foreground: 0 0% 9%;
-    --muted: 217 19% 94%; /* #F0F2F4 - Subtle gray background */
-    --muted-foreground: 0 0% 25%; /* #404040 - Dark gray for strong contrast */
-    --accent: 217 19% 88%; /* #DFE3E8 - Neutral accent */
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84% 60%; /* #EF4444 - Error red */
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 91%; /* #E5E7EB - Light border */
-    --input: 220 13% 91%;
-    --ring: 8 94% 72%; /* Match primary */
-    --radius: 0.75rem;
+    /* OKLCH Theme Variables - Light Mode */
+    --background: 0.9232 0.0026 48.7171;
+    --foreground: 0.2795 0.0368 260.0310;
+    --card: 0.9699 0.0013 106.4238;
+    --card-foreground: 0.2795 0.0368 260.0310;
+    --popover: 0.9699 0.0013 106.4238;
+    --popover-foreground: 0.2795 0.0368 260.0310;
+    --primary: 0.6090 0.1260 221.7230;
+    --primary-foreground: 1.0000 0 0;
+    --secondary: 0.8687 0.0043 56.3660;
+    --secondary-foreground: 0.4461 0.0263 256.8018;
+    --muted: 0.9232 0.0026 48.7171;
+    --muted-foreground: 0.5510 0.0234 264.3637;
+    --accent: 0.9380 0.1270 124.3210;
+    --accent-foreground: 0.3729 0.0306 259.7328;
+    --destructive: 0.6368 0.2078 25.3313;
+    --destructive-foreground: 1.0000 0 0;
+    --border: 0.8687 0.0043 56.3660;
+    --input: 0.8687 0.0043 56.3660;
+    --ring: 0.5854 0.2041 277.1173;
     
-    /* Success and Warning colors */
-    --success: 142 76% 36%; /* #10B981 - Success green */
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%; /* #F59E0B - Warning amber */
-    --warning-foreground: 0 0% 100%;
+    /* Chart colors */
+    --chart-1: 0.5854 0.2041 277.1173;
+    --chart-2: 0.5106 0.2301 276.9656;
+    --chart-3: 0.4568 0.2146 277.0229;
+    --chart-4: 0.3984 0.1773 277.3662;
+    --chart-5: 0.3588 0.1354 278.6973;
+    
+    /* Sidebar colors */
+    --sidebar: 0.8687 0.0043 56.3660;
+    --sidebar-foreground: 0.2795 0.0368 260.0310;
+    --sidebar-primary: 0.5854 0.2041 277.1173;
+    --sidebar-primary-foreground: 1.0000 0 0;
+    --sidebar-accent: 0.8720 0.0100 258.3380;
+    --sidebar-accent-foreground: 0.3729 0.0306 259.7328;
+    --sidebar-border: 0.8687 0.0043 56.3660;
+    --sidebar-ring: 0.5854 0.2041 277.1173;
+    
+    /* Typography */
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --font-serif: 'Lora', serif;
+    --font-mono: 'Roboto Mono', monospace;
+    
+    /* Spacing & Radius */
+    --radius: 1.25rem;
+    --spacing: 0.25rem;
+    
+    /* Shadows */
+    --shadow-2xs: 2px 2px 10px 4px hsl(240 4% 60% / 0.09);
+    --shadow-xs: 2px 2px 10px 4px hsl(240 4% 60% / 0.09);
+    --shadow-sm: 2px 2px 10px 4px hsl(240 4% 60% / 0.18), 2px 1px 2px 3px hsl(240 4% 60% / 0.18);
+    --shadow: 2px 2px 10px 4px hsl(240 4% 60% / 0.18), 2px 1px 2px 3px hsl(240 4% 60% / 0.18);
+    --shadow-md: 2px 2px 10px 4px hsl(240 4% 60% / 0.18), 2px 2px 4px 3px hsl(240 4% 60% / 0.18);
+    --shadow-lg: 2px 2px 10px 4px hsl(240 4% 60% / 0.18), 2px 4px 6px 3px hsl(240 4% 60% / 0.18);
+    --shadow-xl: 2px 2px 10px 4px hsl(240 4% 60% / 0.18), 2px 8px 10px 3px hsl(240 4% 60% / 0.18);
+    --shadow-2xl: 2px 2px 10px 4px hsl(240 4% 60% / 0.45);
+    
+    /* Letter spacing */
+    --tracking-normal: 0em;
   }
 
   .dark {
-    /* CourseFlow Design System - Dark Mode with High Contrast */
-    --background: 0 0% 5%; /* #0D0D0D - Very dark background */
-    --foreground: 0 0% 95%; /* #F2F2F2 - Almost white text */
-    --card: 0 0% 9%; /* #171717 - Slightly elevated surface */
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 347 77% 60%; /* #E85D9F - Brighter pink for dark mode */
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 15%; /* #262626 - Dark gray */
-    --secondary-foreground: 0 0% 95%;
-    --muted: 0 0% 12%; /* #1F1F1F - Subtle dark */
-    --muted-foreground: 0 0% 70%; /* #B3B3B3 - Light gray for contrast */
-    --accent: 0 0% 20%; /* #333333 - Dark accent */
-    --accent-foreground: 0 0% 95%;
-    --destructive: 0 62% 50%; /* #DC2626 - Error red for dark */
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 27% 18%; /* #334155 - Border color */
-    --input: 220 27% 18%;
-    --ring: 8 94% 72%; /* Match primary */
+    /* OKLCH Theme Variables - Dark Mode */
+    --background: 0.2244 0.0074 67.4370;
+    --foreground: 0.9288 0.0126 255.5078;
+    --card: 0.2801 0.0080 59.3379;
+    --card-foreground: 0.9288 0.0126 255.5078;
+    --popover: 0.2801 0.0080 59.3379;
+    --popover-foreground: 0.9288 0.0126 255.5078;
+    --primary: 0.6801 0.1583 276.9349;
+    --primary-foreground: 0.2244 0.0074 67.4370;
+    --secondary: 0.3359 0.0077 59.4197;
+    --secondary-foreground: 0.8717 0.0093 258.3382;
+    --muted: 0.2801 0.0080 59.3379;
+    --muted-foreground: 0.7137 0.0192 261.3246;
+    --accent: 0.3896 0.0074 59.4734;
+    --accent-foreground: 0.8717 0.0093 258.3382;
+    --destructive: 0.6368 0.2078 25.3313;
+    --destructive-foreground: 0.2244 0.0074 67.4370;
+    --border: 0.3359 0.0077 59.4197;
+    --input: 0.3359 0.0077 59.4197;
+    --ring: 0.6801 0.1583 276.9349;
     
-    /* Success and Warning for dark mode */
-    --success: 142 76% 36%; /* #10B981 - Success green */
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%; /* #F59E0B - Warning amber */
-    --warning-foreground: 0 0% 100%;
+    /* Chart colors */
+    --chart-1: 0.6801 0.1583 276.9349;
+    --chart-2: 0.5854 0.2041 277.1173;
+    --chart-3: 0.5106 0.2301 276.9656;
+    --chart-4: 0.4568 0.2146 277.0229;
+    --chart-5: 0.3984 0.1773 277.3662;
+    
+    /* Sidebar colors */
+    --sidebar: 0.3359 0.0077 59.4197;
+    --sidebar-foreground: 0.9288 0.0126 255.5078;
+    --sidebar-primary: 0.6801 0.1583 276.9349;
+    --sidebar-primary-foreground: 0.2244 0.0074 67.4370;
+    --sidebar-accent: 0.3896 0.0074 59.4734;
+    --sidebar-accent-foreground: 0.8717 0.0093 258.3382;
+    --sidebar-border: 0.3359 0.0077 59.4197;
+    --sidebar-ring: 0.6801 0.1583 276.9349;
+    
+    /* Shadows for dark mode */
+    --shadow-2xs: 2px 2px 10px 4px hsl(0 0% 0% / 0.09);
+    --shadow-xs: 2px 2px 10px 4px hsl(0 0% 0% / 0.09);
+    --shadow-sm: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 1px 2px 3px hsl(0 0% 0% / 0.18);
+    --shadow: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 1px 2px 3px hsl(0 0% 0% / 0.18);
+    --shadow-md: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 2px 4px 3px hsl(0 0% 0% / 0.18);
+    --shadow-lg: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 4px 6px 3px hsl(0 0% 0% / 0.18);
+    --shadow-xl: 2px 2px 10px 4px hsl(0 0% 0% / 0.18), 2px 8px 10px 3px hsl(0 0% 0% / 0.18);
+    --shadow-2xl: 2px 2px 10px 4px hsl(0 0% 0% / 0.45);
   }
   
   /* Academic theme for dashboard/app pages */
@@ -278,9 +334,10 @@
 
 /* Modern typography */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: var(--tracking-normal);
 }
 
 /* Better focus styles */
