@@ -115,10 +115,10 @@ export default function LandingPage() {
     },
     {
       name: "Scholar",
-      price: isYearly ? "€96" : "€10",
+      price: isYearly ? "€8" : "€10",
       monthlyPrice: 10,
       yearlyPrice: 96,
-      period: isYearly ? "/year" : "/month",
+      period: "/month",
       features: ["Unlimited courses", "AI-powered organization", "5GB storage", "100 AI summaries/month", "Join 5 study groups", "Document annotation", "Progress tracking"],
       highlighted: true,
       paymentLink: isYearly 
@@ -127,10 +127,10 @@ export default function LandingPage() {
     },
     {
       name: "Master",
-      price: isYearly ? "€240" : "€25",
+      price: isYearly ? "€20" : "€25",
       monthlyPrice: 25,
       yearlyPrice: 240,
-      period: isYearly ? "/year" : "/month",
+      period: "/month",
       features: ["Everything in Scholar", "50GB storage", "500 AI summaries/month", "Unlimited study groups", "Priority AI processing", "Advanced analytics", "Priority support"],
       paymentLink: isYearly 
         ? "https://buy.stripe.com/test_8x23cv9Vmdj6eot1bj9sk03"
@@ -423,7 +423,7 @@ export default function LandingPage() {
                   {plan.period && <span className={`text-lg ${plan.highlighted ? 'text-white/80' : 'text-foreground/90'}`}>{plan.period}</span>}
                   {isYearly && plan.monthlyPrice > 0 && (
                     <div className={`text-sm mt-2 ${plan.highlighted ? 'text-white/60' : 'text-muted-foreground'}`}>
-                      €{plan.yearlyPrice * 12} billed annually
+                      €{plan.yearlyPrice} billed annually
                     </div>
                   )}
                 </div>

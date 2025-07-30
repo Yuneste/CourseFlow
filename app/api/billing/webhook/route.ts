@@ -31,12 +31,17 @@ export async function POST(req: Request) {
         
         // Get customer details
         const customerId = session.customer as string;
-        const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
+        const customerEmail = session.customer_email || session.customer_details?.email;
         
-        if (!customer.email) {
-          console.error('No email found for customer:', customerId);
-          break;
+        if (!customerEmail) {
+          const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
+          if (!customer.email) {
+            console.error('No email found for customer:', customerId);
+            break;
+          }
         }
+        
+        const email = customerEmail || (await stripe.customers.retrieve(customerId) as Stripe.Customer).email;
 
         // Get subscription details
         const subscriptionId = session.subscription as string;
@@ -62,12 +67,12 @@ export async function POST(req: Request) {
             has_access: true,
             updated_at: new Date().toISOString()
           })
-          .eq('email', customer.email);
+          .eq('email', email!);
 
         if (error) {
           console.error('Error updating user subscription:', error);
         } else {
-          console.log(`User ${customer.email} upgraded to ${tier}`);
+          console.log(`User ${email} upgraded to ${tier}`);
         }
         break;
       }
