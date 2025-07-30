@@ -133,11 +133,16 @@ export function UpgradePrompt({ currentPlan = 'explorer', feature }: UpgradeProm
               </CardTitle>
               <CardDescription>
                 <span className="text-2xl font-bold text-foreground">
-                  €{isYearly ? plan.yearlyPrice : plan.monthlyPrice}
+                  €{isYearly ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice}
                 </span>
                 <span className="text-muted-foreground">
-                  /{isYearly ? 'year' : 'month'}
+                  /month
                 </span>
+                {isYearly && (
+                  <div className="text-sm text-muted-foreground mt-1">
+                    €{plan.yearlyPrice} billed annually
+                  </div>
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent>

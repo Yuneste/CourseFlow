@@ -12,11 +12,15 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 export const runtime = 'nodejs'; // Ensure we're using Node.js runtime, not edge
 
 export async function POST(req: Request) {
+  console.log('Webhook endpoint hit');
+  
   let body: string;
   let signature: string | null;
 
   try {
     body = await req.text();
+    console.log('Body length:', body.length);
+    
     const headersList = await headers();
     signature = headersList.get('stripe-signature');
 
