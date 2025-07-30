@@ -15,7 +15,7 @@ export const colors = {
   
   // Text Hierarchy Colors
   text: {
-    sectionHeader: '#7AFFCA', // Main section titles (Overview, Quick Actions, etc.)
+    sectionHeader: '#49C993', // Main section titles (Overview, Quick Actions, etc.)
     cardTitle: '#FFC194',      // Card and component titles
     termStatus: '#FF7878',     // Current term and status indicators
   },

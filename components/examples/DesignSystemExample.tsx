@@ -117,7 +117,7 @@ export function DesignSystemExample() {
           <div className="space-y-2">
             <div className="h-16 rounded-lg bg-courseflow-sectionHeader" />
             <p className="text-xs text-muted-foreground">Section Headers</p>
-            <code className="text-xs">#7AFFCA</code>
+            <code className="text-xs">#49C993</code>
           </div>
           <div className="space-y-2">
             <div className="h-16 rounded-lg bg-courseflow-cardTitle" />

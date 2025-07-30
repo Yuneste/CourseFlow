@@ -59,7 +59,10 @@ const StatsCard = ({ title, value, icon: Icon, delay = 0, trend, color }: StatsC
           <div>
             <p className="text-xs text-[#FFC194] font-medium">{title}</p>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-xl font-bold text-foreground">{value}</h3>
+              <h3 className={cn(
+                "text-xl font-bold",
+                title === "Current Term" ? "text-[#FF7878]" : "text-foreground"
+              )}>{value}</h3>
               {trend && (
                 <span className={cn(
                   "text-xs font-medium px-2 py-1 rounded-full",
@@ -312,7 +315,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           transition={{ delay: 0.3 }}
           className="mb-6"
         >
-          <h2 className="text-base font-semibold text-[#7AFFCA] mb-3">Overview</h2>
+          <h2 className="text-base font-semibold text-[#49C993] mb-3">Overview</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <StatsCard
               title="Active Courses"
@@ -345,7 +348,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           transition={{ delay: 0.4 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-[#7AFFCA]">Quick Actions</h2>
+            <h2 className="text-base font-semibold text-[#49C993]">Quick Actions</h2>
             <Button variant="ghost" size="sm" className="gap-2">
               <Settings className="h-3.5 w-3.5" />
               <span className="text-xs">Customize</span>

@@ -23,7 +23,7 @@ const config: Config = {
           primaryLight: 'rgba(140, 194, 190, 0.1)',
           primaryMedium: 'rgba(140, 194, 190, 0.2)',
           primaryGlow: 'rgba(140, 194, 190, 0.8)',
-          sectionHeader: '#7AFFCA',
+          sectionHeader: '#49C993',
           cardTitle: '#FFC194',
           termStatus: '#FF7878',
         },

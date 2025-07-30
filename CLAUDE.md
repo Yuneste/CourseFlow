@@ -179,7 +179,7 @@ CourseFlow follows a strict design system for consistency. See `docs/design-syst
 
 **Color Palette**:
 - Primary Teal: `#8CC2BE` - buttons, primary actions, hover states
-- Section Headers: `#7AFFCA` - main section titles (Overview, Quick Actions, My Courses)
+- Section Headers: `#49C993` - main section titles (Overview, Quick Actions, My Courses)
 - Card Titles: `#FFC194` - card/component titles within sections
 - Term/Status: `#FF7878` - current term text, status indicators
 

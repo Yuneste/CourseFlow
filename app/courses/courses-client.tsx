@@ -88,7 +88,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-4xl font-bold text-[#7AFFCA] mb-2">My Courses</h1>
+        <h1 className="text-4xl font-bold text-[#49C993] mb-2">My Courses</h1>
         <p className="text-muted-foreground font-medium">Manage and track all your courses in one place</p>
       </motion.div>
 

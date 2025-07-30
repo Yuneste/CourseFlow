@@ -4,7 +4,7 @@
 
 ### Primary Colors
 - **Primary Teal**: `#8CC2BE` - Used for primary actions, buttons, and accents
-- **Section Headers (Cyan)**: `#7AFFCA` - Used for main section titles (Overview, Quick Actions, My Courses)
+- **Section Headers (Green)**: `#49C993` - Used for main section titles (Overview, Quick Actions, My Courses)
 - **Card Titles (Peach)**: `#FFC194` - Used for card/component titles within sections
 - **Term/Status (Coral)**: `#FF7878` - Used for current term text and important status indicators
 
@@ -25,13 +25,13 @@
 ### Page Titles
 - Size: `text-4xl` (2.25rem)
 - Weight: `font-bold`
-- Color: `#7AFFCA`
+- Color: `#49C993`
 - Example: "My Courses", "Dashboard"
 
 ### Section Headers
 - Size: `text-base` to `text-lg`
 - Weight: `font-semibold`
-- Color: `#7AFFCA`
+- Color: `#49C993`
 - Example: "Overview", "Quick Actions"
 
 ### Card/Component Titles
@@ -95,7 +95,7 @@ whileTap={{ scale: 0.98 }}
 ### Section with Title
 ```tsx
 <section>
-  <h2 className="text-base font-semibold text-[#7AFFCA] mb-3">Section Title</h2>
+  <h2 className="text-base font-semibold text-[#49C993] mb-3">Section Title</h2>
   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
     {/* Content */}
   </div>
