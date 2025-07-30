@@ -23,11 +23,14 @@ import {
   Plus,
   Search,
   Bell,
-  Settings
+  Settings,
+  Crown
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
+import { CustomerPortalButton } from '@/components/billing/customer-portal-button';
+import { UpgradePrompt } from '@/components/pricing/upgrade-prompt';
 
 interface DashboardClientProps {
   initialCourses: Course[];
@@ -339,6 +342,57 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
               delay={0.6}
             />
           </div>
+        </motion.div>
+
+        {/* Subscription Status */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="mb-6"
+        >
+          <Card className="p-4 bg-card border-border shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  "p-2 rounded-lg",
+                  userProfile.subscription_tier === 'master' ? "bg-yellow-500/10" : 
+                  userProfile.subscription_tier === 'scholar' ? "bg-primary/10" :
+                  "bg-muted"
+                )}>
+                  <Crown className={cn(
+                    "h-5 w-5",
+                    userProfile.subscription_tier === 'master' ? "text-yellow-500" : 
+                    userProfile.subscription_tier === 'scholar' ? "text-primary" :
+                    "text-muted-foreground"
+                  )} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">
+                    {userProfile.subscription_tier === 'explorer' ? 'Free Plan' :
+                     userProfile.subscription_tier === 'scholar' ? 'Scholar Plan' :
+                     'Master Plan'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {userProfile.subscription_tier === 'explorer' 
+                      ? 'Upgrade to unlock more features'
+                      : userProfile.subscription_status === 'active' 
+                        ? 'Active subscription' 
+                        : 'Subscription ' + userProfile.subscription_status}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {userProfile.subscription_tier === 'explorer' ? (
+                  <Button size="sm" variant="default" asChild>
+                    <Link href="/pricing">Upgrade</Link>
+                  </Button>
+                ) : userProfile.stripe_customer_id ? (
+                  <CustomerPortalButton />
+                ) : null}
+              </div>
+            </div>
+          </Card>
         </motion.div>
 
         {/* Features Grid */}

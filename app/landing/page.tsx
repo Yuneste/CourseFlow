@@ -105,29 +105,36 @@ export default function LandingPage() {
 
   const pricingPlans = [
     {
-      name: "Free",
+      name: "Explorer",
       price: "€0",
       monthlyPrice: 0,
       yearlyPrice: 0,
-      features: ["5 courses", "Basic file organization", "1GB storage", "Community support"],
-      highlighted: false
+      features: ["3 courses", "Basic file organization", "500MB storage", "10 AI summaries/month", "Join 1 study group"],
+      highlighted: false,
+      paymentLink: null
     },
     {
-      name: "Pro",
-      price: isYearly ? "€8" : "€10",
+      name: "Scholar",
+      price: isYearly ? "€96" : "€10",
       monthlyPrice: 10,
-      yearlyPrice: 8,
-      period: "/month",
-      features: ["Unlimited courses", "AI-powered organization", "100GB storage", "Study groups", "Priority support", "Advanced analytics"],
-      highlighted: true
+      yearlyPrice: 96,
+      period: isYearly ? "/year" : "/month",
+      features: ["Unlimited courses", "AI-powered organization", "5GB storage", "100 AI summaries/month", "Join 5 study groups", "Document annotation", "Progress tracking"],
+      highlighted: true,
+      paymentLink: isYearly 
+        ? "https://buy.stripe.com/test_28E6oH3wYfrecgl9HP9sk01"
+        : "https://buy.stripe.com/test_dRmeVdc3ucf2cgl2fn9sk00"
     },
     {
-      name: "Team",
-      price: isYearly ? "€20" : "€25",
+      name: "Master",
+      price: isYearly ? "€240" : "€25",
       monthlyPrice: 25,
-      yearlyPrice: 20,
-      period: "/month",
-      features: ["Everything in Pro", "Unlimited collaborators", "500GB storage", "Admin controls", "API access", "Custom integrations"],
+      yearlyPrice: 240,
+      period: isYearly ? "/year" : "/month",
+      features: ["Everything in Scholar", "50GB storage", "500 AI summaries/month", "Unlimited study groups", "Priority AI processing", "Advanced analytics", "Priority support"],
+      paymentLink: isYearly 
+        ? "https://buy.stripe.com/test_8x23cv9Vmdj6eot1bj9sk03"
+        : "https://buy.stripe.com/test_aFa4gzgjK0wk6W16vD9sk02",
       highlighted: false
     }
   ];
@@ -436,9 +443,15 @@ export default function LandingPage() {
                   }`}
                   asChild
                 >
-                  <Link href="/register">
-                    Get Started
-                  </Link>
+                  {plan.paymentLink ? (
+                    <a href={plan.paymentLink} target="_blank" rel="noopener noreferrer">
+                      Get Started
+                    </a>
+                  ) : (
+                    <Link href="/register">
+                      Start Free
+                    </Link>
+                  )}
                 </Button>
               </motion.div>
             ))}

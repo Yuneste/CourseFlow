@@ -15,6 +15,11 @@ export interface User {
   updated_at: Date;
   avatar_url?: string;
   onboarding_completed?: boolean;
+  subscription_tier?: 'explorer' | 'scholar' | 'master';
+  subscription_status?: 'inactive' | 'active' | 'canceled' | 'past_due' | 'trialing';
+  stripe_customer_id?: string;
+  stripe_subscription_id?: string;
+  has_access?: boolean;
 }
 
 export interface CourseFolder {
