@@ -290,7 +290,7 @@ function StepCountrySelection({ onSelect }: { onSelect: (country: CountryCode) =
               <Button
                 key={code}
                 variant="outline"
-                className="justify-between h-auto p-4 border-border hover:bg-accent"
+                className="justify-between h-auto p-4 border-border hover:bg-[#8CC2BE]/20"
                 onClick={() => onSelect(code)}
               >
                 <div className="text-left">
