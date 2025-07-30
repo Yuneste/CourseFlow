@@ -57,7 +57,7 @@ const StatsCard = ({ title, value, icon: Icon, delay = 0, trend, color }: StatsC
             <Icon className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground font-medium">{title}</p>
+            <p className="text-xs text-[#FFC194] font-medium">{title}</p>
             <div className="flex items-baseline gap-2">
               <h3 className="text-xl font-bold text-foreground">{value}</h3>
               {trend && (
@@ -129,7 +129,7 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
 
           {/* Content */}
           <div className="space-y-2">
-            <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
+            <h3 className="text-base font-semibold text-[#FFC194] group-hover:text-primary transition-colors duration-300">
               {title}
             </h3>
             <p className="text-muted-foreground text-xs leading-relaxed">
@@ -312,7 +312,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           transition={{ delay: 0.3 }}
           className="mb-6"
         >
-          <h2 className="text-base font-semibold text-foreground mb-3">Overview</h2>
+          <h2 className="text-base font-semibold text-[#7AFFCA] mb-3">Overview</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <StatsCard
               title="Active Courses"
@@ -345,7 +345,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           transition={{ delay: 0.4 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-foreground">Quick Actions</h2>
+            <h2 className="text-base font-semibold text-[#7AFFCA]">Quick Actions</h2>
             <Button variant="ghost" size="sm" className="gap-2">
               <Settings className="h-3.5 w-3.5" />
               <span className="text-xs">Customize</span>

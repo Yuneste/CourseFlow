@@ -88,7 +88,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-4xl font-bold text-foreground mb-2">My Courses</h1>
+        <h1 className="text-4xl font-bold text-[#7AFFCA] mb-2">My Courses</h1>
         <p className="text-muted-foreground font-medium">Manage and track all your courses in one place</p>
       </motion.div>
 
@@ -182,12 +182,12 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                     <div className="p-2 rounded-lg bg-primary/10">
                       <BookOpen className="h-5 w-5 text-primary" />
                     </div>
-                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent text-accent-foreground">
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent text-[#FF7878]">
                       {course.term}
                     </span>
                   </div>
                   
-                  <h3 className="text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
+                  <h3 className="text-base font-semibold text-[#FFC194] mb-1 group-hover:text-primary transition-colors">
                     {course.name}
                   </h3>
                   
@@ -208,7 +208,7 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                   <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3.5 w-3.5" />
-                      <span>{course.term || 'Current Term'}</span>
+                      <span className="text-[#FF7878]">{course.term || 'Current Term'}</span>
                     </div>
                     <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
