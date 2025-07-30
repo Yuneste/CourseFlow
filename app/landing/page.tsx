@@ -261,7 +261,7 @@ export default function LandingPage() {
                   </ul>
                 </div>
                 <div className="flex-1 max-w-2xl w-full">
-                  <div className="bg-card rounded-xl shadow-xl p-4 sm:p-6 md:p-8 overflow-hidden border border-border">
+                  <div className="bg-card rounded-xl shadow-[0_0_40px_rgba(140,194,190,0.5)] p-4 sm:p-6 md:p-8 overflow-hidden border border-border">
                     <feature.Demo />
                   </div>
                 </div>
