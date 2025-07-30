@@ -78,7 +78,22 @@ export async function POST(req: Request) {
           tier = 'master';
         }
 
-        // Update user in database
+        // First, find the user by email
+        const { data: profile, error: fetchError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', email!)
+          .single();
+
+        if (fetchError || !profile) {
+          console.error('User not found with email:', email);
+          console.error('Fetch error:', fetchError);
+          break;
+        }
+
+        console.log(`Updating user ${email} (ID: ${profile.id}) to ${tier} plan`);
+
+        // Update user in database by ID
         const { error } = await supabase
           .from('profiles')
           .update({
@@ -89,7 +104,7 @@ export async function POST(req: Request) {
             has_access: true,
             updated_at: new Date().toISOString()
           })
-          .eq('email', email!);
+          .eq('id', profile.id);
 
         if (error) {
           console.error('Error updating user subscription:', error);
