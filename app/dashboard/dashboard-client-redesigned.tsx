@@ -43,23 +43,23 @@ const StatsCard = ({ title, value, icon: Icon, delay = 0, trend, color }: StatsC
     whileHover={{ scale: 1.02, y: -2 }}
     className="relative group"
   >
-    <Card className="p-6 bg-card border-border shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] transition-all duration-300 relative overflow-hidden">
+    <Card className="p-4 bg-card border-border shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] transition-all duration-300 relative overflow-hidden">
       {/* Subtle gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       
       <div className="relative flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className={cn(
-            "p-3 rounded-xl transition-colors duration-300",
+            "p-2 rounded-lg transition-colors duration-300",
             color,
             "group-hover:scale-110 transition-transform"
           )}>
-            <Icon className="h-6 w-6 text-primary" />
+            <Icon className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <p className="text-sm text-muted-foreground font-medium">{title}</p>
+            <p className="text-xs text-muted-foreground font-medium">{title}</p>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-2xl font-bold text-foreground">{value}</h3>
+              <h3 className="text-xl font-bold text-foreground">{value}</h3>
               {trend && (
                 <span className={cn(
                   "text-xs font-medium px-2 py-1 rounded-full",
@@ -91,7 +91,7 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
     >
       <Card 
         className={cn(
-          "relative overflow-hidden cursor-pointer h-full p-6 transition-all duration-300",
+          "relative overflow-hidden cursor-pointer h-full p-4 transition-all duration-300",
           "border-border bg-card shadow-[0_2px_8px_rgba(0,0,0,0.08)]",
           available 
             ? "hover:shadow-[0_8px_16px_rgba(0,0,0,0.12)] hover:border-primary/20" 
@@ -112,41 +112,41 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
         
         <div className="relative">
           {/* Header with icon and badge */}
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between mb-3">
             <div className={cn(
-              "p-3 rounded-xl transition-all duration-300",
+              "p-2 rounded-lg transition-all duration-300",
               color,
               "group-hover:scale-110"
             )}>
-              <Icon className="h-6 w-6 text-primary" />
+              <Icon className="h-5 w-5 text-primary" />
             </div>
             {badge && (
-              <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
+              <span className="px-1.5 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
                 {badge}
               </span>
             )}
           </div>
 
           {/* Content */}
-          <div className="space-y-3">
-            <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
+          <div className="space-y-2">
+            <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
               {title}
             </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">
+            <p className="text-muted-foreground text-xs leading-relaxed">
               {description}
             </p>
           </div>
 
           {/* Footer */}
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-4 flex items-center justify-between">
             <span className={cn(
-              "text-sm font-medium transition-colors duration-300",
+              "text-xs font-medium transition-colors duration-300",
               available ? "text-primary" : "text-muted-foreground"
             )}>
               {available ? 'Open' : 'Coming Soon'}
             </span>
             <ChevronRight className={cn(
-              "h-4 w-4 transition-all duration-300",
+              "h-3.5 w-3.5 transition-all duration-300",
               available ? "text-primary group-hover:translate-x-1" : "text-muted-foreground"
             )} />
           </div>
@@ -182,15 +182,15 @@ const WelcomeHeader = ({ userName }: { userName: string }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mb-8"
+      className="mb-6"
     >
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         {/* Welcome message */}
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl sm:text-2xl font-bold text-foreground mb-1">
             {greeting}, <span className="text-primary">{firstName}</span>
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Ready to make progress on your academic journey?
           </p>
         </div>
@@ -217,14 +217,14 @@ const QuickSearch = () => (
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.2 }}
-    className="mb-8"
+    className="mb-6"
   >
     <div className="relative max-w-md mx-auto">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50" />
       <input
         type="text"
         placeholder="Search functionality coming soon..."
-        className="w-full pl-10 pr-4 py-3 bg-card/50 border border-border rounded-lg cursor-not-allowed opacity-60 transition-colors"
+        className="w-full pl-9 pr-3 py-2 text-sm bg-card/50 border border-border rounded-lg cursor-not-allowed opacity-60 transition-colors"
         disabled
       />
     </div>
@@ -310,10 +310,10 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="mb-8"
+          className="mb-6"
         >
-          <h2 className="text-lg font-semibold text-foreground mb-4">Overview</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <h2 className="text-base font-semibold text-foreground mb-3">Overview</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <StatsCard
               title="Active Courses"
               value={activeCourses}
@@ -344,15 +344,15 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-foreground">Quick Actions</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-semibold text-foreground">Quick Actions</h2>
             <Button variant="ghost" size="sm" className="gap-2">
-              <Settings className="h-4 w-4" />
-              Customize
+              <Settings className="h-3.5 w-3.5" />
+              <span className="text-xs">Customize</span>
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {features.map((feature, index) => (
               <FeatureCard
                 key={feature.title}
@@ -369,18 +369,18 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1 }}
-            className="mt-12"
+            className="mt-8"
           >
-            <Card className="p-8 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 text-center">
-              <div className="flex flex-col items-center gap-4">
-                <div className="p-4 bg-primary/10 rounded-full">
-                  <Sparkles className="h-8 w-8 text-primary" />
+            <Card className="p-6 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 text-center">
+              <div className="flex flex-col items-center gap-3">
+                <div className="p-3 bg-primary/10 rounded-full">
+                  <Sparkles className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
+                  <h3 className="text-lg font-semibold text-foreground mb-1">
                     Welcome to CourseFlow!
                   </h3>
-                  <p className="text-muted-foreground max-w-md">
+                  <p className="text-muted-foreground text-sm max-w-md">
                     Start your academic journey by adding your first course. 
                     Upload materials, organize files, and track your progress.
                   </p>
