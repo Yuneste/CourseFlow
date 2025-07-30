@@ -35,6 +35,7 @@ import { AcademicStars } from '@/components/ui/academic-stars';
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isYearly, setIsYearly] = useState(false);
 
   const features = [
     {
@@ -105,20 +106,26 @@ export default function LandingPage() {
   const pricingPlans = [
     {
       name: "Free",
-      price: "$0",
+      price: "€0",
+      monthlyPrice: 0,
+      yearlyPrice: 0,
       features: ["5 courses", "Basic file organization", "1GB storage", "Community support"],
       highlighted: false
     },
     {
       name: "Pro",
-      price: "$9.99",
+      price: isYearly ? "€8" : "€10",
+      monthlyPrice: 10,
+      yearlyPrice: 8,
       period: "/month",
       features: ["Unlimited courses", "AI-powered organization", "100GB storage", "Study groups", "Priority support", "Advanced analytics"],
       highlighted: true
     },
     {
       name: "Team",
-      price: "$19.99",
+      price: isYearly ? "€20" : "€25",
+      monthlyPrice: 25,
+      yearlyPrice: 20,
       period: "/month",
       features: ["Everything in Pro", "Unlimited collaborators", "500GB storage", "Admin controls", "API access", "Custom integrations"],
       highlighted: false
@@ -350,9 +357,38 @@ export default function LandingPage() {
               Simple, Transparent
               <span className="text-primary font-extrabold"> Pricing</span>
             </h2>
-            <p className="text-lg sm:text-xl text-white/90">
+            <p className="text-lg sm:text-xl text-white/90 mb-6">
               Choose the plan that fits your needs
             </p>
+            
+            {/* Monthly/Yearly Toggle */}
+            <div className="flex items-center justify-center gap-4">
+              <span className={`text-lg ${!isYearly ? 'text-white font-semibold' : 'text-white/60'}`}>
+                Monthly
+              </span>
+              <button
+                onClick={() => setIsYearly(!isYearly)}
+                className="relative w-16 h-8 bg-white/20 rounded-full transition-colors hover:bg-white/30"
+              >
+                <motion.div
+                  className="absolute top-1 left-1 w-6 h-6 bg-primary rounded-full"
+                  animate={{ x: isYearly ? 32 : 0 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              </button>
+              <span className={`text-lg ${isYearly ? 'text-white font-semibold' : 'text-white/60'}`}>
+                Yearly
+              </span>
+              {isYearly && (
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-green-500 text-white text-sm px-3 py-1 rounded-full font-semibold"
+                >
+                  Save 20%
+                </motion.span>
+              )}
+            </div>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
@@ -378,6 +414,11 @@ export default function LandingPage() {
                 <div className="mb-6">
                   <span className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-foreground'}`}>{plan.price}</span>
                   {plan.period && <span className={`text-lg ${plan.highlighted ? 'text-white/80' : 'text-foreground/90'}`}>{plan.period}</span>}
+                  {isYearly && plan.monthlyPrice > 0 && (
+                    <div className={`text-sm mt-2 ${plan.highlighted ? 'text-white/60' : 'text-muted-foreground'}`}>
+                      €{plan.yearlyPrice * 12} billed annually
+                    </div>
+                  )}
                 </div>
                 <ul className="space-y-3 mb-8 flex-grow">
                   {plan.features.map((feature, i) => (
