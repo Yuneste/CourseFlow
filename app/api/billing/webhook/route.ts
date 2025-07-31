@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-07-30.basil',
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       return new NextResponse('Webhook Error: Invalid signature', { status: 400 });
     }
 
-    const supabase = await createClient();
+    const supabase = createServiceClient();
 
     console.log('Processing webhook event:', event.type);
 
@@ -79,15 +79,31 @@ export async function POST(req: Request) {
         }
 
         // First, find the user by email
+        console.log('Looking for user with email:', email);
+        
         const { data: profile, error: fetchError } = await supabase
           .from('profiles')
-          .select('id')
+          .select('id, email')
           .eq('email', email!)
           .single();
 
         if (fetchError || !profile) {
           console.error('User not found with email:', email);
           console.error('Fetch error:', fetchError);
+          
+          // Try case-insensitive search
+          const { data: profileAlt } = await supabase
+            .from('profiles')
+            .select('id, email')
+            .ilike('email', email!)
+            .single();
+            
+          if (profileAlt) {
+            console.log('Found user with different case email:', profileAlt.email);
+            // Return error to Stripe to retry later
+            return new NextResponse('User not found', { status: 404 });
+          }
+          
           break;
         }
 
