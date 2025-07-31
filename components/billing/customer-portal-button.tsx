@@ -27,8 +27,9 @@ export function CustomerPortalButton() {
         .eq('id', user.id)
         .single();
 
-      if (!profile?.stripe_customer_id) {
-        console.log('No active subscription found');
+      if (!profile?.stripe_customer_id || profile.stripe_customer_id.startsWith('manual_fix_')) {
+        console.log('No valid Stripe subscription found');
+        alert('Please complete a new subscription through the pricing page to access the customer portal.');
         return;
       }
 
@@ -43,10 +44,20 @@ export function CustomerPortalButton() {
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('Portal API error:', errorData);
+        alert('Unable to open customer portal. Please try again later.');
+        return;
+      }
+
       const data = await response.json();
 
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        console.error('No portal URL received');
+        alert('Unable to open customer portal. Please try again later.');
       }
     } catch (error) {
       console.error('Error opening customer portal:', error);
