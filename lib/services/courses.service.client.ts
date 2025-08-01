@@ -82,7 +82,7 @@ class CoursesService {
         this.validateCourseData(data as CourseFormData);
       }
 
-      const course = await api.patch<Course>(`/courses/${courseId}`, data);
+      const course = await api.put<Course>(`/courses/${courseId}`, data);
       logger.info('Course updated successfully', {
         action: 'updateCourse',
         metadata: { courseId, updates: Object.keys(data) }
@@ -242,7 +242,7 @@ class CoursesService {
    */
   async deleteFolder(folderId: string): Promise<void> {
     try {
-      await api.delete(`/folders/${folderId}`);
+      await api.delete(`/courses/folders/${folderId}`);
       logger.info('Folder deleted successfully', {
         action: 'deleteFolder',
         metadata: { folderId }
