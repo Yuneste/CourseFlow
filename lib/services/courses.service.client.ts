@@ -149,9 +149,10 @@ class CoursesService {
         throw new Error(`Folder name must be less than 100 characters`);
       }
 
-      const folder = await api.post<CourseFolder>(`/courses/${courseId}/folders`, {
+      const folder = await api.post<CourseFolder>('/courses/folders', {
+        courseId,
         name: name.trim(),
-        parent_id: parentId
+        parentId
       });
       
       logger.info('Course folder created successfully', {
@@ -181,7 +182,7 @@ class CoursesService {
         throw new Error(`Folder name must be less than 100 characters`);
       }
 
-      const folder = await api.patch<CourseFolder>(`/courses/${courseId}/folders/${folderId}`, {
+      const folder = await api.patch<CourseFolder>(`/courses/folders/${folderId}`, {
         name: name.trim()
       });
       
@@ -204,7 +205,7 @@ class CoursesService {
    */
   async deleteCourseFolder(courseId: string, folderId: string): Promise<void> {
     try {
-      await api.delete(`/courses/${courseId}/folders/${folderId}`);
+      await api.delete(`/courses/folders/${folderId}`);
       logger.info('Course folder deleted successfully', {
         action: 'deleteCourseFolder',
         metadata: { courseId, folderId }
