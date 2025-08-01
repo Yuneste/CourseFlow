@@ -463,11 +463,11 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
                         </div>
                       </div>
                       <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                        {course.code} • {course.credits} credits
+                        {course.code} • {course.professor && `Prof. ${course.professor}`}
                       </p>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">
-                          {course.files?.length || 0} files
+                          {course.credits || 0} credits
                         </span>
                         <span className="text-sm font-medium text-[#8CC2BE] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                           Open
