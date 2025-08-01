@@ -6,6 +6,7 @@ import { Toaster } from 'sonner'
 import { GlobalErrorBoundary } from '@/components/error-boundaries/GlobalErrorBoundary'
 import { SkipLinks } from '@/components/accessibility/SkipLinks'
 import { generateMetadata } from '@/components/seo/metadata'
+import { CookieConsent } from '@/components/compliance/CookieConsent'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -63,6 +64,7 @@ export default function RootLayout({
                 },
               }}
             />
+            <CookieConsent />
           </ThemeProvider>
         </GlobalErrorBoundary>
       </body>
