@@ -79,10 +79,12 @@ class FilesService {
         
         // Create the upload request with retry logic
         const response = await withRetry(async () => {
-          // Since api doesn't have uploadWithProgress, use fetch directly
           const xhr = new XMLHttpRequest();
           
           return new Promise<any>((resolve, reject) => {
+            // Set timeout to 30 seconds per file
+            xhr.timeout = 30000;
+            
             xhr.upload.addEventListener('progress', (event) => {
               if (event.lengthComputable) {
                 const progress = (event.loaded / event.total) * 100;
@@ -111,13 +113,19 @@ class FilesService {
                 } catch (e) {
                   reject(new Error('Invalid response'));
                 }
+              } else if (xhr.status === 504) {
+                reject(new Error('Upload timeout - file too large or slow connection'));
               } else {
                 reject(new Error(`Upload failed: ${xhr.status}`));
               }
             });
             
             xhr.addEventListener('error', () => {
-              reject(new Error('Upload failed'));
+              reject(new Error('Network error during upload'));
+            });
+            
+            xhr.addEventListener('timeout', () => {
+              reject(new Error('Upload timeout - file too large or slow connection'));
             });
             
             if (uploadId && this.activeUploads) {
@@ -127,6 +135,13 @@ class FilesService {
             xhr.open('POST', '/api/files/upload');
             xhr.send(formData);
           });
+        }, {
+          maxRetries: 2, // Retry up to 2 times for timeouts
+          initialDelay: 1000,
+          shouldRetry: (error) => {
+            // Only retry on timeout or network errors
+            return error.message.includes('timeout') || error.message.includes('Network error');
+          }
         });
         
         if (response.file) {

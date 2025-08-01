@@ -6,6 +6,9 @@ import { ERROR_MESSAGES } from '@/lib/constants';
 import { rateLimit } from '@/lib/rate-limit';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+// Increase timeout for file uploads
+export const maxDuration = 60; // 60 seconds timeout for file uploads
+
 // Authentication handler
 async function authenticateUser(supabase: SupabaseClient) {
   const { data: { user }, error } = await supabase.auth.getUser();

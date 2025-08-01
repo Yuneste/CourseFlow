@@ -369,38 +369,81 @@ export class UploadService {
    */
   static async uploadBatch(request: UploadRequest): Promise<UploadResponse> {
     const supabase = await createClient();
+    const BATCH_SIZE = 3; // Process files in batches of 3 to avoid timeouts
     
-    // Process files in parallel for better performance
-    const uploadPromises = request.files.map(file =>
-      this.processFile(
-        supabase,
-        file,
-        request.userId,
-        request.courseId,
-        request.folderId,
-        request.userAgent
-      )
-    );
+    const allSuccessfulUploads: FileType[] = [];
+    const allFailedUploads: UploadResult[] = [];
+    
+    // Process files in smaller batches
+    for (let i = 0; i < request.files.length; i += BATCH_SIZE) {
+      const batch = request.files.slice(i, i + BATCH_SIZE);
+      
+      // Process batch in parallel
+      const uploadPromises = batch.map(file =>
+        this.processFile(
+          supabase,
+          file,
+          request.userId,
+          request.courseId,
+          request.folderId,
+          request.userAgent
+        )
+      );
 
-    const uploadResults = await Promise.all(uploadPromises);
-
-    // Separate successful and failed uploads
-    const successfulUploads = uploadResults.filter(r => r.file).map(r => r.file!);
-    const failedUploads = uploadResults.filter(r => r.error);
+      try {
+        const batchResults = await Promise.all(uploadPromises);
+        
+        // Separate successful and failed uploads
+        const successfulUploads = batchResults.filter(r => r.file).map(r => r.file!);
+        const failedUploads = batchResults.filter(r => r.error);
+        
+        allSuccessfulUploads.push(...successfulUploads);
+        allFailedUploads.push(...failedUploads);
+        
+        // Log batch progress
+        logger.info('Batch processing progress', {
+          action: 'uploadBatchProgress',
+          metadata: {
+            userId: request.userId,
+            batchNumber: Math.floor(i / BATCH_SIZE) + 1,
+            totalBatches: Math.ceil(request.files.length / BATCH_SIZE),
+            batchSuccess: successfulUploads.length,
+            batchFailed: failedUploads.length,
+          }
+        });
+      } catch (error) {
+        // If entire batch fails, mark all files in batch as failed
+        logger.error('Batch processing failed', error, {
+          action: 'uploadBatchError',
+          metadata: {
+            userId: request.userId,
+            batchNumber: Math.floor(i / BATCH_SIZE) + 1,
+            batchSize: batch.length
+          }
+        });
+        
+        batch.forEach(file => {
+          allFailedUploads.push({
+            filename: file.name,
+            error: 'Batch processing failed'
+          });
+        });
+      }
+    }
 
     // Log batch upload completion
     logger.info('Batch file upload completed', {
       action: 'uploadBatch',
       metadata: {
         userId: request.userId,
-        filesUploaded: successfulUploads.length,
-        filesFailed: failedUploads.length,
+        filesUploaded: allSuccessfulUploads.length,
+        filesFailed: allFailedUploads.length,
       }
     });
 
     return {
-      files: successfulUploads,
-      errors: failedUploads.length > 0 ? failedUploads : undefined,
+      files: allSuccessfulUploads,
+      errors: allFailedUploads.length > 0 ? allFailedUploads : undefined,
     };
   }
 
