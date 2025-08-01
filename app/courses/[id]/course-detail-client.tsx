@@ -365,11 +365,10 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
       id: tempId,
       course_id: course.id,
       name: newFolderName.trim(),
+      path: newFolderName.trim().toLowerCase().replace(/\s+/g, '-'),
       display_order: folderOrder.length,
       is_special: false,
-      parent_id: null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      created_at: new Date()
     };
     
     // Optimistically add folder to UI
