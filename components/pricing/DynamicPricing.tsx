@@ -40,7 +40,7 @@ export function DynamicPricing({
     } else {
       setDefaultOffers();
     }
-  }, [userId, showPersonalized]);
+  }, [userId, showPersonalized]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // Update countdown timer

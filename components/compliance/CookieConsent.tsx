@@ -102,7 +102,7 @@ export function CookieConsent() {
                 <h3 className="text-lg font-semibold mb-2">Cookie Preferences</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   We use cookies to enhance your experience, analyze site usage, and assist in our marketing efforts. 
-                  By clicking "Accept All", you consent to our use of cookies.
+                  By clicking &quot;Accept All&quot;, you consent to our use of cookies.
                 </p>
                 
                 {showDetails && (
