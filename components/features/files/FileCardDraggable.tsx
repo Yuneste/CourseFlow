@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { formatFileSize } from '@/lib/utils/file-validation';
 import { getFileIcon } from '@/lib/utils/file-icons';
+import { DeleteFileDialog } from '@/components/dialogs/DeleteFileDialog';
 import type { File as FileType } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -41,16 +42,16 @@ export function FileCardDraggable({
 }: FileCardDraggableProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleDelete = async () => {
-    if (confirm(`Are you sure you want to delete "${file.display_name}"?`)) {
-      setIsDeleting(true);
-      try {
-        await onDelete?.(file.id);
-      } catch (error) {
-        console.error('Error deleting file:', error);
-        setIsDeleting(false);
-      }
+    setIsDeleting(true);
+    try {
+      await onDelete?.(file.id);
+      setDeleteDialogOpen(false);
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      setIsDeleting(false);
     }
   };
 
@@ -89,8 +90,9 @@ export function FileCardDraggable({
   };
 
   return (
-    <Card 
-      className={cn(
+    <>
+      <Card 
+        className={cn(
         "group p-4 transition-all duration-200 cursor-pointer select-none",
         "hover:shadow-lg hover:scale-[1.02] hover:-translate-y-0.5",
         "active:scale-[0.98] active:shadow-sm",
@@ -147,7 +149,7 @@ export function FileCardDraggable({
             <DropdownMenuItem 
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete();
+                setDeleteDialogOpen(true);
               }}
               className="text-destructive"
             >
@@ -158,5 +160,14 @@ export function FileCardDraggable({
         </DropdownMenu>
       </div>
     </Card>
+    
+    <DeleteFileDialog
+      open={deleteDialogOpen}
+      onOpenChange={setDeleteDialogOpen}
+      fileName={file.display_name}
+      onConfirm={handleDelete}
+      isDeleting={isDeleting}
+    />
+    </>
   );
 }

@@ -56,7 +56,7 @@ export function DeleteFileDialog({
             ) : (
               <>
                 Are you sure you want to delete{' '}
-                <span className="font-medium text-foreground">&quot;{fileName}&quot;</span>?
+                <span className="font-medium text-foreground">&quot;{fileName || 'this file'}&quot;</span>?
                 <br />
                 <span className="font-medium text-destructive">
                   This action cannot be undone.
