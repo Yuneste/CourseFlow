@@ -12,7 +12,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { course_id, name, parent_id } = body;
+    // Handle both snake_case and camelCase conventions
+    const course_id = body.course_id || body.courseId;
+    const name = body.name;
+    const parent_id = body.parent_id || body.parentId;
 
     if (!course_id || !name) {
       return NextResponse.json({ error: 'Course ID and folder name are required' }, { status: 400 });

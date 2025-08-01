@@ -14,7 +14,8 @@ export async function GET(req: Request) {
     // Get hash and courseId from query params
     const { searchParams } = new URL(req.url);
     const hash = searchParams.get('hash');
-    const courseId = searchParams.get('courseId');
+    // Handle both camelCase (from frontend) and snake_case conventions
+    const courseId = searchParams.get('courseId') || searchParams.get('course_id');
 
     if (!hash) {
       return NextResponse.json({ error: 'Hash parameter required' }, { status: 400 });

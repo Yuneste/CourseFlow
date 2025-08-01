@@ -14,7 +14,8 @@ export async function GET(req: Request) {
 
     // Get query parameters
     const { searchParams } = new URL(req.url);
-    const courseId = searchParams.get('course_id');
+    // Handle both snake_case and camelCase conventions
+  const courseId = searchParams.get('course_id') || searchParams.get('courseId');
 
     // Build query
     let query = supabase
