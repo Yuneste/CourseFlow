@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getStripe } from '@/lib/stripe/client';
 import { SUBSCRIPTION_TIERS } from '@/lib/subscriptions/tiers';
 import { isDisposableEmail } from '@/lib/security/billing-limits';
+import { performBillingSecurityCheck, logSecurityEvent } from '@/lib/security/billing-security';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,6 +13,19 @@ export async function POST(req: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Perform comprehensive security checks
+    const securityCheck = await performBillingSecurityCheck(req, user.id);
+    if (!securityCheck.passed) {
+      await logSecurityEvent(user.id, 'checkout_blocked', {
+        reason: securityCheck.reason
+      });
+      
+      return NextResponse.json(
+        { error: securityCheck.reason || 'Security check failed' },
+        { status: securityCheck.statusCode || 403 }
+      );
     }
 
     // Block disposable emails for paid subscriptions

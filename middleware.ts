@@ -1,7 +1,14 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { billingRateLimitMiddleware } from './middleware/billing-rate-limit'
 
 export async function middleware(request: NextRequest) {
+  // Check billing rate limits first
+  const rateLimitResponse = await billingRateLimitMiddleware(request);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
