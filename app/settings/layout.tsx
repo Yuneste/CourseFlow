@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background'
+import { lightThemeClasses } from '@/lib/theme/light-theme'
 
 export default async function SettingsLayout({
   children,
@@ -16,10 +16,10 @@ export default async function SettingsLayout({
   }
 
   return (
-    <UnifiedBackground>
-      <UnifiedSection>
+    <div className={lightThemeClasses.page.wrapper}>
+      <div className={lightThemeClasses.page.container + " py-8"}>
         {children}
-      </UnifiedSection>
-    </UnifiedBackground>
+      </div>
+    </div>
   )
 }

@@ -41,7 +41,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
 import {
   AlertDialog,
@@ -53,6 +52,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { lightTheme, lightThemeClasses, componentStyles } from '@/lib/theme/light-theme';
 
 interface CourseDetailClientProps {
   course: Course;
