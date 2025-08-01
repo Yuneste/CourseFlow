@@ -2,16 +2,8 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createServiceClient } from '@/lib/supabase/service';
-
-// Initialize Stripe only when needed
-function getStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('STRIPE_SECRET_KEY is not configured');
-  }
-  return new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2025-07-30.basil',
-  });
-}
+import { getStripe } from '@/lib/stripe/client';
+import { SUBSCRIPTION_TIERS } from '@/lib/subscriptions/tiers';
 
 export const runtime = 'nodejs'; // Ensure we're using Node.js runtime, not edge
 
