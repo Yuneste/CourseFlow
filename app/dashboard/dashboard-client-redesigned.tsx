@@ -28,16 +28,16 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { UnifiedBackground, UnifiedSection } from '@/components/ui/unified-background';
 import { CustomerPortalButton } from '@/components/billing/customer-portal-button';
 import { UpgradePrompt } from '@/components/pricing/upgrade-prompt';
+import { lightTheme, lightThemeClasses, componentStyles } from '@/lib/theme/light-theme';
 
 interface DashboardClientProps {
   initialCourses: Course[];
   userProfile: User;
 }
 
-// Redesigned stats card with new design system
+// Light theme stats card
 const StatsCard = ({ title, value, icon: Icon, delay = 0, trend, color }: StatsCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -46,43 +46,41 @@ const StatsCard = ({ title, value, icon: Icon, delay = 0, trend, color }: StatsC
     whileHover={{ scale: 1.02, y: -2 }}
     className="relative group"
   >
-    <Card className="p-4 bg-card border-border shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    <div className={cn(componentStyles.statsCard.base, "p-5 rounded-xl transition-all duration-300 shadow-sm hover:shadow-lg relative overflow-hidden")}>
+      {/* Gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#8CC2BE]/5 to-[#49C993]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       
-      <div className="relative flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            "p-2 rounded-lg transition-colors duration-300",
-            color,
-            "group-hover:scale-110 transition-transform"
-          )}>
-            <Icon className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <p className="text-xs text-[#FFC194] font-medium">{title}</p>
-            <div className="flex items-baseline gap-2">
-              <h3 className={cn(
-                "text-xl font-bold",
-                title === "Current Term" ? "text-[#FF7878]" : "text-foreground"
-              )}>{value}</h3>
-              {trend && (
-                <span className={cn(
-                  "text-xs font-medium px-2 py-1 rounded-full",
-                  trend > 0 ? "text-success bg-success/10" : "text-muted-foreground bg-muted"
-                )}>
-                  {trend > 0 ? `+${trend}` : trend}
-                </span>
-              )}
-            </div>
+      <div className="relative flex items-center gap-4">
+        <div className={cn(
+          componentStyles.statsCard.icon,
+          "p-3 rounded-xl transition-all duration-300 group-hover:scale-110"
+        )}>
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="flex-1">
+          <p className={componentStyles.statsCard.title}>{title}</p>
+          <div className="flex items-baseline gap-2 mt-1">
+            <h3 className={cn(
+              componentStyles.statsCard.value,
+              "text-2xl",
+              title === "Current Term" && "text-[#FF7878]"
+            )}>{value}</h3>
+            {trend && (
+              <span className={cn(
+                "text-xs font-medium px-2 py-0.5 rounded-full",
+                trend > 0 ? "bg-green-50 text-green-700 border border-green-200" : "bg-gray-50 text-gray-600 border border-gray-200"
+              )}>
+                {trend > 0 ? `+${trend}` : trend}
+              </span>
+            )}
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   </motion.div>
 );
 
-// Enhanced feature card with modern design
+// Light theme feature card
 const FeatureCard = ({ title, description, icon: Icon, href, color, delay, available = true, badge }: FeatureCardProps) => {
   const router = useRouter();
   
@@ -95,12 +93,12 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
       whileTap={available ? { scale: 0.98 } : {}}
       className="relative group h-full"
     >
-      <Card 
+      <div 
         className={cn(
-          "relative overflow-hidden cursor-pointer h-full p-4 transition-all duration-300",
-          "border-border bg-card shadow-lg",
+          componentStyles.featureCard.base,
+          "relative overflow-hidden cursor-pointer h-full p-6 rounded-xl transition-all duration-300 shadow-sm hover:shadow-lg",
           available 
-            ? "hover:shadow-xl hover:border-primary/20" 
+            ? "hover:border-[#8CC2BE]/30" 
             : "opacity-60 cursor-not-allowed"
         )}
         onClick={() => {
@@ -114,20 +112,19 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
         }}
       >
         {/* Gradient background on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#8CC2BE]/5 to-[#49C993]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         
         <div className="relative">
           {/* Header with icon and badge */}
-          <div className="flex items-start justify-between mb-3">
+          <div className="flex items-start justify-between mb-4">
             <div className={cn(
-              "p-2 rounded-lg transition-all duration-300",
-              color,
-              "group-hover:scale-110"
+              "p-3 rounded-xl bg-[#E6F7F5] transition-all duration-300 group-hover:scale-110",
+              "group-hover:bg-[#D1EAE7]"
             )}>
-              <Icon className="h-5 w-5 text-primary" />
+              <Icon className={componentStyles.featureCard.icon + " h-6 w-6"} />
             </div>
             {badge && (
-              <span className="px-1.5 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
+              <span className="px-2.5 py-1 bg-[#E6F7F5] text-[#5A9B95] text-xs font-medium rounded-full border border-[#D1EAE7]">
                 {badge}
               </span>
             )}
@@ -135,10 +132,10 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
 
           {/* Content */}
           <div className="space-y-2">
-            <h3 className="text-base font-semibold text-[#FFC194] group-hover:text-primary transition-colors duration-300">
+            <h3 className={cn(componentStyles.featureCard.title, "text-lg")}>
               {title}
             </h3>
-            <p className="text-muted-foreground text-xs leading-relaxed">
+            <p className={cn(componentStyles.featureCard.description, "text-sm leading-relaxed")}>
               {description}
             </p>
           </div>
@@ -147,26 +144,26 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
           <div className="mt-4 flex items-center justify-between">
             <span className={cn(
               "text-xs font-medium transition-colors duration-300",
-              available ? "text-primary" : "text-muted-foreground"
+              available ? "text-[#8CC2BE]" : "text-gray-400"
             )}>
               {available ? 'Open' : 'Coming Soon'}
             </span>
             <ChevronRight className={cn(
-              "h-3.5 w-3.5 transition-all duration-300",
-              available ? "text-primary group-hover:translate-x-1" : "text-muted-foreground"
+              "h-4 w-4 transition-all duration-300",
+              available ? "text-[#8CC2BE] group-hover:translate-x-1" : "text-gray-400"
             )} />
           </div>
         </div>
 
         {/* Coming soon overlay */}
         {!available && (
-          <div className="absolute inset-0 bg-background/80 flex items-center justify-center backdrop-blur-sm">
-            <span className="bg-muted text-muted-foreground px-3 py-1 rounded-full text-sm font-medium">
+          <div className="absolute inset-0 bg-white/80 flex items-center justify-center backdrop-blur-sm rounded-xl">
+            <span className="bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-sm font-medium border border-gray-200">
               Coming Soon
             </span>
           </div>
         )}
-      </Card>
+      </div>
     </motion.div>
   );
 };
@@ -193,10 +190,10 @@ const WelcomeHeader = ({ userName }: { userName: string }) => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         {/* Welcome message */}
         <div>
-          <h1 className="text-2xl sm:text-2xl font-bold text-foreground mb-1">
-            {greeting}, <span className="text-primary">{firstName}</span>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">
+            {greeting}, <span className="text-[#8CC2BE]">{firstName}</span>
           </h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-gray-600 text-base">
             Ready to make progress on your academic journey?
           </p>
         </div>
@@ -205,8 +202,7 @@ const WelcomeHeader = ({ userName }: { userName: string }) => {
         <div className="flex items-center gap-3">
           <Button 
             size="sm" 
-            variant="outline"
-            className="gap-2"
+            className={cn(lightThemeClasses.button.secondary, "gap-2")}
           >
             <Bell className="h-4 w-4" />
             <span className="sr-only sm:not-sr-only">Notifications</span>
@@ -303,8 +299,9 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   ];
 
   return (
-    <UnifiedBackground>
-      <UnifiedSection>
+    <div className={lightThemeClasses.page.wrapper}>
+      <div className={lightThemeClasses.page.container + " py-8"}>
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <WelcomeHeader userName={userProfile.full_name || 'Student'} />
 
@@ -318,7 +315,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           transition={{ delay: 0.3 }}
           className="mb-6"
         >
-          <h2 className="text-base font-semibold text-[#49C993] mb-3">Overview</h2>
+          <h2 className="text-lg font-semibold text-[#49C993] mb-4">Overview</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <StatsCard
               title="Active Courses"
@@ -351,29 +348,29 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           transition={{ delay: 0.7 }}
           className="mb-6"
         >
-          <Card className="p-4 bg-card border-border shadow-lg">
+          <div className={cn(lightThemeClasses.card.base, "p-5 rounded-xl")}>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <div className={cn(
-                  "p-2 rounded-lg",
-                  userProfile.subscription_tier === 'master' ? "bg-yellow-500/10" : 
-                  userProfile.subscription_tier === 'scholar' ? "bg-primary/10" :
-                  "bg-muted"
+                  "p-3 rounded-xl transition-colors",
+                  userProfile.subscription_tier === 'master' ? "bg-amber-50 border border-amber-200" : 
+                  userProfile.subscription_tier === 'scholar' ? "bg-[#E6F7F5] border border-[#D1EAE7]" :
+                  "bg-gray-50 border border-gray-200"
                 )}>
                   <Crown className={cn(
                     "h-5 w-5",
-                    userProfile.subscription_tier === 'master' ? "text-yellow-500" : 
-                    userProfile.subscription_tier === 'scholar' ? "text-primary" :
-                    "text-muted-foreground"
+                    userProfile.subscription_tier === 'master' ? "text-amber-600" : 
+                    userProfile.subscription_tier === 'scholar' ? "text-[#8CC2BE]" :
+                    "text-gray-400"
                   )} />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-semibold text-gray-900">
                     {userProfile.subscription_tier === 'explorer' ? 'Free Plan' :
                      userProfile.subscription_tier === 'scholar' ? 'Scholar Plan' :
                      'Master Plan'}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-gray-500">
                     {userProfile.subscription_tier === 'explorer' 
                       ? 'Upgrade to unlock more features'
                       : userProfile.subscription_status === 'active' 
@@ -384,15 +381,18 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
               </div>
               <div className="flex items-center gap-2">
                 {userProfile.subscription_tier === 'explorer' ? (
-                  <Button size="sm" variant="default" asChild>
-                    <Link href="/pricing">Upgrade</Link>
+                  <Button size="sm" className={lightThemeClasses.button.primary} asChild>
+                    <Link href="/pricing">
+                      <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                      Upgrade
+                    </Link>
                   </Button>
                 ) : userProfile.stripe_customer_id ? (
                   <CustomerPortalButton />
                 ) : null}
               </div>
             </div>
-          </Card>
+          </div>
         </motion.div>
 
         {/* Features Grid */}
@@ -401,11 +401,11 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-[#49C993]">Quick Actions</h2>
-            <Button variant="ghost" size="sm" className="gap-2">
-              <Settings className="h-3.5 w-3.5" />
-              <span className="text-xs">Customize</span>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-semibold text-[#49C993]">Quick Actions</h2>
+            <Button variant="ghost" size="sm" className={cn(lightThemeClasses.button.ghost, "gap-2")}>
+              <Settings className="h-4 w-4" />
+              <span className="text-sm">Customize</span>
             </Button>
           </div>
           
@@ -420,6 +420,101 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           </div>
         </motion.div>
 
+        {/* My Courses Section */}
+        {activeCourses > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1 }}
+            className="mt-8"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-[#49C993]">My Courses</h2>
+              <Button size="sm" variant="ghost" className={cn(lightThemeClasses.button.ghost, "gap-2")} asChild>
+                <Link href="/courses">
+                  <span className="text-sm">View All</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {courses.slice(0, 3).map((course, index) => (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.1 + index * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="group cursor-pointer"
+                  onClick={() => router.push(`/courses/${course.id}`)}
+                >
+                  <div className={cn(
+                    lightThemeClasses.card.base,
+                    "p-5 hover:border-[#8CC2BE]/30 transition-all duration-300 relative overflow-hidden"
+                  )}>
+                    {/* Gradient overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#8CC2BE]/5 to-[#49C993]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    
+                    <div className="relative">
+                      <div className="flex items-start justify-between mb-3">
+                        <h3 className="text-base font-semibold text-[#FFC194]">{course.name}</h3>
+                        <div className="p-2 bg-[#E6F7F5] rounded-lg group-hover:bg-[#D1EAE7] transition-colors">
+                          <Target className="h-4 w-4 text-[#8CC2BE]" />
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                        {course.code} • {course.credits} credits
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">
+                          {course.files?.length || 0} files
+                        </span>
+                        <span className="text-sm font-medium text-[#8CC2BE] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                          Open
+                          <ChevronRight className="h-4 w-4" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Recent Activity */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          className="mt-8"
+        >
+          <h2 className="text-lg font-semibold text-[#49C993] mb-4">Recent Activity</h2>
+          <div className={cn(lightThemeClasses.card.base, "p-6 text-center")}>
+            <div className="p-4 bg-[#F3F4F6] rounded-lg inline-block mb-3">
+              <Clock className="h-8 w-8 text-gray-400" />
+            </div>
+            <p className="text-gray-600 text-base">
+              Activity tracking coming soon
+            </p>
+            <p className="text-gray-500 text-sm mt-1">
+              You'll see your recent uploads, study sessions, and more here.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Upgrade Prompt for Free Users */}
+        {userProfile.subscription_tier === 'explorer' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4 }}
+            className="mt-8"
+          >
+            <UpgradePrompt />
+          </motion.div>
+        )}
+
         {/* Get Started Message */}
         {activeCourses === 0 && (
           <motion.div
@@ -428,25 +523,32 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
             transition={{ delay: 1 }}
             className="mt-8"
           >
-            <Card className="p-6 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 text-center">
-              <div className="flex flex-col items-center gap-3">
-                <div className="p-3 bg-primary/10 rounded-full">
-                  <Sparkles className="h-6 w-6 text-primary" />
+            <div className={cn(lightThemeClasses.card.colored, "p-8 text-center rounded-xl")}>
+              <div className="flex flex-col items-center gap-4">
+                <div className="p-4 bg-[#E6F7F5] rounded-full">
+                  <Sparkles className="h-8 w-8 text-[#8CC2BE]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-1">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     Welcome to CourseFlow!
                   </h3>
-                  <p className="text-muted-foreground text-sm max-w-md">
+                  <p className="text-gray-600 text-base max-w-md">
                     Start your academic journey by adding your first course. 
                     Upload materials, organize files, and track your progress.
                   </p>
                 </div>
+                <Button className={cn(lightThemeClasses.button.primary, "mt-4")} asChild>
+                  <Link href="/courses/new">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Your First Course
+                  </Link>
+                </Button>
               </div>
-            </Card>
+            </div>
           </motion.div>
         )}
-      </UnifiedSection>
-    </UnifiedBackground>
+        </div>
+      </div>
+    </div>
   );
 }

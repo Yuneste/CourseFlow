@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { toast } from 'sonner'
 import { validateEmail, validatePassword } from '@/lib/utils/validation'
+import { cn } from '@/lib/utils'
+import { lightThemeClasses } from '@/lib/theme/light-theme'
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -109,20 +111,20 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <Card className="w-full max-w-md bg-card/95 backdrop-blur-sm border-border shadow-xl">
+      <Card className={cn(lightThemeClasses.card.base, "w-full max-w-md shadow-xl")}>
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-foreground">Check your email</CardTitle>
-          <CardDescription className="text-muted-foreground">
+          <CardTitle className="text-2xl font-bold text-gray-900">Check your email</CardTitle>
+          <CardDescription className="text-gray-600">
             We&apos;ve sent you a verification link to {email}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-600">
             Please check your email and click the verification link to complete your registration.
           </p>
         </CardContent>
         <CardFooter>
-          <Link href="/login" className="text-sm text-primary hover:underline font-medium">
+          <Link href="/login" className="text-sm text-[#8CC2BE] hover:underline font-medium">
             Back to sign in
           </Link>
         </CardFooter>
@@ -131,10 +133,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-card/95 backdrop-blur-sm border-border shadow-xl">
+    <Card className={cn(lightThemeClasses.card.base, "w-full max-w-md shadow-xl")}>
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-foreground">Create an account</CardTitle>
-        <CardDescription className="text-muted-foreground">
+        <CardTitle className="text-2xl font-bold text-gray-900">Create an account</CardTitle>
+        <CardDescription className="text-gray-600">
           Enter your details below to create your account
         </CardDescription>
       </CardHeader>
@@ -143,7 +145,7 @@ export default function RegisterPage() {
           variant="outline"
           onClick={() => handleOAuthSignUp('google')}
           disabled={loading}
-          className="w-full"
+          className={cn("w-full", lightThemeClasses.button.secondary)}
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -171,7 +173,7 @@ export default function RegisterPage() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
+            <span className="bg-white px-2 text-gray-500">
               Or continue with
             </span>
           </div>
@@ -179,7 +181,7 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSignUp} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name</Label>
+            <Label htmlFor="fullName" className="text-gray-700">Full Name</Label>
             <Input
               id="fullName"
               type="text"
@@ -188,10 +190,11 @@ export default function RegisterPage() {
               onChange={(e) => setFullName(e.target.value)}
               required
               disabled={loading}
+              className={lightThemeClasses.input.base}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-gray-700">Email</Label>
             <Input
               id="email"
               type="email"
@@ -200,10 +203,11 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={loading}
+              className={lightThemeClasses.input.base}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-gray-700">Password</Label>
             <Input
               id="password"
               type="password"
@@ -211,13 +215,14 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={loading}
+              className={lightThemeClasses.input.base}
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-gray-500 mt-1">
               At least 8 characters with uppercase, lowercase, and numbers
             </p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Label htmlFor="confirmPassword" className="text-gray-700">Confirm Password</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -225,16 +230,17 @@ export default function RegisterPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               disabled={loading}
+              className={lightThemeClasses.input.base}
             />
           </div>
           
           {error && (
-            <div className="text-sm text-destructive">
+            <div className="text-sm text-red-600">
               {error}
             </div>
           )}
           
-          <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
+          <Button type="submit" className={cn("w-full", lightThemeClasses.button.primary)} disabled={loading}>
             {loading ? (
               <>
                 <LoadingSpinner size="sm" className="mr-2" />
@@ -247,9 +253,9 @@ export default function RegisterPage() {
         </form>
       </CardContent>
       <CardFooter>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-gray-600">
           Already have an account?{' '}
-          <Link href="/login" className="text-primary hover:underline font-medium">
+          <Link href="/login" className="text-[#8CC2BE] hover:underline font-medium">
             Sign in
           </Link>
         </div>

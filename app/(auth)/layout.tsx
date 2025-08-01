@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { GraduationCap } from 'lucide-react'
-import { UnifiedBackground } from '@/components/ui/unified-background'
+import { lightThemeClasses } from '@/lib/theme/light-theme'
 
 export default function AuthLayout({
   children,
@@ -8,14 +8,14 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <UnifiedBackground>
+    <div className={lightThemeClasses.page.wrapper + " min-h-screen flex flex-col"}>
       {/* Header */}
       <div className="p-6">
         <Link href="/" className="flex items-center gap-3 w-fit group">
-          <div className="p-2 bg-card/80 backdrop-blur-sm rounded-lg group-hover:scale-110 transition-transform shadow-sm border border-border">
-            <GraduationCap className="h-8 w-8 text-primary" />
+          <div className="p-3 bg-[#8CC2BE] rounded-lg group-hover:scale-110 transition-transform shadow-sm">
+            <GraduationCap className="h-8 w-8 text-white" />
           </div>
-          <span className="text-2xl font-bold text-foreground">
+          <span className="text-2xl font-bold text-gray-900">
             CourseFlow
           </span>
         </Link>
@@ -27,6 +27,6 @@ export default function AuthLayout({
           {children}
         </div>
       </div>
-    </UnifiedBackground>
+    </div>
   )
 }

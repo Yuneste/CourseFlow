@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { User as UserType } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { lightTheme, lightThemeClasses, componentStyles } from '@/lib/theme/light-theme';
 
 interface SidebarProps {
   user: UserType;
@@ -107,10 +108,10 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 left-4 z-50 lg:hidden bg-white/80 backdrop-blur-sm shadow-sm"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white backdrop-blur-sm shadow-sm border border-gray-200"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        {isOpen ? <X className="h-5 w-5 text-gray-700" /> : <Menu className="h-5 w-5 text-gray-700" />}
       </Button>
 
       {/* Mobile Overlay */}
@@ -133,7 +134,8 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
           width: isCollapsed ? 80 : 280,
         }}
         className={cn(
-          "fixed top-0 left-0 z-40 h-full bg-white border-r border-gray-200",
+          "fixed top-0 left-0 z-40 h-full",
+          componentStyles.sidebar.base,
           "transition-all duration-300 ease-in-out",
           "shadow-xl lg:shadow-sm",
           // Mobile positioning
@@ -153,11 +155,11 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   isCollapsed && "justify-center"
                 )}
               >
-                <div className="w-10 h-10 rounded-xl bg-gray-700 flex items-center justify-center text-white shadow-lg">
+                <div className="w-10 h-10 rounded-xl bg-[#8CC2BE] flex items-center justify-center text-white shadow-sm">
                   <BookOpen className="w-5 h-5" />
                 </div>
                 {!isCollapsed && (
-                  <span className="text-gray-700 font-bold">
+                  <span className="text-gray-900 font-bold">
                     CourseFlow
                   </span>
                 )}
@@ -165,11 +167,11 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="hidden lg:flex hover:bg-gray-100"
+                className={cn("hidden lg:flex", lightThemeClasses.button.ghost)}
                 onClick={() => setIsCollapsed(!isCollapsed)}
               >
                 <ChevronLeft className={cn(
-                  "h-4 w-4 transition-transform",
+                  "h-4 w-4 transition-transform text-gray-600",
                   isCollapsed && "rotate-180"
                 )} />
               </Button>
@@ -182,8 +184,8 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
               "flex items-center gap-3",
               isCollapsed && "justify-center"
             )}>
-              <Avatar className="h-10 w-10 border-2 border-gray-200">
-                <AvatarFallback className="bg-gray-700 text-white">
+              <Avatar className="h-10 w-10 border-2 border-[#E6F7F5]">
+                <AvatarFallback className="bg-[#8CC2BE] text-white">
                   {user?.full_name?.[0] || user?.email?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
@@ -212,21 +214,21 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                     href={item.href}
                     className={cn(
                       "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
-                      "hover:bg-gray-100 group",
-                      active && "bg-gray-100 text-gray-900",
+                      "group",
+                      active ? componentStyles.sidebar.active : componentStyles.sidebar.item,
                       isCollapsed && "justify-center"
                     )}
                     title={isCollapsed ? item.title : undefined}
                   >
                     <Icon className={cn(
                       "h-5 w-5 flex-shrink-0 transition-colors",
-                      active ? "text-gray-900" : "text-gray-500 group-hover:text-gray-700"
+                      active ? "text-[#5A9B95]" : "text-gray-500 group-hover:text-[#5A9B95]"
                     )} />
                     {!isCollapsed && (
                       <div className="flex-1 min-w-0">
                         <p className={cn(
                           "text-sm font-medium",
-                          active ? "text-gray-900" : "text-gray-700"
+                          active ? "text-[#5A9B95]" : "text-gray-700 group-hover:text-[#5A9B95]"
                         )}>
                           {item.title}
                         </p>
@@ -252,20 +254,19 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   href={item.href}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
-                    "hover:bg-gray-100",
-                    active && "bg-gray-100 text-gray-900",
+                    active ? componentStyles.sidebar.active : componentStyles.sidebar.item,
                     isCollapsed && "justify-center"
                   )}
                   title={isCollapsed ? item.title : undefined}
                 >
                   <Icon className={cn(
                     "h-5 w-5 flex-shrink-0",
-                    active ? "text-gray-900" : "text-gray-500"
+                    active ? "text-[#5A9B95]" : "text-gray-500 hover:text-[#5A9B95]"
                   )} />
                   {!isCollapsed && (
                     <span className={cn(
                       "text-sm",
-                      active ? "text-gray-900 font-medium" : "text-gray-700"
+                      active ? "text-[#5A9B95] font-medium" : "text-gray-700 hover:text-[#5A9B95]"
                     )}>
                       {item.title}
                     </span>
@@ -277,7 +278,7 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start gap-3 text-gray-700 hover:text-red-600 hover:bg-red-50",
+                "w-full justify-start gap-3 text-gray-700 hover:text-[#FF7878] hover:bg-[#FFE4E4]",
                 isCollapsed && "justify-center px-0"
               )}
               onClick={onSignOut}

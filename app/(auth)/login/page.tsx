@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
+import { lightThemeClasses } from '@/lib/theme/light-theme'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -70,10 +72,10 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full max-w-md bg-card/95 backdrop-blur-sm border-border shadow-xl">
+    <Card className={cn(lightThemeClasses.card.base, "w-full max-w-md shadow-xl")}>
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-foreground">Welcome back</CardTitle>
-        <CardDescription className="text-muted-foreground">
+        <CardTitle className="text-2xl font-bold text-gray-900">Welcome back</CardTitle>
+        <CardDescription className="text-gray-600">
           Sign in to continue to CourseFlow
         </CardDescription>
       </CardHeader>
@@ -82,7 +84,7 @@ export default function LoginPage() {
           variant="outline"
           onClick={() => handleOAuthLogin('google')}
           disabled={loading}
-          className="w-full"
+          className={cn("w-full", lightThemeClasses.button.secondary)}
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -110,7 +112,7 @@ export default function LoginPage() {
             <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
+            <span className="bg-white px-2 text-gray-500">
               Or continue with
             </span>
           </div>
@@ -118,7 +120,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleEmailLogin} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-gray-700">Email</Label>
             <Input
               id="email"
               type="email"
@@ -127,10 +129,11 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={loading}
+              className={lightThemeClasses.input.base}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-gray-700">Password</Label>
             <Input
               id="password"
               type="password"
@@ -138,16 +141,17 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={loading}
+              className={lightThemeClasses.input.base}
             />
           </div>
           
           {error && (
-            <div className="text-sm text-destructive">
+            <div className="text-sm text-red-600">
               {error}
             </div>
           )}
           
-          <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={loading}>
+          <Button type="submit" className={cn("w-full", lightThemeClasses.button.primary)} disabled={loading}>
             {loading ? (
               <>
                 <LoadingSpinner size="sm" className="mr-2" />
@@ -160,13 +164,13 @@ export default function LoginPage() {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-2">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-gray-600">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-primary hover:underline font-medium">
+          <Link href="/register" className="text-[#8CC2BE] hover:underline font-medium">
             Sign up
           </Link>
         </div>
-        <Link href="/reset-password" className="text-sm text-primary hover:underline">
+        <Link href="/reset-password" className="text-sm text-[#8CC2BE] hover:underline">
           Forgot your password?
         </Link>
       </CardFooter>
