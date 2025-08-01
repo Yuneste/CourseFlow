@@ -164,12 +164,12 @@ export default function LandingPage() {
               <a href="#features" className="text-white/70 hover:text-white transition-colors">Features</a>
               <a href="#testimonials" className="text-white/70 hover:text-white transition-colors">Testimonials</a>
               <a href="#pricing" className="text-white/70 hover:text-white transition-colors">Pricing</a>
-              <Button variant="outline" className="mr-2" asChild>
-                <Link href="/login">Log In</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/register">Get Started</Link>
-              </Button>
+              <Link href="/login">
+                <Button variant="outline" className="mr-2">Log In</Button>
+              </Link>
+              <Link href="/register">
+                <Button>Get Started</Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -183,25 +183,24 @@ export default function LandingPage() {
         </div>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="md:hidden bg-black/90 border-t border-white/10"
-          >
-            <div className="container mx-auto px-4 py-4 space-y-4">
-              <a href="#features" className="block text-white/70 hover:text-white">Features</a>
-              <a href="#testimonials" className="block text-white/70 hover:text-white">Testimonials</a>
-              <a href="#pricing" className="block text-white/70 hover:text-white">Pricing</a>
-              <Button variant="outline" className="w-full" asChild>
-                <Link href="/login" className="block">Log In</Link>
-              </Button>
-              <Button className="w-full" asChild>
-                <Link href="/register" className="block">Get Started</Link>
-              </Button>
-            </div>
-          </motion.div>
-        )}
+        <motion.div
+          initial={false}
+          animate={mobileMenuOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+          className="md:hidden bg-black/90 border-t border-white/10"
+          style={{ display: mobileMenuOpen ? 'block' : 'none' }}
+        >
+          <div className="container mx-auto px-4 py-4 space-y-4">
+            <a href="#features" className="block text-white/70 hover:text-white">Features</a>
+            <a href="#testimonials" className="block text-white/70 hover:text-white">Testimonials</a>
+            <a href="#pricing" className="block text-white/70 hover:text-white">Pricing</a>
+            <Link href="/login" className="block w-full">
+              <Button variant="outline" className="w-full">Log In</Button>
+            </Link>
+            <Link href="/register" className="block w-full">
+              <Button className="w-full">Get Started</Button>
+            </Link>
+          </div>
+        </motion.div>
       </nav>
 
       {/* Hero Section */}
@@ -235,12 +234,12 @@ export default function LandingPage() {
             transition={{ delay: 0.2 }}
             className="flex flex-col md:flex-row gap-4 justify-center mb-8"
           >
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" asChild>
-              <Link href="/register">
+            <Link href="/register">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto">
                 Start Free Trial
                 <Sparkles className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
-              </Link>
-            </Button>
+              </Button>
+            </Link>
             <Button size="lg" className="border-2 border-primary bg-primary/10 hover:bg-primary/20 text-primary hover:text-primary/80 hover:border-primary/80 transition-all px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg w-full sm:w-auto" onClick={() => {
               const element = document.getElementById('features');
               element?.scrollIntoView({ behavior: 'smooth' });
@@ -386,15 +385,14 @@ export default function LandingPage() {
               <span className={`text-lg ${isYearly ? 'text-white font-semibold' : 'text-white/60'}`}>
                 Yearly
               </span>
-              {isYearly && (
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="bg-green-500 text-white text-sm px-3 py-1 rounded-full font-semibold"
-                >
-                  Save 20%
-                </motion.span>
-              )}
+              <motion.span
+                initial={false}
+                animate={isYearly ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                className="bg-green-500 text-white text-sm px-3 py-1 rounded-full font-semibold"
+                style={{ display: isYearly ? 'inline-block' : 'none' }}
+              >
+                Save 20%
+              </motion.span>
             </div>
           </div>
 
@@ -421,11 +419,12 @@ export default function LandingPage() {
                 <div className="mb-6">
                   <span className={`text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-foreground'}`}>{plan.price}</span>
                   {plan.period && <span className={`text-lg ${plan.highlighted ? 'text-white/80' : 'text-foreground/90'}`}>{plan.period}</span>}
-                  {isYearly && plan.monthlyPrice > 0 && (
-                    <div className={`text-sm mt-2 ${plan.highlighted ? 'text-white/60' : 'text-muted-foreground'}`}>
-                      €{plan.yearlyPrice} billed annually
-                    </div>
-                  )}
+                  <div 
+                    className={`text-sm mt-2 ${plan.highlighted ? 'text-white/60' : 'text-muted-foreground'}`}
+                    style={{ display: isYearly && plan.monthlyPrice > 0 ? 'block' : 'none' }}
+                  >
+                    €{plan.yearlyPrice} billed annually
+                  </div>
                 </div>
                 <ul className="space-y-3 mb-8 flex-grow">
                   {plan.features.map((feature, i) => (
@@ -435,24 +434,31 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button 
-                  className={`w-full ${
-                    plan.highlighted 
-                      ? 'bg-primary-foreground text-primary hover:bg-primary-foreground/90' 
-                      : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                  }`}
-                  asChild
-                >
-                  {plan.paymentLink ? (
-                    <a href={plan.paymentLink} target="_blank" rel="noopener noreferrer">
+                {plan.paymentLink ? (
+                  <a href={plan.paymentLink} target="_blank" rel="noopener noreferrer" className="block">
+                    <Button 
+                      className={`w-full ${
+                        plan.highlighted 
+                          ? 'bg-primary-foreground text-primary hover:bg-primary-foreground/90' 
+                          : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                      }`}
+                    >
                       Get Started
-                    </a>
-                  ) : (
-                    <Link href="/register">
+                    </Button>
+                  </a>
+                ) : (
+                  <Link href="/register" className="block">
+                    <Button 
+                      className={`w-full ${
+                        plan.highlighted 
+                          ? 'bg-primary-foreground text-primary hover:bg-primary-foreground/90' 
+                          : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                      }`}
+                    >
                       Start Free
-                    </Link>
-                  )}
-                </Button>
+                    </Button>
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>
@@ -468,12 +474,12 @@ export default function LandingPage() {
           <p className="text-lg sm:text-xl text-primary-foreground/90 mb-6 md:mb-8 max-w-2xl mx-auto px-4">
             Join thousands of students who are already achieving better grades with CourseFlow
           </p>
-          <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg" asChild>
-            <Link href="/register">
+          <Link href="/register">
+            <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg">
               Start Your Free Trial
               <Sparkles className="ml-2 h-4 sm:h-5 w-4 sm:w-5" />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </section>
 
