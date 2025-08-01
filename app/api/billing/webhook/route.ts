@@ -3,11 +3,15 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createServiceClient } from '@/lib/supabase/service';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-07-30.basil',
-});
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+// Initialize Stripe only when needed
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-07-30.basil',
+  });
+}
 
 export const runtime = 'nodejs'; // Ensure we're using Node.js runtime, not edge
 
@@ -29,6 +33,7 @@ export async function POST(req: Request) {
       return new NextResponse('No signature', { status: 400 });
     }
 
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     if (!webhookSecret) {
       console.error('Webhook secret not configured');
       return new NextResponse('Webhook secret not configured', { status: 500 });
@@ -37,6 +42,7 @@ export async function POST(req: Request) {
     let event: Stripe.Event;
 
     try {
+      const stripe = getStripe();
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
       console.error('Webhook signature verification failed:', err);
@@ -54,16 +60,17 @@ export async function POST(req: Request) {
         // Get customer details
         const customerId = session.customer as string;
         const customerEmail = session.customer_email || session.customer_details?.email;
+        const stripe = getStripe();
         
-        if (!customerEmail) {
+        let email = customerEmail;
+        if (!email) {
           const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
           if (!customer.email) {
             console.error('No email found for customer:', customerId);
             break;
           }
+          email = customer.email;
         }
-        
-        const email = customerEmail || (await stripe.customers.retrieve(customerId) as Stripe.Customer).email;
 
         // Get subscription details
         const subscriptionId = session.subscription as string;

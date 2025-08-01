@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { getRateLimitForPath } from './rate-limits';
-import { rateLimiter } from '@/lib/rate-limit';
+import { getRateLimitForPath, parseWindow } from './rate-limits';
+import { rateLimit as checkRateLimit } from '@/lib/rate-limit';
 
 // Security middleware wrapper for API routes
 export async function withSecurity(
@@ -28,15 +28,21 @@ export async function withSecurity(
       const limitConfig = getRateLimitForPath(path);
       
       if (limitConfig) {
-        const limit = await rateLimiter(request, limitConfig);
+        const limit = await checkRateLimit(request, {
+          limit: limitConfig.requests,
+          windowMs: parseWindow(limitConfig.window)
+        });
+        
         if (!limit.success) {
           return NextResponse.json(
             { error: 'Too many requests. Please try again later.' },
             { 
               status: 429, 
               headers: {
-                ...limit.headers,
-                'Retry-After': limit.headers['retry-after'] || '60'
+                'X-RateLimit-Limit': limit.limit.toString(),
+                'X-RateLimit-Remaining': limit.remaining.toString(),
+                'X-RateLimit-Reset': limit.reset.toISOString(),
+                'Retry-After': Math.ceil((limit.reset.getTime() - Date.now()) / 1000).toString(),
               }
             }
           );
@@ -46,7 +52,7 @@ export async function withSecurity(
 
     // 2. Check authentication
     if (requireAuth) {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { data: { user }, error } = await supabase.auth.getUser();
 
       if (error || !user) {
@@ -165,7 +171,7 @@ export function isAllowedOrigin(request: NextRequest): boolean {
 
   // Remove localhost in production
   if (process.env.NODE_ENV === 'production') {
-    const prodOrigins = allowedOrigins.filter(o => !o.includes('localhost'));
+    const prodOrigins = allowedOrigins.filter(o => o && !o.includes('localhost'));
     return prodOrigins.includes(origin);
   }
 
