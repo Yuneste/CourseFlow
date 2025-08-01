@@ -15,6 +15,8 @@ import { cn } from '@/lib/utils';
 import { BenefitsShowcaseStyles } from '@/components/features/onboarding/BenefitsShowcase';
 import { BenefitsShowcaseAnimated } from '@/components/features/onboarding/BenefitsShowcaseAnimated';
 import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
+import { useAppStore } from '@/stores/useAppStore';
+import { toast } from 'sonner';
 
 // Define academic systems by country
 const ACADEMIC_SYSTEMS = {
@@ -144,54 +146,76 @@ export default function OnboardingPage() {
       
       // Navigate to dashboard
       router.push('/dashboard');
-      router.refresh(); // Force refresh to clear any cached state
     } catch (error) {
       console.error('Error completing onboarding:', error);
       // Navigate even on error
       router.push('/dashboard');
-      router.refresh();
     }
   };
 
+  const { addCourse: addCourseToStore, updateCourse: updateCourseInStore, deleteCourse: deleteCourseFromStore } = useAppStore();
+
   const addCourse = async (courseData: CourseFormData) => {
+    setIsLoading(true);
+    setError(null);
+    
     try {
-      setIsLoading(true);
-      setError(null);
       const newCourse = await coursesService.createCourse(courseData);
       setCourses([...courses, newCourse]);
+      addCourseToStore(newCourse); // Update global store
+      toast.success('Course added successfully');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add course');
+      toast.error('Failed to add course');
     } finally {
       setIsLoading(false);
     }
   };
 
   const updateCourse = async (id: string, courseData: any) => {
+    setIsLoading(true);
+    setError(null);
+    
+    // Optimistically update local state
+    const updatedCourse = { ...courses.find(c => c.id === id)!, ...courseData };
+    setCourses(courses.map(course => 
+      course.id === id ? updatedCourse : course
+    ));
+    updateCourseInStore(id, courseData); // Update global store
+    setEditingCourse(null);
+    
     try {
-      setIsLoading(true);
-      setError(null);
-      const updatedCourse = await coursesService.updateCourse(id, courseData);
+      const serverCourse = await coursesService.updateCourse(id, courseData);
+      // Update with server response
       setCourses(courses.map(course => 
-        course.id === id ? updatedCourse : course
+        course.id === id ? serverCourse : course
       ));
-      setEditingCourse(null);
+      updateCourseInStore(id, serverCourse);
+      toast.success('Course updated successfully');
     } catch (err) {
+      // Revert on error
+      setCourses(courses);
       setError(err instanceof Error ? err.message : 'Failed to update course');
+      toast.error('Failed to update course');
     } finally {
       setIsLoading(false);
     }
   };
 
   const deleteCourse = async (id: string) => {
+    // Optimistically update
+    const previousCourses = courses;
+    setCourses(courses.filter(course => course.id !== id));
+    deleteCourseFromStore(id); // Update global store
+    
     try {
-      setIsLoading(true);
-      setError(null);
       await coursesService.deleteCourse(id);
-      setCourses(courses.filter(course => course.id !== id));
+      toast.success('Course deleted successfully');
     } catch (err) {
+      // Revert on error
+      setCourses(previousCourses);
       setError(err instanceof Error ? err.message : 'Failed to delete course');
-    } finally {
-      setIsLoading(false);
+      toast.error('Failed to delete course');
     }
   };
 

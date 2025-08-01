@@ -27,6 +27,7 @@ import { Loader2 } from 'lucide-react';
 import { Course } from '@/types';
 import { coursesService } from '@/lib/services/courses.service.client';
 import { toast } from 'sonner';
+import { useAppStore } from '@/stores/useAppStore';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Course name must be at least 2 characters').max(100),
@@ -51,6 +52,7 @@ const courseEmojis = ['📚', '📖', '✏️', '🎓', '📝', '💻', '🔬', 
 
 export function CourseEditDialog({ course, open, onOpenChange, onSuccess, userAcademicSystem }: CourseEditDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { updateCourse: updateCourseInStore } = useAppStore();
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -78,36 +80,42 @@ export function CourseEditDialog({ course, open, onOpenChange, onSuccess, userAc
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    try {
-      const updates: any = {
-        name: values.name,
-        code: values.code || undefined,
-        professor: values.professor || undefined,
-        emoji: values.emoji || '📚',
-      };
+    
+    const updates: any = {
+      name: values.name,
+      code: values.code || undefined,
+      professor: values.professor || undefined,
+      emoji: values.emoji || '📚',
+    };
 
-      // Handle credits based on user's academic system
-      if (values.credits) {
-        const credits = parseInt(values.credits);
-        if (!isNaN(credits)) {
-          if (userAcademicSystem === 'ects') {
-            updates.ects_credits = credits;
-            // Clear regular credits to avoid confusion
-            updates.credits = null;
-          } else {
-            updates.credits = credits;
-            // Clear ECTS credits to avoid confusion
-            updates.ects_credits = null;
-          }
+    // Handle credits based on user's academic system
+    if (values.credits) {
+      const credits = parseInt(values.credits);
+      if (!isNaN(credits)) {
+        if (userAcademicSystem === 'ects') {
+          updates.ects_credits = credits;
+          // Clear regular credits to avoid confusion
+          updates.credits = null;
+        } else {
+          updates.credits = credits;
+          // Clear ECTS credits to avoid confusion
+          updates.ects_credits = null;
         }
       }
+    }
 
+    // Optimistically update the store
+    updateCourseInStore(course.id, updates);
+    toast.success('Course updated successfully!');
+    onSuccess();
+    onOpenChange(false);
+    
+    try {
       await coursesService.updateCourse(course.id, updates);
-      toast.success('Course updated successfully!');
-      onSuccess();
-      onOpenChange(false);
     } catch (error) {
+      // Revert on error by calling onSuccess which will refresh
       toast.error(error instanceof Error ? error.message : 'Failed to update course');
+      onSuccess(); // This will refresh and revert the optimistic update
     } finally {
       setIsSubmitting(false);
     }

@@ -32,6 +32,7 @@ import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
 import { User } from '@/types';
 import { cn } from '@/lib/utils';
 import { lightTheme, lightThemeClasses, componentStyles } from '@/lib/theme/light-theme';
+import { useAppStore } from '@/stores/useAppStore';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Course name must be at least 2 characters').max(100),
@@ -54,6 +55,7 @@ const courseEmojis = ['📚', '📖', '✏️', '🎓', '📝', '💻', '🔬', 
 export function CourseFormClient({ userProfile }: CourseFormClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { addCourse } = useAppStore();
   
   const country = userProfile.country || 'US';
   const academicSystem = getAcademicSystemWithTerms(country);
@@ -72,28 +74,29 @@ export function CourseFormClient({ userProfile }: CourseFormClientProps) {
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    try {
-      const courseData: any = {
-        name: values.name,
-        code: values.code || undefined,
-        professor: values.professor || undefined,
-        term: values.term,
-        academic_period_type: academicSystem.periodType as 'semester' | 'term' | 'trimester',
-        emoji: values.emoji || '📚',
-        color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'), // Random color
-      };
-      
-      // Handle credits based on user's academic system
-      if (values.credits !== undefined) {
-        if (userProfile.academic_system === 'ects') {
-          courseData.ects_credits = values.credits;
-        } else {
-          courseData.credits = values.credits;
-        }
+    
+    const courseData: any = {
+      name: values.name,
+      code: values.code || undefined,
+      professor: values.professor || undefined,
+      term: values.term,
+      academic_period_type: academicSystem.periodType as 'semester' | 'term' | 'trimester',
+      emoji: values.emoji || '📚',
+      color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'), // Random color
+    };
+    
+    // Handle credits based on user's academic system
+    if (values.credits !== undefined) {
+      if (userProfile.academic_system === 'ects') {
+        courseData.ects_credits = values.credits;
+      } else {
+        courseData.credits = values.credits;
       }
-      
+    }
+    
+    try {
       const course = await coursesService.createCourse(courseData);
-      
+      addCourse(course); // Update global store immediately
       toast.success('Course created successfully!');
       router.push(`/courses/${course.id}`);
     } catch (error) {

@@ -323,13 +323,19 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
   const handleDeleteFolder = async () => {
     if (!deletingFolder) return;
 
+    // Optimistically remove folder from UI
+    const previousFolderOrder = folderOrder;
+    setFolderOrder(folderOrder.filter(f => f.id !== deletingFolder.id));
+    setDeleteDialogOpen(false);
+    const folderToDelete = deletingFolder;
+    setDeletingFolder(null);
+    toast.success('Folder deleted successfully');
+    
     try {
-      await coursesService.deleteFolder(deletingFolder.id);
-      setDeleteDialogOpen(false);
-      setDeletingFolder(null);
-      router.refresh();
-      toast.success('Folder deleted successfully');
+      await coursesService.deleteFolder(folderToDelete.id);
     } catch (error) {
+      // Revert on error
+      setFolderOrder(previousFolderOrder);
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete folder';
       toast.error(errorMessage);
     }
@@ -354,13 +360,31 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
     }
 
     setIsCreatingFolder(true);
+    const tempId = `temp-${Date.now()}`;
+    const newFolder: CourseFolder = {
+      id: tempId,
+      course_id: course.id,
+      name: newFolderName.trim(),
+      display_order: folderOrder.length,
+      is_special: false,
+      parent_id: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    
+    // Optimistically add folder to UI
+    setFolderOrder([...folderOrder, newFolder]);
+    setNewFolderName('');
+    setDialogOpen(false);
+    toast.success(SUCCESS_MESSAGES.FOLDER_CREATED || 'Folder created successfully');
+    
     try {
-      await coursesService.createCourseFolder(course.id, newFolderName.trim());
-      toast.success(SUCCESS_MESSAGES.FOLDER_CREATED || 'Folder created successfully');
-      setNewFolderName('');
-      setDialogOpen(false);
-      router.refresh();
+      const createdFolder = await coursesService.createCourseFolder(course.id, newFolderName.trim());
+      // Replace temp folder with real one
+      setFolderOrder(prev => prev.map(f => f.id === tempId ? createdFolder : f));
     } catch (error) {
+      // Remove temp folder on error
+      setFolderOrder(prev => prev.filter(f => f.id !== tempId));
       logger.error('Failed to create folder', error, {
         action: 'createFolder',
         metadata: { courseId: course.id, folderName: newFolderName }
@@ -884,7 +908,9 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
         course={course}
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
-        onSuccess={() => router.refresh()}
+        onSuccess={() => {
+          // Course is already updated in the store optimistically
+        }}
         userAcademicSystem={userAcademicSystem}
       />
 
