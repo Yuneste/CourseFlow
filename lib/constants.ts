@@ -90,7 +90,7 @@ export const DELAYS = {
   DEBOUNCE_INPUT: 500,
   TOAST_DURATION: 5000,
   REDIRECT_DELAY: 1000,
-  UPLOAD_COMPLETE_FADE: 3000,
+  UPLOAD_COMPLETE_FADE: 2000,
   SESSION_WARNING: 5 * 60 * 1000, // 5 minutes before session expires
 } as const;
 

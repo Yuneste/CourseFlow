@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card } from '@/components/ui/card';
 import { useAppStore } from '@/stores/useAppStore';
 import { formatFileSize } from '@/lib/utils/file-validation';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { UploadProgress as UploadProgressType } from '@/types';
 
 interface UploadProgressProps {
@@ -17,13 +18,13 @@ export function UploadProgress({ onClose }: UploadProgressProps) {
   const { uploadQueue, removeFromUploadQueue, updateUploadProgress } = useAppStore();
   const [pausedUploads, setPausedUploads] = useState<Set<string>>(new Set());
 
-  // Auto-remove completed uploads after 5 seconds
+  // Auto-remove completed uploads after 2 seconds
   useEffect(() => {
     const completedUploads = uploadQueue.filter(u => u.status === 'completed');
     if (completedUploads.length > 0) {
       const timer = setTimeout(() => {
         completedUploads.forEach(u => removeFromUploadQueue(u.fileId));
-      }, 5000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [uploadQueue, removeFromUploadQueue]);
@@ -51,18 +52,23 @@ export function UploadProgress({ onClose }: UploadProgressProps) {
     // In a real implementation, this would also cancel the actual upload
   };
 
-  if (uploadQueue.length === 0) {
-    return null;
-  }
-
   const activeUploads = uploadQueue.filter(u => u.status === 'uploading' || u.status === 'paused');
   const completedUploads = uploadQueue.filter(u => u.status === 'completed');
   const failedUploads = uploadQueue.filter(u => u.status === 'failed');
 
-  const totalProgress = uploadQueue.reduce((sum, upload) => sum + upload.progress, 0) / uploadQueue.length;
+  const totalProgress = uploadQueue.reduce((sum, upload) => sum + upload.progress, 0) / Math.max(uploadQueue.length, 1);
 
   return (
-    <Card className="fixed bottom-20 right-6 w-96 max-h-96 overflow-hidden shadow-lg z-30">
+    <AnimatePresence>
+      {uploadQueue.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.95 }}
+          transition={{ duration: 0.2 }}
+          className="fixed bottom-20 right-6 w-96 z-30"
+        >
+          <Card className="max-h-96 overflow-hidden shadow-lg">
       <div className="p-4 border-b">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-semibold">Upload Progress</h3>
@@ -96,8 +102,17 @@ export function UploadProgress({ onClose }: UploadProgressProps) {
       </div>
 
       <div className="max-h-72 overflow-y-auto">
-        {uploadQueue.map((upload) => (
-          <div key={upload.fileId} className="p-3 border-b last:border-b-0">
+        <AnimatePresence>
+          {uploadQueue.map((upload) => (
+            <motion.div
+              key={upload.fileId}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="p-3 border-b last:border-b-0">
             <div className="flex items-start justify-between mb-1">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{upload.fileName}</p>
@@ -165,8 +180,13 @@ export function UploadProgress({ onClose }: UploadProgressProps) {
               <p className="text-xs text-red-600 mt-1">{upload.error}</p>
             )}
           </div>
-        ))}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </Card>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
