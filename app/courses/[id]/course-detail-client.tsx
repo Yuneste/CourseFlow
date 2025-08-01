@@ -28,6 +28,7 @@ import { CourseEditDialog } from '@/components/features/courses/CourseEditDialog
 import { useRouter } from 'next/navigation';
 import { filesService } from '@/lib/services/files.service.client';
 import { coursesService } from '@/lib/services/courses.service.client';
+import { useAppStore } from '@/stores/useAppStore';
 import { logger } from '@/lib/services/logger.service';
 import {
   Dialog,
@@ -68,7 +69,7 @@ interface FolderNode {
   isExpanded: boolean;
 }
 
-export function CourseDetailClient({ course, folders, files, userAcademicSystem }: CourseDetailClientProps) {
+export function CourseDetailClient({ course, folders, files: initialFiles, userAcademicSystem }: CourseDetailClientProps) {
   const router = useRouter();
   const [selectedFolder, setSelectedFolder] = useState<CourseFolder | null>(null);
   const [showUpload, setShowUpload] = useState(false);
@@ -89,6 +90,17 @@ export function CourseDetailClient({ course, folders, files, userAcademicSystem 
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteCourseDialog, setShowDeleteCourseDialog] = useState(false);
   const [isDeletingCourse, setIsDeletingCourse] = useState(false);
+  
+  // Get files from store and use initial files as fallback
+  const { files: storeFiles, setFiles, deleteFile: deleteFileFromStore } = useAppStore();
+  const files = storeFiles.filter(f => f.course_id === course.id);
+  
+  // Initialize store with server data if empty
+  useEffect(() => {
+    if (storeFiles.length === 0 && initialFiles.length > 0) {
+      setFiles(initialFiles);
+    }
+  }, [initialFiles, storeFiles.length, setFiles]);
 
 
   // Initialize folder order on mount or when folders change
@@ -137,7 +149,7 @@ export function CourseDetailClient({ course, folders, files, userAcademicSystem 
   const handleFileDelete = async (fileId: string) => {
     try {
       await filesService.deleteFile(fileId);
-      router.refresh();
+      deleteFileFromStore(fileId); // Update store immediately
       toast.success(SUCCESS_MESSAGES.FILE_DELETED);
     } catch (error) {
       logger.error('Failed to delete file', error, {

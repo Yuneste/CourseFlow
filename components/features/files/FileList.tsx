@@ -101,8 +101,17 @@ export function FileList({ courseId }: FileListProps) {
     }
   };
 
+  // Debug: Log when files change
+  useEffect(() => {
+    console.log('FileList - Total files in store:', files.length);
+    if (courseId) {
+      const courseFiles = files.filter(file => file.course_id === courseId);
+      console.log(`FileList - Files for course ${courseId}:`, courseFiles.length);
+    }
+  }, [files, courseId]);
+
   // Filter files by course if courseId is provided
-  const displayFiles = courseId ? getFilesByCourse(courseId) : files;
+  const displayFiles = courseId ? files.filter(file => file.course_id === courseId) : files;
 
   if (isLoadingFiles) {
     return (
