@@ -17,6 +17,8 @@
     "db:migrate": "node scripts/migrate-database.js up",
     "db:rollback": "node scripts/migrate-database.js rollback",
     "db:status": "node scripts/migrate-database.js status",
+    "db:health": "node scripts/check-database-health.js",
+    "db:cleanup": "node scripts/cleanup-database.js",
     "health:check": "curl -f http://localhost:3000/api/health || exit 1",
     "prestart": "npm run db:migrate",
     "clean": "node scripts/clean.js",
