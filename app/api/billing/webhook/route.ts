@@ -23,37 +23,44 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  console.log('Webhook endpoint hit');
+  console.log('[WEBHOOK] Endpoint hit at:', new Date().toISOString());
   
   let body: string;
   let signature: string | null;
 
   try {
     body = await req.text();
-    console.log('Body length:', body.length);
+    console.log('[WEBHOOK] Body length:', body.length);
+    console.log('[WEBHOOK] Body preview:', body.substring(0, 200));
     
     const headersList = await headers();
     signature = headersList.get('stripe-signature');
 
     if (!signature) {
-      console.error('No stripe signature found');
+      console.error('[WEBHOOK ERROR] No stripe signature found in headers');
       return new NextResponse('No signature', { status: 400 });
     }
 
+    console.log('[WEBHOOK] Signature found:', signature.substring(0, 20) + '...');
+
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
     if (!webhookSecret) {
-      console.error('Webhook secret not configured');
+      console.error('[WEBHOOK ERROR] STRIPE_WEBHOOK_SECRET not configured');
       return new NextResponse('Webhook secret not configured', { status: 500 });
     }
+
+    console.log('[WEBHOOK] Secret configured:', webhookSecret.substring(0, 10) + '...');
 
     let event: Stripe.Event;
 
     try {
       const stripe = getStripe();
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } catch (err) {
-      console.error('Webhook signature verification failed:', err);
-      return new NextResponse('Webhook Error: Invalid signature', { status: 400 });
+      console.log('[WEBHOOK] Event constructed successfully:', event.type, event.id);
+    } catch (err: any) {
+      console.error('[WEBHOOK ERROR] Signature verification failed:', err.message);
+      console.error('[WEBHOOK ERROR] Full error:', JSON.stringify(err, null, 2));
+      return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
     }
 
     const supabase = createServiceClient();
@@ -93,7 +100,7 @@ export async function POST(req: Request) {
         }
 
         // First, find the user by email
-        console.log('Looking for user with email:', email);
+        console.log('[WEBHOOK] Looking for user with email:', email);
         
         const { data: profile, error: fetchError } = await supabase
           .from('profiles')
@@ -102,29 +109,32 @@ export async function POST(req: Request) {
           .single();
 
         if (fetchError || !profile) {
-          console.error('User not found with email:', email);
-          console.error('Fetch error:', fetchError);
+          console.error('[WEBHOOK ERROR] User not found with email:', email);
+          console.error('[WEBHOOK ERROR] Fetch error:', fetchError);
           
           // Try case-insensitive search
-          const { data: profileAlt } = await supabase
+          const { data: profileAlt, error: altError } = await supabase
             .from('profiles')
             .select('id, email')
             .ilike('email', email!)
             .single();
             
+          if (altError) {
+            console.error('[WEBHOOK ERROR] Case-insensitive search also failed:', altError);
+          }
+            
           if (profileAlt) {
-            console.log('Found user with different case email:', profileAlt.email);
-            // Return error to Stripe to retry later
-            return new NextResponse('User not found', { status: 404 });
+            console.log('[WEBHOOK] Found user with different case email:', profileAlt.email);
           }
           
-          break;
+          // Return error to Stripe to retry later
+          return new NextResponse('User not found', { status: 404 });
         }
 
-        console.log(`Updating user ${email} (ID: ${profile.id}) to ${tier} plan`);
+        console.log(`[WEBHOOK] Updating user ${email} (ID: ${profile.id}) to ${tier} plan`);
 
         // Update user in database by ID
-        const { error } = await supabase
+        const { data: updateData, error } = await supabase
           .from('profiles')
           .update({
             subscription_tier: tier,
@@ -134,12 +144,14 @@ export async function POST(req: Request) {
             has_access: true,
             updated_at: new Date().toISOString()
           })
-          .eq('id', profile.id);
+          .eq('id', profile.id)
+          .select();
 
         if (error) {
-          console.error('Error updating user subscription:', error);
+          console.error('[WEBHOOK ERROR] Database update failed:', error);
+          console.error('[WEBHOOK ERROR] Update details:', JSON.stringify(error, null, 2));
         } else {
-          console.log(`User ${email} upgraded to ${tier}`);
+          console.log(`[WEBHOOK SUCCESS] User ${email} upgraded to ${tier}`, updateData);
         }
         break;
       }
