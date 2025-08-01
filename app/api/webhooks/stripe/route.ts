@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
         // Get the subscription
         const subscription = await stripe.subscriptions.retrieve(
           session.subscription as string
-        );
+        ) as Stripe.Subscription;
 
         // Determine tier based on price
         const priceId = subscription.items.data[0].price.id;
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
             subscription_status: 'active',
             stripe_customer_id: session.customer as string,
             stripe_subscription_id: subscription.id,
-            subscription_current_period_end: new Date(subscription.current_period_end * 1000).toISOString()
+            subscription_current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null
           })
           .eq('id', userId);
 
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
           .update({
             subscription_tier: tier,
             subscription_status: subscription.status,
-            subscription_current_period_end: new Date(subscription.current_period_end * 1000).toISOString()
+            subscription_current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null
           })
           .eq('id', profile.id);
 
