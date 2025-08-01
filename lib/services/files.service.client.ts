@@ -58,7 +58,7 @@ class FilesService {
     let completedFiles = 0;
     
     // Helper function to upload a single file
-    const uploadSingleFile = async (file: File, index: number): Promise<void> => {
+    const uploadSingleFile = async (file: File, index: number): Promise<{ success: boolean; file?: FileType; error?: string }> => {
       const tempId = `temp-${Date.now()}-${index}`;
       
       try {
@@ -198,12 +198,12 @@ class FilesService {
       const batchResults = await Promise.all(batchPromises);
       
       // Extract successful uploads and errors
-      batchResults.forEach((result) => {
+      batchResults.forEach((result, idx) => {
         if (result.success && result.file) {
           results.files.push(result.file);
         } else if (!result.success && result.error) {
           results.errors.push({
-            filename: result.file?.name || 'Unknown file',
+            filename: batch[idx]?.name || 'Unknown file',
             error: result.error
           });
         }
