@@ -30,6 +30,8 @@ import Link from 'next/link';
 import { coursesService } from '@/lib/services/courses.service';
 import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
 import { User } from '@/types';
+import { cn } from '@/lib/utils';
+import { lightTheme, lightThemeClasses, componentStyles } from '@/lib/theme/light-theme';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Course name must be at least 2 characters').max(100),
