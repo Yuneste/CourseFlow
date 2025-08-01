@@ -44,7 +44,7 @@
 **As a student**, I want my files automatically sorted into the right courses and topics based on their content.
 
 ### Acceptance Criteria
-1. AI categorizes files to correct course with 90%+ accuracy
+1. AI categorizes files to correct course with 90%+ accuracy (best strategy: most used word/term or titles detection)
 2. Sub-categorization by topic (Lecture, Assignment, Notes, Exam)
 3. Confidence scores shown to users
 4. One-click correction mechanism
@@ -112,7 +112,7 @@
 4. Important formulas/equations preserved
 5. Summary saved and searchable
 6. Regenerate with different parameters
-7. Export summary as PDF/text
+7. Export summary as PDF/text in a seperate Folder
 
 ### UI/UX Requirements
 - "Summarize" button on file cards
