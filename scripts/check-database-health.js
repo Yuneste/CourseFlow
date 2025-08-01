@@ -17,47 +17,60 @@ async function checkDatabaseHealth() {
   try {
     // 1. Check for orphaned files (files without valid courses)
     console.log('1. Checking for orphaned files...');
+    // First get all courses
+    const { data: courses } = await supabase
+      .from('courses')
+      .select('id');
+    
+    const courseIds = courses ? courses.map(c => c.id) : [];
+    
     const { data: orphanedFiles, error: orphanedFilesError } = await supabase
       .from('files')
       .select('id, display_name, course_id')
-      .not('course_id', 'is', null)
-      .filter('course_id', 'not.in', '(SELECT id FROM courses)');
+      .not('course_id', 'is', null);
+    
+    const actualOrphanedFiles = orphanedFiles ? orphanedFiles.filter(
+      file => !courseIds.includes(file.course_id)
+    ) : [];
 
     if (orphanedFilesError) {
       console.error('Error checking orphaned files:', orphanedFilesError);
     } else {
-      console.log(`   ✓ Found ${orphanedFiles?.length || 0} orphaned files`);
-      if (orphanedFiles?.length > 0) {
-        console.log('   ⚠️  Orphaned files:', orphanedFiles.map(f => f.display_name).join(', '));
+      console.log(`   ✓ Found ${actualOrphanedFiles.length} orphaned files`);
+      if (actualOrphanedFiles.length > 0) {
+        console.log('   ⚠️  Orphaned files:', actualOrphanedFiles.map(f => f.display_name).join(', '));
       }
     }
 
     // 2. Check for orphaned folders
     console.log('\n2. Checking for orphaned folders...');
-    const { data: orphanedFolders, error: orphanedFoldersError } = await supabase
+    const { data: allFolders, error: orphanedFoldersError } = await supabase
       .from('course_folders')
-      .select('id, name, course_id')
-      .filter('course_id', 'not.in', '(SELECT id FROM courses)');
+      .select('id, name, course_id');
+    
+    const orphanedFolders = allFolders ? allFolders.filter(
+      folder => !courseIds.includes(folder.course_id)
+    ) : [];
 
     if (orphanedFoldersError) {
       console.error('Error checking orphaned folders:', orphanedFoldersError);
     } else {
-      console.log(`   ✓ Found ${orphanedFolders?.length || 0} orphaned folders`);
-      if (orphanedFolders?.length > 0) {
+      console.log(`   ✓ Found ${orphanedFolders.length} orphaned folders`);
+      if (orphanedFolders.length > 0) {
         console.log('   ⚠️  Orphaned folders:', orphanedFolders.map(f => f.name).join(', '));
       }
     }
 
     // 3. Check for duplicate folders in same course
     console.log('\n3. Checking for duplicate folders...');
-    const { data: allFolders, error: foldersError } = await supabase
+    const { data: foldersForDuplicates, error: foldersError } = await supabase
       .from('course_folders')
       .select('name, course_id')
       .order('course_id');
 
-    if (!foldersError && allFolders) {
-      const duplicates = {};
-      allFolders.forEach(folder => {
+    let duplicates = {};
+    if (!foldersError && foldersForDuplicates) {
+      foldersForDuplicates.forEach(folder => {
         const key = `${folder.course_id}-${folder.name}`;
         if (duplicates[key]) {
           duplicates[key]++;
@@ -109,8 +122,9 @@ async function checkDatabaseHealth() {
     
     // Summary
     const issues = [];
-    if (orphanedFiles?.length > 0) issues.push(`${orphanedFiles.length} orphaned files`);
-    if (orphanedFolders?.length > 0) issues.push(`${orphanedFolders.length} orphaned folders`);
+    if (actualOrphanedFiles.length > 0) issues.push(`${actualOrphanedFiles.length} orphaned files`);
+    if (orphanedFolders.length > 0) issues.push(`${orphanedFolders.length} orphaned folders`);
+    const duplicateCount = Object.values(duplicates || {}).filter(count => count > 1).length;
     if (duplicateCount > 0) issues.push(`${duplicateCount} duplicate folders`);
     if (invalidFiles?.length > 0) issues.push(`${invalidFiles.length} files with invalid sizes`);
 
