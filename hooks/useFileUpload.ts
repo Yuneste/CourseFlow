@@ -173,13 +173,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       });
 
       // Add successful uploads to store
-      result.files.forEach(file => {
-        logger.info('Adding file to store', {
-          action: 'addFileToStore',
-          metadata: { fileId: file.id, fileName: file.display_name, courseId: file.course_id }
-        });
-        addFile(file);
-      });
+      result.files.forEach(file => addFile(file));
 
       // Show errors if any
       if (result.errors && result.errors.length > 0) {

@@ -182,6 +182,8 @@ export const useAppStore = create<AppState>()(
           set((state) => ({
             files: [file, ...state.files],
             filesError: null,
+            // Force a new timestamp to trigger re-renders
+            filesLastFetched: Date.now()
           })),
 
         updateFile: (id, updates) =>

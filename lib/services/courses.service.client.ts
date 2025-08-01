@@ -224,7 +224,7 @@ class CoursesService {
    */
   async reorderFolders(updates: Array<{ id: string; display_order: number }>): Promise<void> {
     try {
-      await api.post('/courses/folders/reorder', { updates });
+      await api.patch('/courses/folders', { folders: updates });
       logger.info('Folders reordered successfully', {
         action: 'reorderFolders',
         metadata: { updateCount: updates.length }

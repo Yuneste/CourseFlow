@@ -101,15 +101,6 @@ export function FileList({ courseId }: FileListProps) {
     }
   };
 
-  // Debug: Log when files change
-  useEffect(() => {
-    console.log('FileList - Total files in store:', files.length);
-    if (courseId) {
-      const courseFiles = files.filter(file => file.course_id === courseId);
-      console.log(`FileList - Files for course ${courseId}:`, courseFiles.length);
-    }
-  }, [files, courseId]);
-
   // Filter files by course if courseId is provided
   const displayFiles = courseId ? files.filter(file => file.course_id === courseId) : files;
 
@@ -151,7 +142,7 @@ export function FileList({ courseId }: FileListProps) {
   }
 
   return (
-    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3" key={`files-${displayFiles.length}`}>
       {displayFiles.map((file) => (
         <FileCard
           key={file.id}
