@@ -684,10 +684,21 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                       onClick={async () => {
                         if (confirm(`Delete ${selectedFiles.size} selected files?`)) {
                           const fileIds = Array.from(selectedFiles);
-                          for (const fileId of fileIds) {
-                            await handleFileDelete(fileId);
+                          try {
+                            // Delete all files in parallel
+                            await Promise.all(
+                              fileIds.map(fileId => filesService.deleteFile(fileId))
+                            );
+                            router.refresh();
+                            toast.success(`Deleted ${fileIds.length} file${fileIds.length > 1 ? 's' : ''}`);
+                            setSelectedFiles(new Set());
+                          } catch (error) {
+                            logger.error('Failed to delete files', error, {
+                              action: 'deleteMultipleFiles',
+                              metadata: { fileCount: fileIds.length }
+                            });
+                            toast.error('Some files failed to delete');
                           }
-                          setSelectedFiles(new Set());
                         }
                       }}
                     >
