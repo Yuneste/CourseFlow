@@ -65,7 +65,8 @@ export class EmailCampaignService {
       return subjects.upgrade[context as keyof typeof subjects.upgrade] || subjects.upgrade.explorer;
     }
 
-    return subjects[type as keyof typeof subjects] || 'CourseFlow Update';
+    const subject = subjects[type as keyof typeof subjects];
+    return typeof subject === 'string' ? subject : 'CourseFlow Update';
   }
 
   private generateEmailContent(type: string, data: any): string {

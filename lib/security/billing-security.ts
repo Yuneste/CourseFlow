@@ -23,7 +23,7 @@ const SUSPICIOUS_PATTERNS = [
 
 // Check for suspicious user activity
 export async function checkUserSecurity(userId: string): Promise<SecurityCheck> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Get user profile and recent activity
   const { data: profile, error } = await supabase
@@ -178,7 +178,7 @@ export async function logSecurityEvent(
   eventType: string,
   metadata: Record<string, any>
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   try {
     await supabase.from('usage_tracking').insert({

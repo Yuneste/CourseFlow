@@ -52,7 +52,7 @@ export class CostProtectionService {
         .gte('created_at', currentMonth.toISOString());
 
       const currentSpend = usage?.reduce((sum, log) => sum + (log.cost || 0), 0) || 0;
-      const maxSpend = tierConfig.maxAISpendPerMonth;
+      const maxSpend = tierConfig.limits.maxAICostPerMonth;
       const remainingBudget = maxSpend - currentSpend;
 
       // Check if operation is allowed
@@ -122,7 +122,7 @@ export class CostProtectionService {
         .eq('user_id', userId);
 
       const currentUsage = files?.reduce((sum, file) => sum + (file.file_size || 0), 0) || 0;
-      const limit = tierConfig.storageLimit;
+      const limit = tierConfig.limits.storage * 1024 * 1024; // Convert MB to bytes
 
       if (limit !== -1 && currentUsage >= limit) {
         return {
@@ -243,7 +243,7 @@ export class CostProtectionService {
         .single();
 
       const tier = profile?.subscription_tier || 'explorer';
-      const maxSpend = SUBSCRIPTION_TIERS[tier as keyof typeof SUBSCRIPTION_TIERS].maxAISpendPerMonth;
+      const maxSpend = SUBSCRIPTION_TIERS[tier as keyof typeof SUBSCRIPTION_TIERS].limits.maxAICostPerMonth;
 
       // Get current month's data
       const now = new Date();

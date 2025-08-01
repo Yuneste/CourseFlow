@@ -153,17 +153,15 @@ export class UsageTrackingService {
       reasons.push('Excessive file uploads detected');
     }
 
-    // Check for duplicate files (same hash uploaded multiple times)
-    const { data: duplicates } = await supabase
+    // Check for files (simplified check without grouping)
+    const { data: files, count: fileCount } = await supabase
       .from('files')
-      .select('file_hash, count')
-      .eq('user_id', userId)
-      .select('file_hash')
-      .group('file_hash')
-      .having('count(*)', 'gt', 5);
+      .select('file_hash', { count: 'exact' })
+      .eq('user_id', userId);
 
-    if (duplicates && duplicates.length > 0) {
-      reasons.push('Multiple duplicate files detected');
+    // Simple check for suspicious file count
+    if (fileCount && fileCount > 100) {
+      reasons.push('Large number of files uploaded');
     }
 
     return {

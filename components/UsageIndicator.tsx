@@ -150,7 +150,7 @@ export function UsageIndicator() {
                   <span className="font-medium text-gray-700">{item.label}</span>
                 </div>
                 <span className="text-gray-600">
-                  {item.data.current}{item.data.unit} / {formatLimit(item.data.limit, item.data.unit)}
+                  {item.data.current}{(item.data as any).unit || ''} / {formatLimit(item.data.limit, (item.data as any).unit)}
                 </span>
               </div>
               {!isUnlimited && !isUnavailable && (

@@ -90,11 +90,11 @@ export function markEventProcessed(eventId: string): void {
   // Clean up old events periodically
   if (processedEvents.size > 10000) {
     const now = Date.now();
-    for (const [id, time] of processedEvents.entries()) {
+    processedEvents.forEach((time, id) => {
       if (now - time > EVENT_CACHE_TTL) {
         processedEvents.delete(id);
       }
-    }
+    });
   }
 }
 

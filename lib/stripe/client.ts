@@ -2,11 +2,17 @@ import Stripe from 'stripe';
 
 // Initialize Stripe with proper configuration
 export function getStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  
+  if (!stripeKey) {
+    // In development/build time, return a dummy client
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+      console.warn('STRIPE_SECRET_KEY is not configured');
+    }
     throw new Error('STRIPE_SECRET_KEY is not configured');
   }
 
-  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+  return new Stripe(stripeKey, {
     apiVersion: '2025-07-30.basil',
     maxNetworkRetries: 2,
     timeout: 10000, // 10 second timeout

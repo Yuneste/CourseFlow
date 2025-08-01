@@ -133,9 +133,9 @@ export async function billingRateLimitMiddleware(
 // Clean up old entries periodically
 setInterval(() => {
   const now = Date.now();
-  for (const [key, limit] of rateLimitStore.entries()) {
+  rateLimitStore.forEach((limit, key) => {
     if (now > limit.resetTime + 60000) { // 1 minute grace period
       rateLimitStore.delete(key);
     }
-  }
+  });
 }, 5 * 60 * 1000); // Run every 5 minutes

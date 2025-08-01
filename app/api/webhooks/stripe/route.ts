@@ -9,10 +9,17 @@ import {
   markEventProcessed 
 } from '@/lib/security/webhook-protection';
 
-const stripe = getStripe();
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
 export async function POST(request: NextRequest) {
+  // Initialize Stripe inside the function
+  const stripe = getStripe();
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  
+  if (!endpointSecret) {
+    return NextResponse.json(
+      { error: 'Webhook secret not configured' },
+      { status: 500 }
+    );
+  }
   // Rate limiting check
   const clientIp = headers().get('x-forwarded-for') || 'unknown';
   const rateLimitCheck = checkWebhookRateLimit(`stripe-webhook:${clientIp}`);
@@ -96,7 +103,7 @@ export async function POST(request: NextRequest) {
             subscription_status: 'active',
             stripe_customer_id: session.customer as string,
             stripe_subscription_id: subscription.id,
-            subscription_current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null
+            subscription_current_period_end: (subscription as any).current_period_end ? new Date((subscription as any).current_period_end * 1000).toISOString() : null
           })
           .eq('id', userId);
 
@@ -141,7 +148,7 @@ export async function POST(request: NextRequest) {
           .update({
             subscription_tier: tier,
             subscription_status: subscription.status,
-            subscription_current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null
+            subscription_current_period_end: (subscription as any).current_period_end ? new Date((subscription as any).current_period_end * 1000).toISOString() : null
           })
           .eq('id', profile.id);
 
