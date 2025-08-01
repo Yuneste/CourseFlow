@@ -10,11 +10,11 @@ export default function AnalyticsPage() {
       <div className={cn(lightThemeClasses.page.container, "py-8 flex items-center justify-center min-h-[80vh]")}>
         <div className={cn(lightThemeClasses.card.base, "max-w-md w-full p-8 text-center")}>
           <div className="flex justify-center mb-6">
-            <div className="p-4 bg-[#E6F7F5] rounded-full">
-              <BarChart3 className="h-12 w-12 text-[#8CC2BE]" />
+            <div className="p-4 bg-[#E0E7FF] rounded-full">
+              <BarChart3 className="h-10 w-10 text-[#6366F1]" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
+          <h1 className="text-2xl font-bold text-[#3B82F6] mb-3">
             Analytics Coming Soon
           </h1>
           <p className="text-gray-600 mb-6">

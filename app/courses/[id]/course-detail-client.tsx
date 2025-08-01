@@ -405,7 +405,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           ) : (
             <Folder className={cn(
               "h-4 w-4 transition-all duration-200",
-              node.folder.is_special ? 'text-primary' : 'text-foreground',
+              node.folder.is_special ? 'text-[#6366F1]' : 'text-gray-700',
               isDragOver && "scale-110"
             )} />
           )}
@@ -558,8 +558,8 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                 <div
                   className={cn(
                     "flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-all duration-200",
-                    "hover:bg-gray-100 dark:hover:bg-gray-800",
-                    !selectedFolder && "bg-primary/10"
+                    "hover:bg-[#E0E7FF]",
+                    !selectedFolder && "bg-[#C7D2FE]"
                   )}
                   onClick={() => setSelectedFolder(null)}
                 >
@@ -578,7 +578,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
           <div className="lg:col-span-3 space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between animate-in slide-in-from-right duration-500">
-              <h2 className="text-lg font-semibold">
+              <h2 className="text-lg font-semibold text-[#8B5CF6]">
                 {selectedFolder ? selectedFolder.name : 'All Files'}
               </h2>
               <div className="flex items-center gap-2">
@@ -627,9 +627,9 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
             
             {/* Bulk actions bar */}
             {(selectedFiles.size > 0 || currentFiles.length > 0) && (
-              <Card className="p-3 bg-muted/50 border-border animate-in slide-in-from-top-2 duration-300">
+              <Card className={cn(lightThemeClasses.card.base, "p-3 animate-in slide-in-from-top-2 duration-300")}>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-gray-700">
                     {selectedFiles.size > 0 
                       ? `${selectedFiles.size} file${selectedFiles.size > 1 ? 's' : ''} selected`
                       : `${currentFiles.length} file${currentFiles.length > 1 ? 's' : ''} available`
@@ -711,11 +711,11 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
 
             {/* Upload Section */}
             {showUpload && (
-              <Card className="overflow-hidden animate-in slide-in-from-top duration-300">
-                <div className="p-4 bg-muted/50 border-b flex items-center justify-between">
+              <Card className={cn(lightThemeClasses.card.base, "overflow-hidden animate-in slide-in-from-top duration-300")}>
+                <div className="p-4 bg-[#E0E7FF] border-b border-[#C7D2FE] flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Upload className="h-4 w-4 text-muted-foreground" />
-                    <h3 className="text-sm font-medium">Upload Files</h3>
+                    <Upload className="h-4 w-4 text-[#6366F1]" />
+                    <h3 className="text-sm font-medium text-[#4F46E5]">Upload Files</h3>
                   </div>
                   <Button
                     size="sm"
@@ -771,9 +771,9 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
                 ))}
               </div>
             ) : (
-              <Card className="p-12 text-center animate-in fade-in duration-500">
-                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 dark:text-gray-400">
+              <Card className={cn(lightThemeClasses.card.base, "p-12 text-center animate-in fade-in duration-500")}>
+                <FileText className="h-10 w-10 text-[#6366F1] mx-auto mb-4" />
+                <p className="text-gray-600">
                   No files in {selectedFolder ? 'this folder' : 'this course'} yet
                 </p>
                 <p className="text-sm text-gray-500 mt-2">

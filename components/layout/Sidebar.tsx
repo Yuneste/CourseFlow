@@ -222,13 +222,13 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   >
                     <Icon className={cn(
                       "h-5 w-5 flex-shrink-0 transition-colors",
-                      active ? "text-[#5A9B95]" : "text-gray-500 group-hover:text-[#5A9B95]"
+                      active ? "text-[#6366F1]" : "text-gray-500 group-hover:text-[#6366F1]"
                     )} />
                     {!isCollapsed && (
                       <div className="flex-1 min-w-0">
                         <p className={cn(
                           "text-sm font-medium",
-                          active ? "text-[#5A9B95]" : "text-gray-700 group-hover:text-[#5A9B95]"
+                          active ? "text-[#6366F1]" : "text-gray-700 group-hover:text-[#6366F1]"
                         )}>
                           {item.title}
                         </p>
@@ -261,12 +261,12 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                 >
                   <Icon className={cn(
                     "h-5 w-5 flex-shrink-0",
-                    active ? "text-[#5A9B95]" : "text-gray-500 hover:text-[#5A9B95]"
+                    active ? "text-[#6366F1]" : "text-gray-500 hover:text-[#6366F1]"
                   )} />
                   {!isCollapsed && (
                     <span className={cn(
                       "text-sm",
-                      active ? "text-[#5A9B95] font-medium" : "text-gray-700 hover:text-[#5A9B95]"
+                      active ? "text-[#6366F1] font-medium" : "text-gray-700 hover:text-[#6366F1]"
                     )}>
                       {item.title}
                     </span>

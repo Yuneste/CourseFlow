@@ -264,10 +264,11 @@ export function CourseFormClient({ userProfile }: CourseFormClientProps) {
                 variant="outline"
                 onClick={() => router.push('/courses')}
                 disabled={isSubmitting}
+                className={lightThemeClasses.button.secondary}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} className={lightThemeClasses.button.primary}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

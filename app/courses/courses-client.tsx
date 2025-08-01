@@ -88,8 +88,8 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">My Courses</h1>
-        <p className="text-gray-600 font-medium">Manage and track all your courses in one place</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">My Courses</h1>
+        <p className="text-gray-600 text-sm">Manage and track all your courses in one place</p>
       </motion.div>
 
       {/* Actions Bar */}
@@ -172,25 +172,25 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
               >
               <Card className={cn(
                 lightThemeClasses.card.base,
-                "h-[200px] transition-all duration-300 cursor-move hover:scale-[1.02] hover:border-[#8CC2BE]/30 flex flex-col relative overflow-hidden",
+                "h-[180px] transition-all duration-300 cursor-move hover:scale-[1.02] hover:border-[#6366F1]/30 flex flex-col relative overflow-hidden",
                 draggedCourse?.id === course.id && "opacity-50"
               )}>
                 {/* Gradient overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#8CC2BE]/5 to-[#49C993]/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/5 to-[#8B5CF6]/5 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 <div className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity z-10">
                   <GripVertical className="h-4 w-4 text-gray-400" />
                 </div>
                 <Link href={`/courses/${course.id}`} className="flex flex-col p-5 group h-full relative">
                   <div className="flex justify-between items-start mb-3">
-                    <div className="p-2.5 rounded-lg bg-[#E6F7F5]">
-                      <BookOpen className="h-5 w-5 text-[#8CC2BE]" />
+                    <div className="p-2 rounded-lg bg-[#E0E7FF]">
+                      <BookOpen className="h-4 w-4 text-[#6366F1]" />
                     </div>
-                    <span className={cn(lightThemeClasses.badge.error, "text-xs px-2 py-0.5 rounded-full")}>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]">
                       {course.term}
                     </span>
                   </div>
                   
-                  <h3 className="text-lg font-semibold text-[#FFC194] mb-2 group-hover:text-[#FFB074] transition-colors">
+                  <h3 className="text-base font-semibold text-[#3B82F6] mb-2 group-hover:text-[#2563EB] transition-colors">
                     {course.name}
                   </h3>
                   
@@ -211,9 +211,9 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
                   <div className="flex items-center justify-between text-sm mt-auto">
                     <div className="flex items-center gap-1.5 text-gray-600">
                       <Calendar className="h-4 w-4" />
-                      <span className="text-[#FF7878] font-medium">{course.term || 'Current Term'}</span>
+                      <span className="text-[#64748B] font-medium">{course.term || 'Current Term'}</span>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-[#8CC2BE] group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight className="h-3.5 w-3.5 text-[#6366F1] group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
               </Card>
