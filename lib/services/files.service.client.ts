@@ -3,6 +3,7 @@ import type { File as FileType, UploadProgress } from '@/types';
 import { calculateFileHash } from '@/lib/utils/file-validation';
 import { createResumableUpload, checkResumableSession } from '@/lib/utils/tus-upload';
 import { withRetry } from '@/lib/utils/retry';
+import { logger } from '@/lib/services/logger.service';
 
 export interface UploadOptions {
   courseId?: string;
@@ -54,7 +55,7 @@ class FilesService {
   async upload(files: File[], options: UploadOptions = {}, uploadId?: string): Promise<{ files: FileType[]; errors?: any[] }> {
     const { courseId, folderId, onProgress, onFileProgress } = options;
     const results = { files: [] as FileType[], errors: [] as any[] };
-    const PARALLEL_UPLOADS = 3; // Upload 3 files at a time
+    const PARALLEL_UPLOADS = 2; // Upload 2 files at a time (reduced to prevent timeouts)
     let completedFiles = 0;
     
     // Helper function to upload a single file
@@ -62,6 +63,20 @@ class FilesService {
       const tempId = `temp-${Date.now()}-${index}`;
       
       try {
+        // Log upload attempt
+        logger.info('Starting file upload', {
+          action: 'uploadSingleFile',
+          metadata: {
+            fileName: file.name,
+            fileSize: file.size,
+            fileSizeMB: (file.size / (1024 * 1024)).toFixed(2),
+            fileType: file.type,
+            courseId,
+            folderId,
+            index
+          }
+        });
+        
         // Notify start
         if (onFileProgress) {
           onFileProgress(tempId, {
@@ -83,8 +98,8 @@ class FilesService {
           const xhr = new XMLHttpRequest();
           
           return new Promise<any>((resolve, reject) => {
-            // Set timeout to 30 seconds per file
-            xhr.timeout = 30000;
+            // Set timeout to 45 seconds per file (increased for larger files)
+            xhr.timeout = 45000;
             
             xhr.upload.addEventListener('progress', (event) => {
               if (event.lengthComputable) {
@@ -115,17 +130,56 @@ class FilesService {
                   reject(new Error('Invalid response'));
                 }
               } else if (xhr.status === 504) {
+                logger.error('Gateway timeout', new Error('504 Gateway Timeout'), {
+                  action: 'uploadFile',
+                  metadata: {
+                    fileName: file.name,
+                    fileSize: file.size,
+                    fileSizeMB: (file.size / (1024 * 1024)).toFixed(2),
+                    responseText: xhr.responseText.substring(0, 200)
+                  }
+                });
                 reject(new Error('Upload timeout - file too large or slow connection'));
               } else {
+                logger.error('Upload failed with status', new Error(`HTTP ${xhr.status}`), {
+                  action: 'uploadFile',
+                  metadata: {
+                    fileName: file.name,
+                    fileSize: file.size,
+                    fileSizeMB: (file.size / (1024 * 1024)).toFixed(2),
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    responseText: xhr.responseText.substring(0, 200)
+                  }
+                });
                 reject(new Error(`Upload failed: ${xhr.status}`));
               }
             });
             
             xhr.addEventListener('error', () => {
+              logger.error('Network error during upload', new Error('XHR error'), {
+                action: 'uploadFile',
+                metadata: {
+                  fileName: file.name,
+                  fileSize: file.size,
+                  fileSizeMB: (file.size / (1024 * 1024)).toFixed(2),
+                  readyState: xhr.readyState,
+                  status: xhr.status
+                }
+              });
               reject(new Error('Network error during upload'));
             });
             
             xhr.addEventListener('timeout', () => {
+              logger.error('Upload timeout', new Error('XHR timeout'), {
+                action: 'uploadFile',
+                metadata: {
+                  fileName: file.name,
+                  fileSize: file.size,
+                  fileSizeMB: (file.size / (1024 * 1024)).toFixed(2),
+                  timeout: xhr.timeout
+                }
+              });
               reject(new Error('Upload timeout - file too large or slow connection'));
             });
             
@@ -171,6 +225,20 @@ class FilesService {
           throw new Error(response.errors?.[0]?.error || response.error || 'Upload failed');
         }
       } catch (error) {
+        // Log detailed error information
+        logger.error('File upload failed', error instanceof Error ? error : new Error(String(error)), {
+          action: 'uploadSingleFile',
+          metadata: {
+            fileName: file.name,
+            fileSize: file.size,
+            fileSizeMB: (file.size / (1024 * 1024)).toFixed(2),
+            fileType: file.type,
+            courseId,
+            folderId,
+            errorMessage: error instanceof Error ? error.message : String(error)
+          }
+        });
+        
         // Notify error
         if (onFileProgress) {
           onFileProgress(tempId, {
@@ -194,8 +262,24 @@ class FilesService {
         uploadSingleFile(file, i + batchIndex)
       );
       
+      // Log batch info
+      logger.info('Processing upload batch', {
+        action: 'uploadBatch',
+        metadata: {
+          batchNumber: Math.floor(i / PARALLEL_UPLOADS) + 1,
+          totalBatches: Math.ceil(files.length / PARALLEL_UPLOADS),
+          filesInBatch: batch.length,
+          fileNames: batch.map(f => f.name)
+        }
+      });
+      
       // Wait for batch to complete
       const batchResults = await Promise.all(batchPromises);
+      
+      // Add a small delay between batches to prevent overwhelming the server
+      if (i + PARALLEL_UPLOADS < files.length) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
       
       // Extract successful uploads and errors
       batchResults.forEach((result, idx) => {

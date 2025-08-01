@@ -369,7 +369,7 @@ export class UploadService {
    */
   static async uploadBatch(request: UploadRequest): Promise<UploadResponse> {
     const supabase = await createClient();
-    const BATCH_SIZE = 3; // Process files in batches of 3 to avoid timeouts
+    const BATCH_SIZE = 2; // Process files in batches of 2 to avoid timeouts (matching client)
     
     const allSuccessfulUploads: FileType[] = [];
     const allFailedUploads: UploadResult[] = [];
