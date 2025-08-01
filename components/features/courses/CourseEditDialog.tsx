@@ -43,12 +43,13 @@ interface CourseEditDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
+  userAcademicSystem?: string;
 }
 
 // Default emojis for courses
 const courseEmojis = ['📚', '📖', '✏️', '🎓', '📝', '💻', '🔬', '🧪', '🎨', '🎵', '🏛️', '⚡'];
 
-export function CourseEditDialog({ course, open, onOpenChange, onSuccess }: CourseEditDialogProps) {
+export function CourseEditDialog({ course, open, onOpenChange, onSuccess, userAcademicSystem }: CourseEditDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<FormValues>({
@@ -85,14 +86,18 @@ export function CourseEditDialog({ course, open, onOpenChange, onSuccess }: Cour
         emoji: values.emoji || '📚',
       };
 
-      // Handle credits
+      // Handle credits based on user's academic system
       if (values.credits) {
         const credits = parseInt(values.credits);
         if (!isNaN(credits)) {
-          if (course.credits !== undefined) {
-            updates.credits = credits;
-          } else if (course.ects_credits !== undefined) {
+          if (userAcademicSystem === 'ects') {
             updates.ects_credits = credits;
+            // Clear regular credits to avoid confusion
+            updates.credits = null;
+          } else {
+            updates.credits = credits;
+            // Clear ECTS credits to avoid confusion
+            updates.ects_credits = null;
           }
         }
       }
@@ -185,7 +190,7 @@ export function CourseEditDialog({ course, open, onOpenChange, onSuccess }: Cour
                 name="credits"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{course.ects_credits !== undefined ? 'ECTS' : 'Credits'}</FormLabel>
+                    <FormLabel>{userAcademicSystem === 'ects' ? 'ECTS Credits' : 'Credits'}</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 

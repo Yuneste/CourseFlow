@@ -42,5 +42,17 @@ export default async function CoursePage({ params }: { params: { id: string } })
     .eq('course_id', params.id)
     .order('created_at', { ascending: false });
 
-  return <CourseDetailClient course={course} folders={uniqueFolders} files={files || []} />;
+  // Get user profile for academic system info
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('academic_system')
+    .eq('id', user.id)
+    .single();
+
+  return <CourseDetailClient 
+    course={course} 
+    folders={uniqueFolders} 
+    files={files || []} 
+    userAcademicSystem={profile?.academic_system}
+  />;
 }

@@ -58,6 +58,7 @@ interface CourseDetailClientProps {
   course: Course;
   folders: CourseFolder[];
   files: File[];
+  userAcademicSystem?: string;
 }
 
 interface FolderNode {
@@ -67,7 +68,7 @@ interface FolderNode {
   isExpanded: boolean;
 }
 
-export function CourseDetailClient({ course, folders, files }: CourseDetailClientProps) {
+export function CourseDetailClient({ course, folders, files, userAcademicSystem }: CourseDetailClientProps) {
   const router = useRouter();
   const [selectedFolder, setSelectedFolder] = useState<CourseFolder | null>(null);
   const [showUpload, setShowUpload] = useState(false);
@@ -832,6 +833,7 @@ export function CourseDetailClient({ course, folders, files }: CourseDetailClien
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
         onSuccess={() => router.refresh()}
+        userAcademicSystem={userAcademicSystem}
       />
 
       {/* Delete Course Confirmation Dialog */}
