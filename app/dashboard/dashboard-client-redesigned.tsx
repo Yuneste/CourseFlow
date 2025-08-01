@@ -442,7 +442,9 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
                       </p>
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-gray-500">
-                          {course.credits || 0} credits
+                          {userProfile.academic_system === 'ects' 
+                            ? `${course.ects_credits || 0} ECTS` 
+                            : `${course.credits || 0} credits`}
                         </span>
                         <span className="text-xs font-medium text-[#6366F1] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                           Open
