@@ -14,6 +14,8 @@ export interface SubscriptionTier {
   limits: TierLimits;
 }
 
+import { env } from '@/lib/env';
+
 export const SUBSCRIPTION_TIERS: Record<'explorer' | 'scholar' | 'master', SubscriptionTier> = {
   explorer: {
     name: 'Explorer',
@@ -30,7 +32,7 @@ export const SUBSCRIPTION_TIERS: Record<'explorer' | 'scholar' | 'master', Subsc
   scholar: {
     name: 'Scholar', 
     price: 10.00, // EUR, VAT included
-    stripePriceId: process.env.STRIPE_PRICE_SCHOLAR_MONTHLY_EUR,
+    stripePriceId: env.STRIPE_PRICE_SCHOLAR_MONTHLY_EUR || undefined,
     limits: {
       storage: 5120, // MB (5GB)
       filesPerMonth: 500,
@@ -43,7 +45,7 @@ export const SUBSCRIPTION_TIERS: Record<'explorer' | 'scholar' | 'master', Subsc
   master: {
     name: 'Master',
     price: 25.00, // EUR, VAT included
-    stripePriceId: process.env.STRIPE_PRICE_MASTER_MONTHLY_EUR,
+    stripePriceId: env.STRIPE_PRICE_MASTER_MONTHLY_EUR || undefined,
     limits: {
       storage: 51200, // MB (50GB)
       filesPerMonth: -1, // unlimited

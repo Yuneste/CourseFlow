@@ -1,12 +1,13 @@
 import Stripe from 'stripe';
+import { env } from '@/lib/env';
 
 // Initialize Stripe with proper configuration
 export function getStripe() {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  const stripeKey = env.STRIPE_SECRET_KEY;
   
   if (!stripeKey) {
     // In development/build time, return a dummy client
-    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+    if (env.isDevelopment || env.isTest) {
       console.warn('STRIPE_SECRET_KEY is not configured');
     }
     throw new Error('STRIPE_SECRET_KEY is not configured');

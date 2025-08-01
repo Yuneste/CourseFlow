@@ -5,10 +5,12 @@ const requiredEnvVars = {
   // Supabase
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   
   // App
   NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   NODE_ENV: process.env.NODE_ENV || 'development',
+  
 } as const
 
 // Optional environment variables with defaults
@@ -23,6 +25,18 @@ const optionalEnvVars = {
   // API Rate limiting
   RATE_LIMIT_REQUESTS: process.env.RATE_LIMIT_REQUESTS || '100',
   RATE_LIMIT_WINDOW_MS: process.env.RATE_LIMIT_WINDOW_MS || '900000', // 15 minutes
+  
+  // Stripe Configuration (optional for build time)
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || '',
+  
+  // Stripe Price IDs (optional, can be set in dashboard)
+  STRIPE_PRICE_SCHOLAR_MONTHLY_EUR: process.env.STRIPE_PRICE_SCHOLAR_MONTHLY_EUR || '',
+  STRIPE_PRICE_MASTER_MONTHLY_EUR: process.env.STRIPE_PRICE_MASTER_MONTHLY_EUR || '',
+  
+  // OpenAI (optional)
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
 } as const
 
 // Validate required environment variables
