@@ -28,22 +28,7 @@ export async function GET() {
 
     // Calculate usage percentages
     const usageWithPercentages = {
-      filesUploaded: {
-        current: usage.filesUploaded,
-        limit: tierLimits.filesPerMonth,
-        percentage: UsageTrackingService.getUsagePercentage(
-          usage.filesUploaded, 
-          tierLimits.filesPerMonth
-        )
-      },
-      aiSummaries: {
-        current: usage.aiSummariesUsed,
-        limit: tierLimits.aiSummariesPerMonth,
-        percentage: UsageTrackingService.getUsagePercentage(
-          usage.aiSummariesUsed, 
-          tierLimits.aiSummariesPerMonth
-        )
-      },
+      // Remove filesUploaded - we only track storage now
       storage: {
         current: usage.storageUsed,
         limit: tierLimits.storage,
@@ -52,6 +37,14 @@ export async function GET() {
           tierLimits.storage
         ),
         unit: 'MB'
+      },
+      aiSummaries: {
+        current: usage.aiSummariesUsed,
+        limit: tierLimits.aiSummariesPerMonth,
+        percentage: UsageTrackingService.getUsagePercentage(
+          usage.aiSummariesUsed, 
+          tierLimits.aiSummariesPerMonth
+        )
       },
       aiSpend: {
         current: usage.aiSpendThisMonth,

@@ -89,22 +89,16 @@ export function UsageIndicator() {
 
   const usageItems = [
     {
-      label: 'Files Uploaded',
-      icon: FileText,
-      data: usage.usage.filesUploaded,
-      color: 'blue'
+      label: 'Storage Used',
+      icon: HardDrive,
+      data: usage.usage.storage,
+      color: 'green'
     },
     {
       label: 'AI Summaries',
       icon: Brain,
       data: usage.usage.aiSummaries,
       color: 'purple'
-    },
-    {
-      label: 'Storage Used',
-      icon: HardDrive,
-      data: usage.usage.storage,
-      color: 'green'
     },
     {
       label: 'AI Spend',
