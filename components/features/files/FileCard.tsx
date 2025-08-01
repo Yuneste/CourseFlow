@@ -216,7 +216,6 @@ export function FileCard({ file, onDelete, onDownload, onPreview }: FileCardProp
       <DeleteFileDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        fileName={file.display_name}
         onConfirm={handleDelete}
         isDeleting={isDeleting}
       />

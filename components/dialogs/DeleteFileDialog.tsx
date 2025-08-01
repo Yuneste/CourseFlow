@@ -16,7 +16,6 @@ import { cn } from '@/lib/utils';
 interface DeleteFileDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  fileName?: string;
   fileCount?: number;
   onConfirm: () => void;
   isDeleting?: boolean;
@@ -25,7 +24,6 @@ interface DeleteFileDialogProps {
 export function DeleteFileDialog({
   open,
   onOpenChange,
-  fileName,
   fileCount,
   onConfirm,
   isDeleting = false,
@@ -55,8 +53,7 @@ export function DeleteFileDialog({
               </>
             ) : (
               <>
-                Are you sure you want to delete{' '}
-                <span className="font-medium text-foreground">&quot;{fileName || 'this file'}&quot;</span>?
+                Are you sure you want to delete this file?
                 <br />
                 <span className="font-medium text-destructive">
                   This action cannot be undone.

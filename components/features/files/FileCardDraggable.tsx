@@ -164,7 +164,6 @@ export function FileCardDraggable({
     <DeleteFileDialog
       open={deleteDialogOpen}
       onOpenChange={setDeleteDialogOpen}
-      fileName={file.display_name}
       onConfirm={handleDelete}
       isDeleting={isDeleting}
     />
