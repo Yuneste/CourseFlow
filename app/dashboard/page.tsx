@@ -3,13 +3,19 @@ import { createClient } from '@/lib/supabase/server'
 import { DashboardClient } from './dashboard-client-redesigned'
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  
-  const { data: { user } } = await supabase.auth.getUser()
+  try {
+    const supabase = await createClient()
+    
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/login')
-  }
+    if (authError) {
+      console.error('Auth error in dashboard:', authError);
+      redirect('/login')
+    }
+
+    if (!user) {
+      redirect('/login')
+    }
 
   // Fetch user's courses
   const { data: courses } = await supabase
@@ -30,10 +36,19 @@ export default async function DashboardPage() {
     redirect('/onboarding')
   }
 
-  return (
-    <DashboardClient 
-      initialCourses={courses || []} 
-      userProfile={profile}
-    />
-  )
+    return (
+      <DashboardClient 
+        initialCourses={courses || []} 
+        userProfile={profile}
+      />
+    )
+  } catch (error) {
+    console.error('Error in DashboardPage:', error);
+    // If there's an error, we should still try to redirect to a safe page
+    if (error instanceof Error && error.message.includes('NEXT_PUBLIC_SUPABASE')) {
+      // Environment variable error - show a more specific error
+      throw new Error('Application configuration error. Please contact support.');
+    }
+    throw error;
+  }
 }

@@ -9,13 +9,14 @@ interface CoursePageProps {
 }
 
 export default async function CoursePage({ params }: CoursePageProps) {
-  const supabase = await createClient();
-  
-  // Check authentication
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
-    redirect('/');
-  }
+  try {
+    const supabase = await createClient();
+    
+    // Check authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      redirect('/');
+    }
 
   // Fetch course details
   const { data: course, error: courseError } = await supabase
@@ -37,10 +38,14 @@ export default async function CoursePage({ params }: CoursePageProps) {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
-  return (
-    <CourseDetailClient 
-      course={course} 
-      initialFiles={files || []}
-    />
-  );
+    return (
+      <CourseDetailClient 
+        course={course} 
+        initialFiles={files || []}
+      />
+    );
+  } catch (error) {
+    console.error('Error in dashboard CoursePage:', error);
+    throw error;
+  }
 }

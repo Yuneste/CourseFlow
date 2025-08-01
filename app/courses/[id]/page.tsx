@@ -3,13 +3,14 @@ import { redirect } from 'next/navigation';
 import { CourseDetailClient } from './course-detail-client';
 
 export default async function CoursePage({ params }: { params: { id: string } }) {
-  const supabase = await createClient();
-  
-  // Check authentication
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
-    redirect('/login');
-  }
+  try {
+    const supabase = await createClient();
+    
+    // Check authentication
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      redirect('/login');
+    }
 
   // Fetch course details
   const { data: course, error: courseError } = await supabase
@@ -24,11 +25,15 @@ export default async function CoursePage({ params }: { params: { id: string } })
   }
 
   // Fetch course folders
-  const { data: folders = [] } = await supabase
+  const { data: folders, error: foldersError } = await supabase
     .from('course_folders')
     .select('*')
     .eq('course_id', params.id)
     .order('display_order');
+
+  if (foldersError) {
+    console.error('Error fetching folders:', foldersError);
+  }
 
   // Remove any duplicate folders (in case of data issues)
   const uniqueFolders = folders ? Array.from(
@@ -36,23 +41,37 @@ export default async function CoursePage({ params }: { params: { id: string } })
   ) : [];
 
   // Fetch files for this course
-  const { data: files = [] } = await supabase
+  const { data: files, error: filesError } = await supabase
     .from('files')
     .select('*')
     .eq('course_id', params.id)
     .order('created_at', { ascending: false });
 
+  if (filesError) {
+    console.error('Error fetching files:', filesError);
+  }
+
   // Get user profile for academic system info
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('academic_system')
     .eq('id', user.id)
     .single();
 
-  return <CourseDetailClient 
-    course={course} 
-    folders={uniqueFolders} 
-    files={files || []} 
-    userAcademicSystem={profile?.academic_system}
-  />;
+  if (profileError) {
+    console.error('Error fetching profile:', profileError);
+  }
+
+    return <CourseDetailClient 
+      course={course} 
+      folders={uniqueFolders} 
+      files={files || []} 
+      userAcademicSystem={profile?.academic_system}
+    />;
+  } catch (error) {
+    console.error('Error in CoursePage:', error);
+    // In production, Next.js will show a generic error page
+    // In development, you'll see the actual error
+    throw error;
+  }
 }
