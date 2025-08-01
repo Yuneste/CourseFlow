@@ -11,8 +11,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     
-    // For now, we'll return basic metrics
-    // In production, you might want to restrict this to admin users
+    // Check if user is admin
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('id', user.id)
+      .single()
+    
+    const adminEmails = process.env.ADMIN_EMAILS?.split(',') || []
+    if (!profile || !adminEmails.includes(profile.email)) {
+      return NextResponse.json({ error: 'Forbidden. Admin access required.' }, { status: 403 })
+    }
+    
+    // Get metrics for admin users only
     const metrics = await getApplicationMetrics(supabase)
     
     return NextResponse.json(metrics)

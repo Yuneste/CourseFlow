@@ -4,6 +4,11 @@ import { createClient } from '@/lib/supabase/server';
 // TEMPORARY: Manual subscription fix endpoint
 // Remove this after debugging
 export async function GET() {
+  // Block this endpoint in production
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+  
   try {
     const supabase = await createClient();
     

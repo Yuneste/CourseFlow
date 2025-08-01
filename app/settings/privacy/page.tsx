@@ -52,7 +52,7 @@ export default function PrivacySettingsPage() {
 
       if (files && files.length > 0) {
         const filePaths = files.map(f => f.storage_path);
-        await supabase.storage.from('course-files').remove(filePaths);
+        await supabase.storage.from('user-files').remove(filePaths);
       }
 
       // Delete user account (this will cascade delete all related data)

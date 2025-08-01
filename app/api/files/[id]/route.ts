@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { fileUpdateSchema } from '@/lib/security/input-validation';
+import { z } from 'zod';
 
 export async function PATCH(
   req: NextRequest,
@@ -15,12 +17,21 @@ export async function PATCH(
     }
 
     // Get request body
-    const updates = await req.json();
+    const body = await req.json();
+    
+    // Validate input
+    const validation = fileUpdateSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ 
+        error: 'Invalid input', 
+        details: validation.error.flatten() 
+      }, { status: 400 });
+    }
 
-    // Update file
+    // Update file with validated data only
     const { data: file, error } = await supabase
       .from('files')
-      .update(updates)
+      .update(validation.data)
       .eq('id', params.id)
       .eq('user_id', user.id)
       .select()
