@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
-import { Toaster } from 'sonner';
 import { User } from '@/types';
 import { signOut } from '@/app/actions/auth';
 import { cn } from '@/lib/utils';
@@ -61,7 +60,6 @@ export function DashboardLayoutClient({ user, children }: DashboardLayoutClientP
         </main>
       </div>
       
-      <Toaster />
       <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />
       <KeyboardShortcutsModal />
     </div>
