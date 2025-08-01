@@ -214,14 +214,33 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
     if (draggedFiles.length === 0) return;
     
     try {
-      // Move files to new folder
-      for (const fileId of draggedFiles) {
+      // Check which files are already in the target folder
+      const filesToMove = draggedFiles.filter(fileId => {
+        const file = files.find(f => f.id === fileId);
+        return file && file.folder_id !== folderId;
+      });
+      
+      if (filesToMove.length === 0) {
+        toast.info('Files are already in this folder');
+        setSelectedFiles(new Set());
+        return;
+      }
+      
+      // Move only files that aren't already in the folder
+      for (const fileId of filesToMove) {
         await filesService.updateFile(fileId, { folder_id: folderId });
       }
       
       setSelectedFiles(new Set());
       router.refresh();
-      toast.success(`Moved ${draggedFiles.length} file(s)`);
+      
+      // Show appropriate message
+      if (filesToMove.length < draggedFiles.length) {
+        const skipped = draggedFiles.length - filesToMove.length;
+        toast.success(`Moved ${filesToMove.length} file(s), ${skipped} already in folder`);
+      } else {
+        toast.success(`Moved ${filesToMove.length} file(s)`);
+      }
     } catch (error) {
       logger.error('Failed to move files', error, {
         action: 'moveFiles',
