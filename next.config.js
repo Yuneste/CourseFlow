@@ -14,13 +14,6 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   
-  // Increase body size limit for file uploads (50MB * number of files)
-  api: {
-    bodyParser: {
-      sizeLimit: '500mb', // Allows uploading multiple large files
-    },
-  },
-  
   // Image optimization
   images: {
     domains: ['localhost'],
