@@ -15,6 +15,13 @@ function getStripe() {
 
 export const runtime = 'nodejs'; // Ensure we're using Node.js runtime, not edge
 
+export async function GET() {
+  return NextResponse.json({ 
+    message: 'Stripe webhook endpoint is active',
+    method: 'Use POST to receive webhook events'
+  });
+}
+
 export async function POST(req: Request) {
   console.log('Webhook endpoint hit');
   
