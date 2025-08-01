@@ -126,32 +126,13 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       return;
     }
 
-    // Check for duplicates
-    setCheckingDuplicates(true);
-    const { duplicates } = await checkForDuplicates(validFiles);
-    setDuplicateFiles(duplicates);
-    setCheckingDuplicates(false);
-
+    // Skip duplicate check for better performance - let server handle it
     setSelectedFiles(validFiles);
-  }, [validateFiles, checkForDuplicates]);
+  }, [validateFiles]);
 
   // Upload files
   const uploadFiles = useCallback(async () => {
     if (selectedFiles.length === 0) return;
-
-    // Filter out duplicate files
-    const filesToUpload = selectedFiles.filter(file => !duplicateFiles.has(file.name));
-    
-    if (filesToUpload.length === 0) {
-      setUploadErrors(['All selected files are duplicates in this course and have been skipped']);
-      return;
-    }
-
-    // Show warning if some files were skipped
-    if (filesToUpload.length < selectedFiles.length) {
-      const skippedCount = selectedFiles.length - filesToUpload.length;
-      setUploadErrors([`${skippedCount} duplicate file(s) in this course skipped`]);
-    }
 
     setIsUploading(true);
     onUploadStart?.();
@@ -160,8 +141,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       // Clear previous upload queue
       clearUploadQueue();
 
-      // Upload only non-duplicate files with progress tracking
-      const result = await filesService.upload(filesToUpload, {
+      // Upload files with progress tracking
+      const result = await filesService.upload(selectedFiles, {
         courseId,
         folderId,
         onFileProgress: (fileId, progress) => {
@@ -172,19 +153,17 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         },
       });
 
-      // Add successful uploads to store
+      // Add successful uploads to store immediately for instant UI update
       result.files.forEach(file => addFile(file));
 
       // Show errors if any
       if (result.errors && result.errors.length > 0) {
-        const errorMessages = result.errors.map(err => 
-          `${err.filename}: ${err.error}`
-        );
-        // If some files were skipped due to duplicates, prepend that message
-        if (filesToUpload.length < selectedFiles.length) {
-          const skippedCount = selectedFiles.length - filesToUpload.length;
-          errorMessages.unshift(`${skippedCount} duplicate file(s) in this course were skipped`);
-        }
+        const errorMessages = result.errors.map(err => {
+          if (err.error === 'File already exists') {
+            return `${err.filename}: Already exists in this course`;
+          }
+          return `${err.filename}: ${err.error}`;
+        });
         setUploadErrors(errorMessages);
       }
 
@@ -198,13 +177,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         onUploadComplete?.();
         logger.info('Files uploaded successfully', {
           action: 'uploadFiles',
-          metadata: { fileCount: result.files.length, skippedDuplicates: selectedFiles.length - filesToUpload.length }
-        });
-      } else if (result.errors && result.errors.length === filesToUpload.length) {
-        // All non-duplicate files failed to upload
-        logger.error('All files failed to upload', {
-          action: 'uploadFiles',
-          metadata: { attemptedCount: filesToUpload.length, errors: result.errors }
+          metadata: { fileCount: result.files.length }
         });
       }
 
@@ -218,8 +191,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       setIsUploading(false);
     }
   }, [
-    selectedFiles, 
-    duplicateFiles,
+    selectedFiles,
     courseId, 
     folderId, 
     onUploadStart, 

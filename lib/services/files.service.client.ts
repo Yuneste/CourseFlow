@@ -71,28 +71,6 @@ class FilesService {
           });
         }
         
-        // Check for duplicates first
-        const duplicateCheck = await this.checkDuplicate(file, courseId);
-        if (duplicateCheck.isDuplicate && duplicateCheck.existingFile) {
-          results.errors.push({
-            filename: file.name,
-            error: 'File already exists',
-            existingFile: duplicateCheck.existingFile,
-          });
-          
-          // Notify duplicate
-          if (onFileProgress) {
-            onFileProgress(tempId, {
-              fileId: tempId,
-              fileName: file.name,
-              progress: 0,
-              status: 'failed',
-              error: 'File already exists',
-            });
-          }
-          continue;
-        }
-        
         // Prepare form data
         const formData = new FormData();
         formData.append('file', file);

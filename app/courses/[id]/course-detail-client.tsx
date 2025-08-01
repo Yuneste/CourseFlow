@@ -213,40 +213,55 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
     
     if (draggedFiles.length === 0) return;
     
+    // Check which files are already in the target folder
+    const filesToMove = draggedFiles.filter(fileId => {
+      const file = files.find(f => f.id === fileId);
+      return file && file.folder_id !== folderId;
+    });
+    
+    if (filesToMove.length === 0) {
+      toast.info('Files are already in this folder');
+      setSelectedFiles(new Set());
+      return;
+    }
+    
+    // Optimistically update the UI immediately
+    const { updateFile } = useAppStore.getState();
+    filesToMove.forEach(fileId => {
+      updateFile(fileId, { folder_id: folderId });
+    });
+    
+    setSelectedFiles(new Set());
+    
+    // Show success message immediately
+    if (filesToMove.length < draggedFiles.length) {
+      const skipped = draggedFiles.length - filesToMove.length;
+      toast.success(`Moved ${filesToMove.length} file(s), ${skipped} already in folder`);
+    } else {
+      toast.success(`Moved ${filesToMove.length} file(s)`);
+    }
+    
     try {
-      // Check which files are already in the target folder
-      const filesToMove = draggedFiles.filter(fileId => {
-        const file = files.find(f => f.id === fileId);
-        return file && file.folder_id !== folderId;
+      // Update in the background (parallel for speed)
+      await Promise.all(
+        filesToMove.map(fileId => 
+          filesService.updateFile(fileId, { folder_id: folderId })
+        )
+      );
+    } catch (error) {
+      // Revert the optimistic update on error
+      filesToMove.forEach(fileId => {
+        const originalFile = files.find(f => f.id === fileId);
+        if (originalFile) {
+          updateFile(fileId, { folder_id: originalFile.folder_id });
+        }
       });
       
-      if (filesToMove.length === 0) {
-        toast.info('Files are already in this folder');
-        setSelectedFiles(new Set());
-        return;
-      }
-      
-      // Move only files that aren't already in the folder
-      for (const fileId of filesToMove) {
-        await filesService.updateFile(fileId, { folder_id: folderId });
-      }
-      
-      setSelectedFiles(new Set());
-      router.refresh();
-      
-      // Show appropriate message
-      if (filesToMove.length < draggedFiles.length) {
-        const skipped = draggedFiles.length - filesToMove.length;
-        toast.success(`Moved ${filesToMove.length} file(s), ${skipped} already in folder`);
-      } else {
-        toast.success(`Moved ${filesToMove.length} file(s)`);
-      }
-    } catch (error) {
       logger.error('Failed to move files', error, {
         action: 'moveFiles',
         metadata: { fileCount: draggedFiles.length, targetFolderId: folderId }
       });
-      toast.error(ERROR_MESSAGES.GENERIC);
+      toast.error('Failed to move files. Changes reverted.');
     }
   };
 
@@ -716,15 +731,21 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
                       onClick={async () => {
                         if (confirm(`Delete ${selectedFiles.size} selected files?`)) {
                           const fileIds = Array.from(selectedFiles);
+                          
+                          // Optimistically remove from UI
+                          const { deleteFile: deleteFileFromStore } = useAppStore.getState();
+                          fileIds.forEach(fileId => deleteFileFromStore(fileId));
+                          setSelectedFiles(new Set());
+                          toast.success(`Deleted ${fileIds.length} file${fileIds.length > 1 ? 's' : ''}`);
+                          
                           try {
-                            // Delete all files in parallel
+                            // Delete all files in parallel in the background
                             await Promise.all(
                               fileIds.map(fileId => filesService.deleteFile(fileId))
                             );
-                            router.refresh();
-                            toast.success(`Deleted ${fileIds.length} file${fileIds.length > 1 ? 's' : ''}`);
-                            setSelectedFiles(new Set());
                           } catch (error) {
+                            // Revert the optimistic update by refreshing
+                            router.refresh();
                             logger.error('Failed to delete files', error, {
                               action: 'deleteMultipleFiles',
                               metadata: { fileCount: fileIds.length }
