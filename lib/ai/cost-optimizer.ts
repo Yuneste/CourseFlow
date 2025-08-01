@@ -51,7 +51,7 @@ export function estimateTaskCost(
   model: string, 
   estimatedTokens: number
 ): number {
-  const costPer1k = AI_COST_OPTIMIZATION.modelCosts[model] || 0.01;
+  const costPer1k = AI_COST_OPTIMIZATION.modelCosts[model as keyof typeof AI_COST_OPTIMIZATION.modelCosts] || 0.01;
   return (estimatedTokens / 1000) * costPer1k;
 }
 

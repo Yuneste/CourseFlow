@@ -30,6 +30,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { CustomerPortalButton } from '@/components/billing/customer-portal-button';
 import { UpgradePrompt } from '@/components/pricing/upgrade-prompt';
+import { UsageIndicator } from '@/components/UsageIndicator';
 import { lightTheme, lightThemeClasses, componentStyles } from '@/lib/theme/light-theme';
 
 interface DashboardClientProps {
@@ -490,11 +491,21 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           <div></div>
         )}
 
-        {/* Recent Activity */}
+        {/* Usage Overview */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
+          className="mt-8"
+        >
+          <UsageIndicator />
+        </motion.div>
+
+        {/* Recent Activity */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.3 }}
           className="mt-8"
         >
           <h2 className="text-base font-semibold text-[#8B5CF6] mb-3">Recent Activity</h2>
