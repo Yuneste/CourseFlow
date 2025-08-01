@@ -46,6 +46,7 @@ export function FileList({ courseId }: FileListProps) {
     fetchFilesIfNeeded();
   }, [courseId, shouldRefetchFiles, setFiles, setLoadingFiles, setFilesError]);
 
+
   const fetchFiles = async () => {
     setLoadingFiles(true);
     setFilesError(null);

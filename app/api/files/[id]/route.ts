@@ -19,8 +19,18 @@ export async function PATCH(
     // Get request body
     const body = await req.json();
     
+    // Handle both camelCase and snake_case conventions
+    const normalizedBody = {
+      ...body,
+      course_id: body.course_id || body.courseId,
+      folder_id: body.folder_id || body.folderId,
+    };
+    // Remove the camelCase versions to avoid duplication
+    delete normalizedBody.courseId;
+    delete normalizedBody.folderId;
+    
     // Validate input
-    const validation = fileUpdateSchema.safeParse(body);
+    const validation = fileUpdateSchema.safeParse(normalizedBody);
     if (!validation.success) {
       return NextResponse.json({ 
         error: 'Invalid input', 

@@ -35,9 +35,9 @@ export async function middleware(request: NextRequest) {
   const cspDirectives = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://cdn.vercel-insights.com",
-    "style-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: https: blob:",
-    "font-src 'self' data:",
+    "font-src 'self' data: https://fonts.gstatic.com",
     "connect-src 'self' https://api.stripe.com https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com",
     "frame-src https://js.stripe.com https://hooks.stripe.com",
     "object-src 'none'",

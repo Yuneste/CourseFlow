@@ -745,7 +745,7 @@ export function CourseDetailClient({ course, folders, files, userAcademicSystem 
                     folderId={selectedFolder?.id}
                     onUploadComplete={() => {
                       setUploadingFiles(false);
-                      router.refresh();
+                      // Files are automatically added to the store by the upload hook
                       // Auto-close after successful upload if no other uploads are pending
                       setTimeout(() => {
                         if (!uploadingFiles) {

@@ -8,6 +8,8 @@ export const fileUpdateSchema = z.object({
   ai_summary: z.string().max(5000).optional(),
   ai_category: z.enum(['lecture', 'assignment', 'notes', 'exam', 'other']).optional(),
   ai_confidence: z.number().min(0).max(1).optional(),
+  course_id: z.string().uuid().nullable().optional(),
+  folder_id: z.string().uuid().nullable().optional(),
   // Explicitly define allowed fields - any other fields will be rejected
 }).strict();
 

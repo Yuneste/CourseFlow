@@ -38,7 +38,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     addToUploadQueue, 
     updateUploadProgress, 
     removeFromUploadQueue,
-    clearUploadQueue 
+    clearUploadQueue,
+    clearCompletedUploads 
   } = useAppStore();
 
   // Validate a single file
@@ -190,6 +191,10 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       // Clear selected files and show success
       if (result.files.length > 0) {
         setSelectedFiles([]);
+        // Clear completed uploads from the queue after a short delay to show completion
+        setTimeout(() => {
+          clearCompletedUploads();
+        }, 1500);
         onUploadComplete?.();
         logger.info('Files uploaded successfully', {
           action: 'uploadFiles',
@@ -220,6 +225,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     onUploadStart, 
     onUploadComplete,
     clearUploadQueue,
+    clearCompletedUploads,
     addToUploadQueue,
     updateUploadProgress,
     addFile

@@ -189,8 +189,8 @@ export function CourseDetailClient({ course, initialFiles }: CourseDetailClientP
           <FileUpload
             courseId={course.id}
             onUploadComplete={() => {
-              // Refresh files
-              window.location.reload();
+              // Files are automatically added to the store by the upload hook
+              // No need to refresh the page
             }}
           />
         </Card>
