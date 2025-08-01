@@ -1,6 +1,5 @@
--- Migration: Add usage tracking and AI usage logs tables
--- Version: 006
--- Description: Create tables for tracking user usage and AI costs
+-- Complete usage tracking setup with fixed indexes
+-- This migration creates all usage tracking tables if they don't exist
 
 -- Create ai_usage_logs table for tracking AI API calls and costs
 CREATE TABLE IF NOT EXISTS public.ai_usage_logs (
@@ -13,12 +12,10 @@ CREATE TABLE IF NOT EXISTS public.ai_usage_logs (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create indexes for ai_usage_logs
-CREATE INDEX idx_ai_usage_logs_user_id ON public.ai_usage_logs(user_id);
-CREATE INDEX idx_ai_usage_logs_created_at ON public.ai_usage_logs(created_at);
--- Note: Cannot use date_trunc in index expression as it's not IMMUTABLE
--- Instead use user_id + created_at index for efficient month-based queries
-CREATE INDEX idx_ai_usage_logs_user_created ON public.ai_usage_logs(user_id, created_at);
+-- Create indexes for ai_usage_logs (without problematic date_trunc)
+CREATE INDEX IF NOT EXISTS idx_ai_usage_logs_user_id ON public.ai_usage_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_ai_usage_logs_created_at ON public.ai_usage_logs(created_at);
+CREATE INDEX IF NOT EXISTS idx_ai_usage_logs_user_created ON public.ai_usage_logs(user_id, created_at);
 
 -- Create usage_tracking table for general usage metrics
 CREATE TABLE IF NOT EXISTS public.usage_tracking (
@@ -31,9 +28,9 @@ CREATE TABLE IF NOT EXISTS public.usage_tracking (
 );
 
 -- Create indexes for usage_tracking
-CREATE INDEX idx_usage_tracking_user_id ON public.usage_tracking(user_id);
-CREATE INDEX idx_usage_tracking_created_at ON public.usage_tracking(created_at);
-CREATE INDEX idx_usage_tracking_metric_type ON public.usage_tracking(metric_type);
+CREATE INDEX IF NOT EXISTS idx_usage_tracking_user_id ON public.usage_tracking(user_id);
+CREATE INDEX IF NOT EXISTS idx_usage_tracking_created_at ON public.usage_tracking(created_at);
+CREATE INDEX IF NOT EXISTS idx_usage_tracking_metric_type ON public.usage_tracking(metric_type);
 
 -- Add student verification columns to profiles if they don't exist
 DO $$
@@ -147,10 +144,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE TRIGGER track_file_upload_trigger
-    AFTER INSERT ON public.files
-    FOR EACH ROW
-    EXECUTE FUNCTION public.track_file_upload();
+-- Only create trigger if it doesn't exist
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'track_file_upload_trigger') THEN
+        CREATE TRIGGER track_file_upload_trigger
+            AFTER INSERT ON public.files
+            FOR EACH ROW
+            EXECUTE FUNCTION public.track_file_upload();
+    END IF;
+END $$;
 
 -- Add comments
 COMMENT ON TABLE public.ai_usage_logs IS 'Tracks all AI API usage and associated costs per user';
