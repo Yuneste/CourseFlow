@@ -2,6 +2,10 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { CourseDetailClient } from './course-detail-client';
 
+// Disable caching for this page to ensure fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function CoursePage({ params }: { params: { id: string } }) {
   try {
     const supabase = await createClient();
