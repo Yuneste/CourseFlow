@@ -33,7 +33,11 @@ import {
 
 // Hook to check if mobile
 const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    // Return a consistent initial value for SSR
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 640;
+  });
   
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);

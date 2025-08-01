@@ -40,9 +40,19 @@ const starPositions: StarPosition[] = [
 ];
 
 export function AcademicStars() {
+  // Use deterministic selection for SSR compatibility
   const selectedIcons = React.useMemo(() => {
-    const shuffled = [...academicIcons].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 4);
+    // Select first 4 icons deterministically
+    return academicIcons.slice(0, 4);
+  }, []);
+
+  // Generate deterministic star positions based on index
+  const starDots = React.useMemo(() => {
+    return [...Array(50)].map((_, i) => ({
+      top: `${(i * 37) % 100}%`,
+      left: `${(i * 61) % 100}%`,
+      duration: 2 + (i % 4)
+    }));
   }, []);
 
   return (
@@ -52,14 +62,14 @@ export function AcademicStars() {
       
       {/* Subtle star dots for atmosphere */}
       <div className="absolute inset-0">
-        {[...Array(50)].map((_, i) => (
+        {starDots.map((dot, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full opacity-20"
             style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animation: `twinkle ${2 + Math.random() * 4}s infinite`
+              top: dot.top,
+              left: dot.left,
+              animation: `twinkle ${dot.duration}s infinite`
             }}
           />
         ))}
