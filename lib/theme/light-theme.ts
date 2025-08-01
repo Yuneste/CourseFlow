@@ -4,7 +4,7 @@
  */
 
 export const lightTheme = {
-  // Color Palette - Light versions of landing page colors
+  // Color Palette - Modern professional colors
   colors: {
     // Backgrounds
     background: {
@@ -15,22 +15,22 @@ export const lightTheme = {
       accent: '#EFF6FF',      // Light blue accent areas
     },
     
-    // Primary Brand Colors (from landing page)
+    // Primary Brand Colors - Professional blue/purple palette
     primary: {
-      teal: '#8CC2BE',          // Primary teal
-      tealLight: '#E6F7F5',     // Very light teal for backgrounds
-      tealMuted: '#D1EAE7',     // Muted teal for subtle elements
-      tealDark: '#5A9B95',      // Darker teal for text on light
+      main: '#6366F1',          // Modern indigo
+      light: '#E0E7FF',         // Very light indigo for backgrounds
+      muted: '#C7D2FE',         // Muted indigo for subtle elements
+      dark: '#4F46E5',          // Darker indigo for text on light
     },
     
-    // Accent Colors (from landing page)
+    // Accent Colors - Sophisticated palette
     accent: {
-      green: '#49C993',         // Section headers
-      greenLight: '#E6F7ED',    // Light green backgrounds
-      peach: '#FFC194',         // Card titles
-      peachLight: '#FFF4EA',    // Light peach backgrounds
-      coral: '#FF7878',         // Status/alerts
-      coralLight: '#FFE4E4',    // Light coral backgrounds
+      purple: '#8B5CF6',        // Soft purple for headers
+      purpleLight: '#EDE9FE',   // Light purple backgrounds
+      blue: '#3B82F6',          // Professional blue
+      blueLight: '#DBEAFE',     // Light blue backgrounds
+      slate: '#64748B',         // Neutral slate for status
+      slateLight: '#F1F5F9',    // Light slate backgrounds
     },
     
     // Text Colors
@@ -109,9 +109,9 @@ export const lightThemeClasses = {
   
   // Buttons
   button: {
-    primary: 'bg-[#8CC2BE] hover:bg-[#5A9B95] text-white shadow-sm hover:shadow-md',
-    secondary: 'bg-white hover:bg-[#F8FAFB] border border-gray-200 hover:border-[#8CC2BE]/30 text-gray-700',
-    ghost: 'hover:bg-[#E6F7F5] text-gray-600 hover:text-[#5A9B95]',
+    primary: 'bg-[#6366F1] hover:bg-[#4F46E5] text-white shadow-sm hover:shadow-md',
+    secondary: 'bg-white hover:bg-[#F8FAFB] border border-gray-200 hover:border-[#6366F1]/30 text-gray-700',
+    ghost: 'hover:bg-[#E0E7FF] text-gray-600 hover:text-[#4F46E5]',
   },
   
   // Typography
@@ -143,25 +143,25 @@ export const lightThemeClasses = {
 export const componentStyles = {
   sidebar: {
     base: 'bg-white border-r border-gray-200',
-    item: 'hover:bg-[#E6F7F5] text-gray-700 hover:text-[#5A9B95]',
-    active: 'bg-[#E6F7F5] text-[#5A9B95] font-medium',
+    item: 'hover:bg-[#E0E7FF] text-gray-700 hover:text-[#4F46E5]',
+    active: 'bg-[#E0E7FF] text-[#4F46E5] font-medium',
   },
   
   header: {
     base: 'bg-white border-b border-gray-200 backdrop-blur-sm bg-white/95',
-    nav: 'text-gray-600 hover:text-[#8CC2BE]',
+    nav: 'text-gray-600 hover:text-[#6366F1]',
   },
   
   statsCard: {
-    base: 'bg-white border border-gray-200 hover:border-[#8CC2BE]/30',
-    icon: 'bg-[#E6F7F5] text-[#8CC2BE]',
-    title: 'text-[#FFC194] text-sm font-medium',
+    base: 'bg-white border border-gray-200 hover:border-[#6366F1]/30',
+    icon: 'bg-[#E0E7FF] text-[#6366F1]',
+    title: 'text-[#8B5CF6] text-xs font-medium',
     value: 'text-gray-900 font-bold',
   },
   
   featureCard: {
-    base: 'bg-gradient-to-br from-white to-[#FAFBFC] border border-gray-200 hover:border-[#8CC2BE]/30',
-    icon: 'text-[#8CC2BE]',
+    base: 'bg-gradient-to-br from-white to-[#FAFBFC] border border-gray-200 hover:border-[#6366F1]/30',
+    icon: 'text-[#6366F1]',
     title: 'text-gray-900 font-semibold',
     description: 'text-gray-600',
   },

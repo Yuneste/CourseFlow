@@ -155,8 +155,8 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
                   isCollapsed && "justify-center"
                 )}
               >
-                <div className="w-10 h-10 rounded-xl bg-[#8CC2BE] flex items-center justify-center text-white shadow-sm">
-                  <BookOpen className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-[#6366F1] flex items-center justify-center text-white shadow-sm">
+                  <BookOpen className="w-4 h-4" />
                 </div>
                 {!isCollapsed && (
                   <span className="text-gray-900 font-bold">
@@ -184,8 +184,8 @@ export function Sidebar({ user, onSignOut }: SidebarProps) {
               "flex items-center gap-3",
               isCollapsed && "justify-center"
             )}>
-              <Avatar className="h-10 w-10 border-2 border-[#E6F7F5]">
-                <AvatarFallback className="bg-[#8CC2BE] text-white">
+              <Avatar className="h-9 w-9 border-2 border-[#E0E7FF]">
+                <AvatarFallback className="bg-[#6366F1] text-white text-sm">
                   {user?.full_name?.[0] || user?.email?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
