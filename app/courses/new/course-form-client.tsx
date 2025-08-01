@@ -27,7 +27,7 @@ import {
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { coursesService } from '@/lib/services/courses.service';
+import { coursesService } from '@/lib/services/courses.service.client';
 import { getAcademicSystemWithTerms } from '@/lib/academic-systems';
 import { User } from '@/types';
 import { cn } from '@/lib/utils';

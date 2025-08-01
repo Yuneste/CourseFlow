@@ -26,8 +26,8 @@ import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileCardDraggable } from '@/components/features/files/FileCardDraggable';
 import { CourseEditDialog } from '@/components/features/courses/CourseEditDialog';
 import { useRouter } from 'next/navigation';
-import { filesService } from '@/lib/services/files.service';
-import { coursesService } from '@/lib/services/courses.service';
+import { filesService } from '@/lib/services/files.service.client';
+import { coursesService } from '@/lib/services/courses.service.client';
 import { logger } from '@/lib/services/logger.service';
 import {
   Dialog,

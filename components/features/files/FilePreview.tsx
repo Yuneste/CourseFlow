@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { filesService } from '@/lib/services/files.service';
+import { filesService } from '@/lib/services/files.service.client';
 import type { File as FileType } from '@/types';
 
 interface FilePreviewProps {

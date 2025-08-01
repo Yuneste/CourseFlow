@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { circuitBreakers } from '@/lib/utils/circuit-breaker'
+import { env } from '@/lib/env'
+import * as Sentry from '@sentry/nextjs'
 
 interface HealthCheck {
   service: string
@@ -7,6 +10,7 @@ interface HealthCheck {
   latency?: number
   error?: string
   timestamp: string
+  details?: any
 }
 
 interface HealthStatus {
@@ -15,24 +19,33 @@ interface HealthStatus {
   version: string
   uptime: number
   checks: HealthCheck[]
+  circuitBreakers?: Record<string, any>
 }
+
+const appStartTime = Date.now()
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now()
   const checks: HealthCheck[] = []
   
+  // Check if this is a simple liveness probe
+  const url = new URL(request.url)
+  if (url.searchParams.get('type') === 'liveness') {
+    return NextResponse.json({ status: 'ok' })
+  }
+  
   try {
-    // Check database connection
-    const dbCheck = await checkDatabase()
-    checks.push(dbCheck)
+    // Run all checks in parallel for better performance
+    const [dbCheck, storageCheck, stripeCheck, openaiCheck, envCheck, memoryCheck] = await Promise.all([
+      checkDatabase(),
+      checkStorage(),
+      checkStripe(),
+      checkOpenAI(),
+      checkEnvironmentVariables(),
+      checkMemoryUsage()
+    ])
     
-    // Check environment variables
-    const envCheck = checkEnvironmentVariables()
-    checks.push(envCheck)
-    
-    // Check memory usage
-    const memoryCheck = checkMemoryUsage()
-    checks.push(memoryCheck)
+    checks.push(dbCheck, storageCheck, stripeCheck, openaiCheck, envCheck, memoryCheck)
     
     // Determine overall status
     const hasUnhealthy = checks.some(check => check.status === 'unhealthy')
@@ -49,8 +62,9 @@ export async function GET(request: NextRequest) {
       status: overallStatus,
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '0.1.0',
-      uptime: process.uptime(),
-      checks
+      uptime: Math.round((Date.now() - appStartTime) / 1000),
+      checks,
+      circuitBreakers: getCircuitBreakerStatus()
     }
     
     const statusCode = overallStatus === 'healthy' ? 200 : 
@@ -59,6 +73,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(healthStatus, { status: statusCode })
     
   } catch (error) {
+    Sentry.captureException(error)
+    
     const errorCheck: HealthCheck = {
       service: 'health-endpoint',
       status: 'unhealthy',
@@ -70,7 +86,7 @@ export async function GET(request: NextRequest) {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '0.1.0',
-      uptime: process.uptime(),
+      uptime: Math.round((Date.now() - appStartTime) / 1000),
       checks: [errorCheck]
     }
     
@@ -123,10 +139,119 @@ async function checkDatabase(): Promise<HealthCheck> {
   }
 }
 
+async function checkStorage(): Promise<HealthCheck> {
+  const startTime = Date.now()
+  
+  try {
+    const supabase = await createClient()
+    
+    // List buckets to check storage connection
+    const { data, error } = await supabase.storage.listBuckets()
+    
+    if (error) throw error
+    
+    return {
+      service: 'storage',
+      status: 'healthy',
+      latency: Date.now() - startTime,
+      timestamp: new Date().toISOString(),
+      details: { buckets: data?.length || 0 }
+    }
+  } catch (error) {
+    return {
+      service: 'storage',
+      status: 'unhealthy',
+      latency: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Storage connection failed',
+      timestamp: new Date().toISOString()
+    }
+  }
+}
+
+async function checkStripe(): Promise<HealthCheck> {
+  if (!env.STRIPE_SECRET_KEY) {
+    return {
+      service: 'stripe',
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      details: { configured: false }
+    }
+  }
+  
+  const startTime = Date.now()
+  
+  try {
+    const { default: Stripe } = await import('stripe')
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-07-30.basil',
+    })
+    
+    await circuitBreakers.stripe.execute(async () => {
+      await stripe.products.list({ limit: 1 })
+    })
+    
+    return {
+      service: 'stripe',
+      status: 'healthy',
+      latency: Date.now() - startTime,
+      timestamp: new Date().toISOString()
+    }
+  } catch (error) {
+    return {
+      service: 'stripe',
+      status: 'unhealthy',
+      latency: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Stripe connection failed',
+      timestamp: new Date().toISOString()
+    }
+  }
+}
+
+async function checkOpenAI(): Promise<HealthCheck> {
+  if (!env.OPENAI_API_KEY) {
+    return {
+      service: 'openai',
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      details: { configured: false }
+    }
+  }
+  
+  const startTime = Date.now()
+  
+  try {
+    const response = await circuitBreakers.openai.execute(async () => {
+      return await fetch('https://api.openai.com/v1/models', {
+        headers: {
+          'Authorization': `Bearer ${env.OPENAI_API_KEY}`,
+        },
+      })
+    })
+    
+    if (!response.ok) throw new Error(`OpenAI API error: ${response.status}`)
+    
+    return {
+      service: 'openai',
+      status: 'healthy',
+      latency: Date.now() - startTime,
+      timestamp: new Date().toISOString()
+    }
+  } catch (error) {
+    return {
+      service: 'openai',
+      status: 'unhealthy',
+      latency: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'OpenAI connection failed',
+      timestamp: new Date().toISOString()
+    }
+  }
+}
+
 function checkEnvironmentVariables(): HealthCheck {
   const requiredEnvVars = [
     'NEXT_PUBLIC_SUPABASE_URL',
-    'NEXT_PUBLIC_SUPABASE_ANON_KEY'
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    'SUPABASE_SERVICE_ROLE_KEY'
   ]
   
   const missingVars = requiredEnvVars.filter(
@@ -154,6 +279,7 @@ function checkMemoryUsage(): HealthCheck {
     const memUsage = process.memoryUsage()
     const heapUsedMB = Math.round(memUsage.heapUsed / 1024 / 1024)
     const heapTotalMB = Math.round(memUsage.heapTotal / 1024 / 1024)
+    const rssMB = Math.round(memUsage.rss / 1024 / 1024)
     const memoryPercentage = (heapUsedMB / heapTotalMB) * 100
     
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy'
@@ -167,7 +293,13 @@ function checkMemoryUsage(): HealthCheck {
     return {
       service: 'memory',
       status,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      details: {
+        heapUsedMB,
+        heapTotalMB,
+        rssMB,
+        heapPercentage: Math.round(memoryPercentage)
+      }
     }
     
   } catch (error) {
@@ -178,4 +310,19 @@ function checkMemoryUsage(): HealthCheck {
       timestamp: new Date().toISOString()
     }
   }
+}
+
+function getCircuitBreakerStatus(): Record<string, any> {
+  const status: Record<string, any> = {}
+  
+  Object.entries(circuitBreakers).forEach(([name, breaker]) => {
+    const metrics = breaker.getMetrics()
+    status[name] = {
+      state: metrics.state,
+      failures: metrics.failures,
+      lastFailTime: metrics.lastFailTime,
+    }
+  })
+  
+  return status
 }

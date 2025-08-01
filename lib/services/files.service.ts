@@ -3,6 +3,7 @@ import type { File as FileType, UploadProgress } from '@/types';
 import { calculateFileHash } from '@/lib/utils/file-validation';
 import { createResumableUpload, checkResumableSession } from '@/lib/utils/tus-upload';
 import { withRetry } from '@/lib/utils/retry';
+import { caches, getUserCacheKey } from '@/lib/cache/redis';
 
 export interface UploadOptions {
   courseId?: string;
@@ -243,29 +244,66 @@ class FilesService {
   }
 
   /**
-   * Get user's files
+   * Get user's files with caching
    */
-  async getFiles(courseId?: string): Promise<FileType[]> {
+  async getFiles(courseId?: string, userId?: string): Promise<FileType[]> {
+    const cacheKey = courseId 
+      ? `course-files:${courseId}`
+      : userId 
+      ? getUserCacheKey(userId, 'all-files')
+      : 'files:list';
+    
+    // Try cache first
+    const cached = await caches.files.get<FileType[]>(cacheKey);
+    if (cached) return cached;
+    
+    // Fetch from API
     const query = courseId ? `?course_id=${courseId}` : '';
-    return api.get<FileType[]>(`/files${query}`);
+    const files = await api.get<FileType[]>(`/files${query}`);
+    
+    // Cache for 5 minutes
+    await caches.files.set(cacheKey, files, { 
+      ttl: 300,
+      tags: courseId ? [`course:${courseId}`, 'files'] : ['files']
+    });
+    
+    return files;
   }
 
   /**
-   * Update a file
+   * Update a file and invalidate cache
    */
   async updateFile(id: string, updates: Partial<FileType>): Promise<FileType> {
-    return api.patch<FileType>(`/files/${id}`, updates);
+    const file = await api.patch<FileType>(`/files/${id}`, updates);
+    
+    // Invalidate related caches
+    await caches.files.deleteByTag('files');
+    if (file.course_id) {
+      await caches.files.deleteByTag(`course:${file.course_id}`);
+    }
+    
+    return file;
   }
 
   /**
-   * Delete a file
+   * Delete a file and invalidate cache
    */
   async deleteFile(id: string): Promise<void> {
-    return api.delete(`/files/${id}`);
+    // Get file info for cache invalidation
+    const files = await this.getFiles();
+    const file = files.find(f => f.id === id);
+    
+    await api.delete(`/files/${id}`);
+    
+    // Invalidate related caches
+    await caches.files.deleteByTag('files');
+    if (file?.course_id) {
+      await caches.files.deleteByTag(`course:${file.course_id}`);
+    }
   }
 
   /**
-   * Get signed download URL for a file
+   * Get signed download URL for a file with caching
    */
   async getDownloadUrl(fileId: string): Promise<{
     url: string;
@@ -273,7 +311,29 @@ class FilesService {
     contentType: string;
     size: number;
   }> {
-    return api.get(`/files/${fileId}/download`);
+    const cacheKey = `download-url:${fileId}`;
+    
+    // Check cache first (short TTL for signed URLs)
+    const cached = await caches.files.get<{
+      url: string;
+      filename: string;
+      contentType: string;
+      size: number;
+    }>(cacheKey);
+    
+    if (cached) return cached;
+    
+    const result = await api.get<{
+      url: string;
+      filename: string;
+      contentType: string;
+      size: number;
+    }>(`/files/${fileId}/download`);
+    
+    // Cache for 30 minutes (signed URLs typically expire in 1 hour)
+    await caches.files.set(cacheKey, result, { ttl: 1800 });
+    
+    return result;
   }
 
   /**

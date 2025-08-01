@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { FileX, Eye } from 'lucide-react';
 import { FileCard } from './FileCard';
 import { useAppStore } from '@/stores/useAppStore';
-import { filesService } from '@/lib/services/files.service';
+import { filesService } from '@/lib/services/files.service.client';
 import type { File } from '@/types';
 
 interface FileListProps {

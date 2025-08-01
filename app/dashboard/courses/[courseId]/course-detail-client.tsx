@@ -9,7 +9,7 @@ import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileCategoryView } from '@/components/features/files/FileCategoryView';
 import { FileList } from '@/components/features/files/FileList';
 import { StorageUsage } from '@/components/features/files/StorageUsage';
-import { filesService } from '@/lib/services/files.service';
+import { filesService } from '@/lib/services/files.service.client';
 import { useAppStore } from '@/stores/useAppStore';
 import { getCategoryLabel } from '@/lib/utils/file-categorization';
 import type { Course, File } from '@/types';

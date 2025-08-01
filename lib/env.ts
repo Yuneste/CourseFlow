@@ -37,6 +37,22 @@ const optionalEnvVars = {
   
   // OpenAI (optional)
   OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
+  
+  // Redis (optional)
+  REDIS_URL: process.env.REDIS_URL || '',
+  
+  // Sentry (optional)
+  SENTRY_DSN: process.env.SENTRY_DSN || '',
+  NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
+  
+  // Metrics (optional)
+  METRICS_SECRET: process.env.METRICS_SECRET || '',
+  
+  // AWS (optional - for backups)
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
+  AWS_REGION: process.env.AWS_REGION || '',
+  BACKUP_S3_BUCKET: process.env.BACKUP_S3_BUCKET || '',
 } as const
 
 // Validate required environment variables

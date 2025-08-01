@@ -2,6 +2,7 @@ import { api } from '@/lib/api/client';
 import { Course, CourseFormData, CourseFolder } from '@/types';
 import { logger } from '@/lib/services/logger.service';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES, DB_LIMITS } from '@/lib/constants';
+import { caches, getUserCacheKey, getCourseCacheKey } from '@/lib/cache/redis';
 
 /**
  * Service for managing courses
@@ -9,12 +10,35 @@ import { ERROR_MESSAGES, SUCCESS_MESSAGES, DB_LIMITS } from '@/lib/constants';
  */
 class CoursesService {
   /**
-   * Get all courses for the authenticated user
+   * Get all courses for the authenticated user with caching
    */
-  async getCourses(term?: string): Promise<Course[]> {
+  async getCourses(term?: string, userId?: string): Promise<Course[]> {
     try {
+      const cacheKey = term 
+        ? `courses:term:${term}`
+        : userId 
+        ? getUserCacheKey(userId, 'courses')
+        : 'courses:list';
+      
+      // Try cache first
+      const cached = await caches.courses.get<Course[]>(cacheKey);
+      if (cached) {
+        logger.info('Courses fetched from cache', {
+          action: 'getCourses',
+          metadata: { count: cached.length, term, cached: true }
+        });
+        return cached;
+      }
+      
       const query = term ? `?term=${term}` : '';
       const courses = await api.get<Course[]>(`/courses${query}`);
+      
+      // Cache for 10 minutes
+      await caches.courses.set(cacheKey, courses, {
+        ttl: 600,
+        tags: term ? ['courses', `term:${term}`] : ['courses']
+      });
+      
       logger.info('Courses fetched successfully', {
         action: 'getCourses',
         metadata: { count: courses.length, term }
@@ -30,11 +54,30 @@ class CoursesService {
   }
 
   /**
-   * Get a single course by ID
+   * Get a single course by ID with caching
    */
   async getCourse(courseId: string): Promise<Course> {
     try {
+      const cacheKey = getCourseCacheKey(courseId, 'details');
+      
+      // Try cache first
+      const cached = await caches.courses.get<Course>(cacheKey);
+      if (cached) {
+        logger.info('Course fetched from cache', {
+          action: 'getCourse',
+          metadata: { courseId, cached: true }
+        });
+        return cached;
+      }
+      
       const course = await api.get<Course>(`/courses/${courseId}`);
+      
+      // Cache for 30 minutes
+      await caches.courses.set(cacheKey, course, {
+        ttl: 1800,
+        tags: ['courses', `course:${courseId}`]
+      });
+      
       logger.info('Course fetched successfully', {
         action: 'getCourse',
         metadata: { courseId }
@@ -50,7 +93,7 @@ class CoursesService {
   }
 
   /**
-   * Create a new course
+   * Create a new course and invalidate cache
    */
   async createCourse(data: CourseFormData): Promise<Course> {
     try {
@@ -58,6 +101,13 @@ class CoursesService {
       this.validateCourseData(data);
 
       const course = await api.post<Course>('/courses', data);
+      
+      // Invalidate courses cache
+      await caches.courses.deleteByTag('courses');
+      if (data.term) {
+        await caches.courses.deleteByTag(`term:${data.term}`);
+      }
+      
       logger.info('Course created successfully', {
         action: 'createCourse',
         metadata: { courseName: data.name, term: data.term }

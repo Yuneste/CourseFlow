@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { filesService } from '@/lib/services/files.service';
+import { filesService } from '@/lib/services/files.service.client';
 import { useAppStore } from '@/stores/useAppStore';
 import { validateFileType, validateFileSize, validateFileBatch } from '@/lib/utils/file-validation';
 import { logger } from '@/lib/services/logger.service';
@@ -160,7 +160,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       clearUploadQueue();
 
       // Upload only non-duplicate files with progress tracking
-      const result = await filesService.uploadWithQueue(filesToUpload, {
+      const result = await filesService.upload(filesToUpload, {
         courseId,
         folderId,
         onFileProgress: (fileId, progress) => {

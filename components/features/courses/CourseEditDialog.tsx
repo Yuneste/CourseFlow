@@ -25,7 +25,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
 import { Course } from '@/types';
-import { coursesService } from '@/lib/services/courses.service';
+import { coursesService } from '@/lib/services/courses.service.client';
 import { toast } from 'sonner';
 
 const formSchema = z.object({

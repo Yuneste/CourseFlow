@@ -9,7 +9,7 @@ import { ChevronRight, ChevronLeft, BookOpen, Globe, Plus, Edit2, Trash2, Gradua
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { coursesService } from '@/lib/services/courses.service';
+import { coursesService } from '@/lib/services/courses.service.client';
 import { Course, CourseFormData } from '@/types';
 import { cn } from '@/lib/utils';
 import { BenefitsShowcaseStyles } from '@/components/features/onboarding/BenefitsShowcase';
