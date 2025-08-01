@@ -22,6 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { formatFileSize } from '@/lib/utils/file-validation';
 import { getFileIcon } from '@/lib/utils/file-icons';
 import { getCategoryLabel } from '@/lib/utils/file-categorization';
+import { DeleteFileDialog } from '@/components/dialogs/DeleteFileDialog';
 import type { File as FileType } from '@/types';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -36,16 +37,16 @@ interface FileCardProps {
 export function FileCard({ file, onDelete, onDownload, onPreview }: FileCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleDelete = async () => {
-    if (confirm(`Are you sure you want to delete "${file.display_name}"?`)) {
-      setIsDeleting(true);
-      try {
-        await onDelete?.(file.id);
-      } catch (error) {
-        console.error('Error deleting file:', error);
-        setIsDeleting(false);
-      }
+    setIsDeleting(true);
+    try {
+      await onDelete?.(file.id);
+      setDeleteDialogOpen(false);
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      setIsDeleting(false);
     }
   };
 
@@ -172,7 +173,7 @@ export function FileCard({ file, onDelete, onDownload, onPreview }: FileCardProp
                 <DropdownMenuItem 
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDelete();
+                    setDeleteDialogOpen(true);
                   }}
                   className="text-destructive"
                 >
@@ -211,6 +212,14 @@ export function FileCard({ file, onDelete, onDownload, onPreview }: FileCardProp
           />
         </div>
       </Card>
+      
+      <DeleteFileDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        fileName={file.display_name}
+        onConfirm={handleDelete}
+        isDeleting={isDeleting}
+      />
     </motion.div>
   );
 }

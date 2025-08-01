@@ -25,6 +25,7 @@ import { Card } from '@/components/ui/card';
 import { FileUpload } from '@/components/features/files/FileUpload';
 import { FileCardDraggable } from '@/components/features/files/FileCardDraggable';
 import { CourseEditDialog } from '@/components/features/courses/CourseEditDialog';
+import { DeleteFileDialog } from '@/components/dialogs/DeleteFileDialog';
 import { useRouter } from 'next/navigation';
 import { filesService } from '@/lib/services/files.service.client';
 import { coursesService } from '@/lib/services/courses.service.client';
@@ -90,6 +91,8 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteCourseDialog, setShowDeleteCourseDialog] = useState(false);
   const [isDeletingCourse, setIsDeletingCourse] = useState(false);
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
   
   // Get files from store and use initial files as fallback
   const { files: storeFiles, setFiles, deleteFile: deleteFileFromStore } = useAppStore();
@@ -751,32 +754,7 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
                       variant="outline"
                       className="text-destructive hover:scale-105 transition-transform"
                       disabled={selectedFiles.size === 0}
-                      onClick={async () => {
-                        if (confirm(`Delete ${selectedFiles.size} selected files?`)) {
-                          const fileIds = Array.from(selectedFiles);
-                          
-                          // Optimistically remove from UI
-                          const { deleteFile: deleteFileFromStore } = useAppStore.getState();
-                          fileIds.forEach(fileId => deleteFileFromStore(fileId));
-                          setSelectedFiles(new Set());
-                          toast.success(`Deleted ${fileIds.length} file${fileIds.length > 1 ? 's' : ''}`);
-                          
-                          try {
-                            // Delete all files in parallel in the background
-                            await Promise.all(
-                              fileIds.map(fileId => filesService.deleteFile(fileId))
-                            );
-                          } catch (error) {
-                            // Revert the optimistic update by refreshing
-                            router.refresh();
-                            logger.error('Failed to delete files', error, {
-                              action: 'deleteMultipleFiles',
-                              metadata: { fileCount: fileIds.length }
-                            });
-                            toast.error('Some files failed to delete');
-                          }
-                        }
-                      }}
+                      onClick={() => setBulkDeleteDialogOpen(true)}
                     >
                       <Trash2 className="h-4 w-4 mr-1" />
                       Delete
@@ -938,6 +916,41 @@ export function CourseDetailClient({ course, folders, files: initialFiles, userA
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      <DeleteFileDialog
+        open={bulkDeleteDialogOpen}
+        onOpenChange={setBulkDeleteDialogOpen}
+        fileCount={selectedFiles.size}
+        onConfirm={async () => {
+          setIsDeletingBulk(true);
+          const fileIds = Array.from(selectedFiles);
+          
+          // Optimistically remove from UI
+          const { deleteFile: deleteFileFromStore } = useAppStore.getState();
+          fileIds.forEach(fileId => deleteFileFromStore(fileId));
+          setSelectedFiles(new Set());
+          setBulkDeleteDialogOpen(false);
+          toast.success(`Deleted ${fileIds.length} file${fileIds.length > 1 ? 's' : ''}`);
+          
+          try {
+            // Delete all files in parallel in the background
+            await Promise.all(
+              fileIds.map(fileId => filesService.deleteFile(fileId))
+            );
+          } catch (error) {
+            // Revert the optimistic update by refreshing
+            router.refresh();
+            logger.error('Failed to delete files', error, {
+              action: 'deleteMultipleFiles',
+              metadata: { fileCount: fileIds.length }
+            });
+            toast.error('Some files failed to delete');
+          } finally {
+            setIsDeletingBulk(false);
+          }
+        }}
+        isDeleting={isDeletingBulk}
+      />
     </>
   );
 }
