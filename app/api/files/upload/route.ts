@@ -44,7 +44,15 @@ export async function POST(req: NextRequest) {
 
     // Parse form data to check file types for rate limiting
     const formData = await req.formData();
-    const files = formData.getAll('files') as File[];
+    
+    // Handle both 'files' (plural) and 'file' (singular) field names
+    let files = formData.getAll('files') as File[];
+    if (files.length === 0) {
+      const singleFile = formData.get('file');
+      if (singleFile instanceof File) {
+        files = [singleFile];
+      }
+    }
     
     // Determine rate limit based on file types
     const hasImages = files.some(f => f.type.startsWith('image/'));
@@ -75,8 +83,9 @@ export async function POST(req: NextRequest) {
     });
 
     // Get course and folder IDs from already parsed form data
-    const courseId = formData.get('course_id') as string | null;
-    const folderId = formData.get('folder_id') as string | null;
+    // Handle both camelCase (from UI) and snake_case (from API)
+    const courseId = (formData.get('course_id') || formData.get('courseId')) as string | null;
+    const folderId = (formData.get('folder_id') || formData.get('folderId')) as string | null;
 
     // Validate request
     const validation = UploadService.validateRequest(files);
