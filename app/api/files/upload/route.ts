@@ -9,6 +9,15 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 // Increase timeout for file uploads
 export const maxDuration = 60; // 60 seconds timeout for file uploads
 
+// Configure Next.js to handle large file uploads
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '500mb',
+    },
+  },
+};
+
 // Authentication handler
 async function authenticateUser(supabase: SupabaseClient) {
   const { data: { user }, error } = await supabase.auth.getUser();

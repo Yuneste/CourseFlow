@@ -54,11 +54,12 @@ class FilesService {
   async upload(files: File[], options: UploadOptions = {}, uploadId?: string): Promise<{ files: FileType[]; errors?: any[] }> {
     const { courseId, folderId, onProgress, onFileProgress } = options;
     const results = { files: [] as FileType[], errors: [] as any[] };
+    const PARALLEL_UPLOADS = 3; // Upload 3 files at a time
+    let completedFiles = 0;
     
-    // Process files sequentially to respect server limits
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const tempId = `temp-${Date.now()}-${i}`;
+    // Helper function to upload a single file
+    const uploadSingleFile = async (file: File, index: number): Promise<void> => {
+      const tempId = `temp-${Date.now()}-${index}`;
       
       try {
         // Notify start
@@ -89,10 +90,6 @@ class FilesService {
               if (event.lengthComputable) {
                 const progress = (event.loaded / event.total) * 100;
                 
-                // Update overall progress
-                const overallProgress = ((i + progress / 100) / files.length) * 100;
-                if (onProgress) onProgress(overallProgress);
-                
                 // Update file-specific progress
                 if (onFileProgress) {
                   onFileProgress(tempId, {
@@ -102,6 +99,10 @@ class FilesService {
                     status: 'uploading',
                   });
                 }
+                
+                // Update overall progress based on completed files + current progress
+                const overallProgress = ((completedFiles + progress / 100) / files.length) * 100;
+                if (onProgress) onProgress(overallProgress);
               }
             });
             
@@ -144,10 +145,19 @@ class FilesService {
           }
         });
         
-        if (response.file) {
-          results.files.push(response.file);
-          
+        if (response.files && response.files.length > 0) {
           // Notify completion
+          if (onFileProgress) {
+            onFileProgress(tempId, {
+              fileId: response.files[0].id,
+              fileName: file.name,
+              progress: 100,
+              status: 'completed',
+            });
+          }
+          return { success: true, file: response.files[0] };
+        } else if (response.file) {
+          // Handle single file response format
           if (onFileProgress) {
             onFileProgress(tempId, {
               fileId: response.file.id,
@@ -156,27 +166,11 @@ class FilesService {
               status: 'completed',
             });
           }
-        } else if (response.errors && response.errors.length > 0) {
-          results.errors.push(...response.errors);
-          
-          // Notify error
-          if (onFileProgress && response.errors[0]) {
-            onFileProgress(tempId, {
-              fileId: tempId,
-              fileName: file.name,
-              progress: 0,
-              status: 'failed',
-              error: response.errors[0].error,
-            });
-          }
+          return { success: true, file: response.file };
+        } else {
+          throw new Error(response.errors?.[0]?.error || response.error || 'Upload failed');
         }
       } catch (error) {
-        // Handle upload error
-        results.errors.push({
-          filename: file.name,
-          error: error instanceof Error ? error.message : 'Upload failed',
-        });
-        
         // Notify error
         if (onFileProgress) {
           onFileProgress(tempId, {
@@ -187,7 +181,33 @@ class FilesService {
             error: error instanceof Error ? error.message : 'Upload failed',
           });
         }
+        return { success: false, error: error instanceof Error ? error.message : 'Upload failed' };
+      } finally {
+        completedFiles++;
       }
+    };
+    
+    // Process files in parallel batches
+    for (let i = 0; i < files.length; i += PARALLEL_UPLOADS) {
+      const batch = files.slice(i, i + PARALLEL_UPLOADS);
+      const batchPromises = batch.map((file, batchIndex) => 
+        uploadSingleFile(file, i + batchIndex)
+      );
+      
+      // Wait for batch to complete
+      const batchResults = await Promise.all(batchPromises);
+      
+      // Extract successful uploads and errors
+      batchResults.forEach((result) => {
+        if (result.success && result.file) {
+          results.files.push(result.file);
+        } else if (!result.success && result.error) {
+          results.errors.push({
+            filename: result.file?.name || 'Unknown file',
+            error: result.error
+          });
+        }
+      });
     }
     
     return results;

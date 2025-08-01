@@ -6,7 +6,7 @@
 // File upload constraints
 export const FILE_UPLOAD = {
   MAX_SIZE: 50 * 1024 * 1024, // 50MB in bytes
-  MAX_BATCH_SIZE: 10, // Maximum files per batch upload
+  MAX_BATCH_SIZE: 20, // Maximum files per batch upload (increased for better UX)
   ALLOWED_TYPES: {
     DOCUMENTS: ['.pdf', '.doc', '.docx', '.txt', '.md'],
     SPREADSHEETS: ['.xls', '.xlsx', '.csv'],
