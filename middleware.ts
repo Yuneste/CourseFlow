@@ -1,12 +1,19 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { billingRateLimitMiddleware } from './middleware/billing-rate-limit'
+import { abuseCheckMiddleware } from './lib/middleware/abuse-check'
 
 export async function middleware(request: NextRequest) {
   // Check billing rate limits first
   const rateLimitResponse = await billingRateLimitMiddleware(request);
   if (rateLimitResponse) {
     return rateLimitResponse;
+  }
+
+  // Check for abuse patterns
+  const abuseResponse = await abuseCheckMiddleware(request);
+  if (abuseResponse) {
+    return abuseResponse;
   }
 
   let response = NextResponse.next({
