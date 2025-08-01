@@ -498,7 +498,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
               Activity tracking coming soon
             </p>
             <p className="text-gray-500 text-sm mt-1">
-              You'll see your recent uploads, study sessions, and more here.
+              You&apos;ll see your recent uploads, study sessions, and more here.
             </p>
           </div>
         </motion.div>
