@@ -15,7 +15,7 @@ interface UpgradePromptProps {
 }
 
 export function UpgradePrompt({ currentPlan = 'explorer', feature }: UpgradePromptProps) {
-  const [isYearly, setIsYearly] = useState(false);
+  const [isYearly, setIsYearly] = useState(true); // Default to yearly for better value
   const [userEmail, setUserEmail] = useState<string>('');
   const supabase = createClient();
 
