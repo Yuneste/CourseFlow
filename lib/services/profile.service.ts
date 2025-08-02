@@ -68,6 +68,16 @@ export class ProfileService {
         .eq('id', userId)
         .select();
 
+      logger.info('Profile update result', {
+        action: 'updateProfile',
+        metadata: { 
+          userId, 
+          updateData,
+          updateResult,
+          updateError: updateError?.message 
+        }
+      });
+
       if (updateError) {
         // If profile doesn't exist, create it
         if (updateError.code === 'PGRST116') { // No rows returned

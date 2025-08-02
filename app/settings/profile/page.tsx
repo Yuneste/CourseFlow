@@ -84,33 +84,43 @@ export default function ProfileSettingsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setSuccessMessage('')
 
     try {
+      const updatePayload = {
+        full_name: profile.full_name,
+        study_program: profile.study_program,
+        degree_type: profile.degree_type,
+        current_term: profile.current_term,
+      };
+      
+      console.log('Updating profile with:', updatePayload);
+      
       const response = await fetch('/api/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          full_name: profile.full_name,
-          study_program: profile.study_program,
-          degree_type: profile.degree_type,
-          current_term: profile.current_term,
-        }),
+        body: JSON.stringify(updatePayload),
       })
+
+      const data = await response.json();
+      console.log('Response:', response.status, data);
 
       if (response.ok) {
         setSuccessMessage('Profile updated successfully!')
         // Reload profile to show updated data
         await loadProfile()
         
-        // Show success message for 2 seconds before redirecting
+        // Show success message for 2 seconds
         setTimeout(() => {
           setSuccessMessage('')
         }, 2000)
       } else {
-        console.error('Failed to update profile')
+        console.error('Failed to update profile:', data)
+        setSuccessMessage(`Error: ${data.error || 'Failed to update profile'}`)
       }
     } catch (error) {
       console.error('Error updating profile:', error)
+      setSuccessMessage('Error: Failed to connect to server')
     } finally {
       setIsLoading(false)
     }
@@ -238,7 +248,9 @@ export default function ProfileSettingsPage() {
                 {isLoading ? 'Saving...' : 'Save Changes'}
               </Button>
               {successMessage && (
-                <p className="mt-2 text-sm text-green-600">{successMessage}</p>
+                <p className={`mt-2 text-sm ${successMessage.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>
+                  {successMessage}
+                </p>
               )}
             </div>
           </form>
