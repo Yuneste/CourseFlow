@@ -76,14 +76,5 @@ export function generateMetadata({
     alternates: {
       canonical: 'https://courseflow.app',
     },
-    viewport: {
-      width: 'device-width',
-      initialScale: 1,
-      maximumScale: 1,
-    },
-    themeColor: [
-      { media: '(prefers-color-scheme: light)', color: '#ECF0C0' },
-      { media: '(prefers-color-scheme: dark)', color: '#1a1a1a' },
-    ],
   }
 }
