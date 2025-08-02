@@ -47,6 +47,7 @@ export default function ProfileSettingsPage() {
     current_term: '',
   })
   const [availableTerms, setAvailableTerms] = useState<string[]>([])
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false)
 
   useEffect(() => {
     loadProfile()
@@ -68,6 +69,15 @@ export default function ProfileSettingsPage() {
         const terms = generateAcademicTerms(country);
         setAvailableTerms(terms.slice(0, 10)); // Show recent 10 terms
         
+        // Use the saved current_term or leave empty for placeholder to show
+        const currentTerm = profileData.current_term || '';
+        
+        console.log('Loaded profile data:', {
+          current_term: profileData.current_term,
+          country: country,
+          availableTerms: terms.slice(0, 3)
+        });
+        
         setProfile({
           full_name: profileData.full_name || '',
           email: user.email || '',
@@ -75,8 +85,9 @@ export default function ProfileSettingsPage() {
           degree_type: profileData.degree_type || '',
           country: country,
           academic_system: profileData.academic_system || '',
-          current_term: profileData.current_term || getCurrentTerm(country),
+          current_term: currentTerm,
         })
+        setIsProfileLoaded(true)
       }
     }
   }
@@ -108,6 +119,7 @@ export default function ProfileSettingsPage() {
       if (response.ok) {
         setSuccessMessage('Profile updated successfully!')
         // Reload profile to show updated data
+        console.log('Profile saved successfully, reloading...');
         await loadProfile()
         
         // Show success message for 2 seconds
@@ -207,25 +219,37 @@ export default function ProfileSettingsPage() {
 
             <div className="space-y-2">
               <Label htmlFor="current_term">Current Academic Term</Label>
-              <Select
-                value={profile.current_term}
-                onValueChange={(value) => setProfile({ ...profile, current_term: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select current term" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableTerms.map((term) => (
-                    <SelectItem key={term} value={term}>
-                      {term}
-                      {term === getCurrentTerm(profile.country) && (
-                        <span className="ml-2 text-xs text-muted-foreground">(System Default)</span>
-                      )}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-muted-foreground">Select your current academic term</p>
+              {isProfileLoaded && availableTerms.length > 0 ? (
+                <Select
+                  key={profile.current_term} // Force re-render when value changes
+                  value={profile.current_term}
+                  onValueChange={(value) => setProfile({ ...profile, current_term: value })}
+                >
+                  <SelectTrigger id="current_term">
+                    <SelectValue placeholder="Select current term" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableTerms.map((term) => {
+                      const isSystemDefault = term === getCurrentTerm(profile.country);
+                      return (
+                        <SelectItem key={term} value={term}>
+                          {term}
+                          {isSystemDefault && " (System Default)"}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">
+                  Loading terms...
+                </div>
+              )}
+              <p className="text-sm text-muted-foreground">
+                {profile.current_term 
+                  ? `Currently set to: ${profile.current_term}`
+                  : "Select your current academic term"}
+              </p>
             </div>
 
             <div className="space-y-2">
