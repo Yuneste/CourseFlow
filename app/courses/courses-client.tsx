@@ -5,6 +5,7 @@ import { Course, User } from '@/types'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { TermFilter } from '@/components/ui/term-filter'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { 
@@ -28,6 +29,7 @@ interface CoursesClientProps {
 export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<'all'>('all')
+  const [selectedTerm, setSelectedTerm] = useState('')
   const [courseList, setCourseList] = useState(courses)
   const [draggedCourse, setDraggedCourse] = useState<Course | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
@@ -35,7 +37,8 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
   const filteredCourses = courseList.filter(course => {
     const matchesSearch = course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (course.code?.toLowerCase().includes(searchQuery.toLowerCase()) || false)
-    return matchesSearch
+    const matchesTerm = !selectedTerm || course.term === selectedTerm
+    return matchesSearch && matchesTerm
   })
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, course: Course, index: number) => {
@@ -97,9 +100,9 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="flex flex-col sm:flex-row gap-4 mb-8"
+        className="flex flex-col sm:flex-row gap-3 mb-8"
       >
-        <div className="relative flex-1">
+        <div className="relative flex-1 sm:max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
             type="text"
@@ -110,16 +113,19 @@ export function CoursesClient({ courses, userProfile }: CoursesClientProps) {
           />
         </div>
         
-        <div className="flex gap-2">
-          {/* Filter buttons can be added here when needed */}
+        <div className="flex gap-2 flex-1 sm:flex-initial justify-end">
+          <TermFilter
+            countryCode={userProfile?.country || 'US'}
+            onTermChange={setSelectedTerm}
+            className="w-full sm:w-auto"
+          />
+          <Link href="/courses/new" className="w-full sm:w-auto">
+            <Button className={cn("w-full", lightThemeClasses.button.primary)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Course
+            </Button>
+          </Link>
         </div>
-
-        <Link href="/courses/new">
-          <Button className={cn("w-full sm:w-auto", lightThemeClasses.button.primary)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Course
-          </Button>
-        </Link>
       </motion.div>
 
       {/* Courses Grid */}

@@ -7,6 +7,7 @@ import { useAppStore } from '@/stores/useAppStore';
 import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { TermFilter } from '@/components/ui/term-filter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, 
@@ -240,6 +241,7 @@ const QuickSearch = () => (
 export function DashboardClient({ initialCourses, userProfile }: DashboardClientProps) {
   const router = useRouter();
   const { courses, setCourses, setUser } = useAppStore();
+  const [selectedTerm, setSelectedTerm] = useState('');
 
   useEffect(() => {
     setUser(userProfile);
@@ -253,6 +255,11 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   const country = userProfile?.country || 'US';
   const systemInfo = getAcademicSystemWithTerms(country);
   
+  // Filter courses by selected term
+  const filteredCourses = selectedTerm 
+    ? courses.filter(course => course.term === selectedTerm)
+    : courses;
+    
   // Enhanced stats
   const activeCourses = courses.length;
   const completedCourses = 0;
@@ -409,15 +416,26 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
           >
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-base font-semibold text-[#8B5CF6]">My Courses</h2>
-              <Button size="sm" variant="ghost" className={cn(lightThemeClasses.button.ghost, "gap-2")} asChild>
-                <Link href="/courses">
-                  <span className="text-xs">View All</span>
-                  <ChevronRight className="h-3.5 w-3.5" />
-                </Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                <TermFilter
+                  countryCode={country}
+                  onTermChange={setSelectedTerm}
+                  variant="compact"
+                />
+                <Button size="sm" variant="ghost" className={cn(lightThemeClasses.button.ghost, "gap-2")} asChild>
+                  <Link href="/courses">
+                    <span className="text-xs">View All</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </Link>
+                </Button>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {courses.slice(0, 3).map((course, index) => (
+              {filteredCourses.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-gray-500 text-sm">No courses found for the selected term.</p>
+                </div>
+              ) : filteredCourses.slice(0, 3).map((course, index) => (
                 <motion.div
                   key={course.id}
                   initial={{ opacity: 0, y: 20 }}
