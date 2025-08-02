@@ -240,8 +240,9 @@ const QuickSearch = () => (
 
 export function DashboardClient({ initialCourses, userProfile }: DashboardClientProps) {
   const router = useRouter();
-  const { courses, setCourses, setUser } = useAppStore();
+  const { courses: storeCourses, setCourses, setUser } = useAppStore();
   const [selectedTerm, setSelectedTerm] = useState('');
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     setUser(userProfile);
@@ -250,10 +251,14 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
   useEffect(() => {
     // Always sync with the latest courses from the server
     setCourses(initialCourses);
+    setIsHydrated(true);
   }, [initialCourses, setCourses]);
 
   const country = userProfile?.country || 'US';
   const systemInfo = getAcademicSystemWithTerms(country);
+  
+  // Use initialCourses during SSR/hydration, storeCourses after hydration
+  const courses = isHydrated ? storeCourses : initialCourses;
   
   // Filter courses by selected term
   const filteredCourses = selectedTerm 

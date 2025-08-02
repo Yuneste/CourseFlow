@@ -83,9 +83,12 @@ export function prefersReducedMotion(): boolean {
 
 /**
  * Generates a unique ID for UI elements
+ * Uses a counter to ensure consistent IDs during SSR
  */
+let idCounter = 0;
 export function generateUIId(prefix: string = 'ui'): string {
-  return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
+  // Use a simple counter for consistent IDs between server and client
+  return `${prefix}-${++idCounter}`;
 }
 
 /**

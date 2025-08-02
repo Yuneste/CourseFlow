@@ -82,7 +82,7 @@ export function CourseFormClient({ userProfile }: CourseFormClientProps) {
       term: values.term,
       academic_period_type: academicSystem.periodType as 'semester' | 'term' | 'trimester',
       emoji: values.emoji || '📚',
-      color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'), // Random color
+      color: '#8CC2BE', // Default to theme primary color, can be changed later
     };
     
     // Handle credits based on user's academic system
