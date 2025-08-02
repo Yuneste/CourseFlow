@@ -11,6 +11,7 @@ export interface User {
   country?: string;
   timezone?: string;
   academic_system?: 'gpa' | 'ects' | 'uk_honours' | 'percentage';
+  current_term?: string;
   created_at: Date;
   updated_at: Date;
   avatar_url?: string;

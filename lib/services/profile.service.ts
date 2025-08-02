@@ -18,6 +18,7 @@ export interface ProfileUpdateData {
   academic_system?: 'gpa' | 'ects' | 'uk_honours' | 'percentage';
   full_name?: string;
   onboarding_completed?: boolean;
+  current_term?: string;
 }
 
 export class ProfileService {

@@ -344,7 +344,7 @@ export function DashboardClient({ initialCourses, userProfile }: DashboardClient
             />
             <StatsCard
               title="Current Term"
-              value={systemInfo.currentTerm}
+              value={userProfile.current_term || systemInfo.currentTerm}
               icon={Calendar}
               color="bg-success/10"
               delay={0.6}

@@ -32,6 +32,7 @@ export async function PATCH(request: NextRequest) {
     if (body.academic_system !== undefined) updateData.academic_system = body.academic_system;
     if (body.full_name !== undefined) updateData.full_name = body.full_name;
     if (body.onboarding_completed !== undefined) updateData.onboarding_completed = body.onboarding_completed;
+    if (body.current_term !== undefined) updateData.current_term = body.current_term;
     
     // Update profile using service
     const result = await ProfileService.updateProfile(

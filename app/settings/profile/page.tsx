@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { generateAcademicTerms, getCurrentTerm } from '@/lib/academic-systems'
 
 const getCountryName = (code: string) => {
   const countries: Record<string, string> = {
@@ -43,7 +44,9 @@ export default function ProfileSettingsPage() {
     degree_type: '',
     country: '',
     academic_system: '',
+    current_term: '',
   })
+  const [availableTerms, setAvailableTerms] = useState<string[]>([])
 
   useEffect(() => {
     loadProfile()
@@ -61,13 +64,18 @@ export default function ProfileSettingsPage() {
         .single()
       
       if (profileData) {
+        const country = profileData.country || 'US';
+        const terms = generateAcademicTerms(country);
+        setAvailableTerms(terms.slice(0, 10)); // Show recent 10 terms
+        
         setProfile({
           full_name: profileData.full_name || '',
           email: user.email || '',
           study_program: profileData.study_program || '',
           degree_type: profileData.degree_type || '',
-          country: profileData.country || '',
+          country: country,
           academic_system: profileData.academic_system || '',
+          current_term: profileData.current_term || getCurrentTerm(country),
         })
       }
     }
@@ -85,6 +93,7 @@ export default function ProfileSettingsPage() {
           full_name: profile.full_name,
           study_program: profile.study_program,
           degree_type: profile.degree_type,
+          current_term: profile.current_term,
         }),
       })
 
@@ -184,6 +193,29 @@ export default function ProfileSettingsPage() {
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="current_term">Current Academic Term</Label>
+              <Select
+                value={profile.current_term}
+                onValueChange={(value) => setProfile({ ...profile, current_term: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select current term" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableTerms.map((term) => (
+                    <SelectItem key={term} value={term}>
+                      {term}
+                      {term === getCurrentTerm(profile.country) && (
+                        <span className="ml-2 text-xs text-muted-foreground">(System Default)</span>
+                      )}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-muted-foreground">Select your current academic term</p>
             </div>
 
             <div className="space-y-2">
