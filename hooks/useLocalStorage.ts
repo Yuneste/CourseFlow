@@ -25,7 +25,8 @@ export function useLocalStorage<T>(
     }
   };
 
-  const [storedValue, setStoredValue] = useState<T>(readValue);
+  // Always initialize with initialValue to prevent hydration mismatch
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
 
   // Return a wrapped version of useState's setter function that persists the new value to localStorage
   const setValue = (value: T | ((val: T) => T)) => {
@@ -46,7 +47,11 @@ export function useLocalStorage<T>(
   };
 
   useEffect(() => {
-    setStoredValue(readValue());
+    // Sync with localStorage after mount to avoid hydration issues
+    const value = readValue();
+    if (value !== initialValue) {
+      setStoredValue(value);
+    }
   }, []);
 
   return [storedValue, setValue];

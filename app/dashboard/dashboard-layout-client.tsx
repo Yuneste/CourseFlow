@@ -17,18 +17,18 @@ interface DashboardLayoutClientProps {
 }
 
 export function DashboardLayoutClient({ user, children }: DashboardLayoutClientProps) {
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('sidebar-collapsed') === 'true';
-    }
-    return false;
-  });
+  // Initialize with false to prevent hydration mismatch
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   
   // Initialize global keyboard shortcuts
   useGlobalKeyboardShortcuts();
 
   useEffect(() => {
+    // Read from localStorage after mount
+    const stored = localStorage.getItem('sidebar-collapsed') === 'true';
+    setIsCollapsed(stored);
+
     const handleStorageChange = () => {
       setIsCollapsed(localStorage.getItem('sidebar-collapsed') === 'true');
     };

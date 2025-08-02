@@ -34,13 +34,15 @@ interface SidebarProps {
 
 export function Sidebar({ user, onSignOut }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('sidebar-collapsed') === 'true';
-    }
-    return false;
-  });
+  // Initialize with false to prevent hydration mismatch
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
+
+  // Load collapsed state from localStorage after mount
+  useEffect(() => {
+    const stored = localStorage.getItem('sidebar-collapsed') === 'true';
+    setIsCollapsed(stored);
+  }, []);
 
   // Close sidebar on route change (mobile)
   useEffect(() => {

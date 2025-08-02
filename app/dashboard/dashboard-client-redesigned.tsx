@@ -171,11 +171,14 @@ const FeatureCard = ({ title, description, icon: Icon, href, color, delay, avail
 
 // Modern welcome header
 const WelcomeHeader = ({ userName }: { userName: string }) => {
-  const [greeting, setGreeting] = useState("");
+  // Initialize with a default greeting to avoid hydration mismatch
+  const [greeting, setGreeting] = useState("Welcome");
+  const [mounted, setMounted] = useState(false);
   
   const firstName = userName.split(' ')[0] || 'Student';
   
   useEffect(() => {
+    setMounted(true);
     const hour = new Date().getHours();
     if (hour < 12) setGreeting("Good morning");
     else if (hour < 18) setGreeting("Good afternoon");
